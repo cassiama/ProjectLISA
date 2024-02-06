@@ -57,28 +57,28 @@ routes
 
         let validEmail;
         try {
-            validEmail = hecheckEmail(email);
+            validEmail = checkEmail(email);
         } catch (e) {
             errors.push(e);
         }
 
         let validFirstName;
         try {
-            validFirstName = hecheckName(firstName, "First Name");
+            validFirstName = checkName(firstName, "First Name");
         } catch (e) {
             errors.push(e);
         }
 
         let validLastName;
         try {
-            validLastName = hecheckName(lastName, "Last Name");
+            validLastName = checkName(lastName, "Last Name");
         } catch (e) {
             errors.push(e);
         }
 
         let validPassword;
         try {
-            validPassword = hecheckPassword(password);
+            validPassword = checkPassword(password);
         } catch (e) {
             errors.push(e);
         }
