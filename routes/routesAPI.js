@@ -51,28 +51,28 @@ routes
 
         let validEmail;
         try {
-            validEmail = helpers.checkValidEmail(email);
+            validEmail = helpers.checkEmail(email);
         } catch (e) {
             errors.push(e);
         }
 
         let validFirstName;
         try {
-            validFirstName = helpers.checkValidString(firstName, "First Name");
+            validFirstName = helpers.checkName(firstName, "First Name");
         } catch (e) {
             errors.push(e);
         }
 
         let validLastName;
         try {
-            validLastName = helpers.checkValidString(lastName, "Last Name");
+            validLastName = helpers.checkName(lastName, "Last Name");
         } catch (e) {
             errors.push(e);
         }
 
         let validPassword;
         try {
-            validPassword = helpers.checkValidPassword(password);
+            validPassword = helpers.checkPassword(password);
         } catch (e) {
             errors.push(e);
         }
@@ -85,9 +85,9 @@ routes
             return;
         }
 
-        let registerUserResult = undefined;
+        let user;
         try {
-            registerUserResult = await users.registerUser(
+            user = await users.registerUser(
                 validFirstName,
                 validLastName,
                 validEmail,
@@ -105,11 +105,11 @@ routes
             return;
         }
 
-        if (registerUserResult.insertedUser) {
+        if (user) {
             req.session.user = {
-                firstName: validFirstName,
-                lastName: validLastName,
-                email: validEmail
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.emailAddress
             };
             res.redirect('/account');
         } else {

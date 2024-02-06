@@ -35,14 +35,14 @@ loginRouter
 
         let validEmail;
         try {
-            validEmail = helpers.checkValidEmail(email);
+            validEmail = helpers.checkEmail(email);
         } catch (e) {
             errors.push(e);
         }
 
         let validPassword;
         try {
-            validPassword = helpers.checkValidPassword(password);
+            validPassword = helpers.checkPassword(password);
         } catch (e) {
             errors.push(e);
         }
@@ -55,9 +55,9 @@ loginRouter
             return;
         }
 
-        let checkUserResult = undefined;
+        let user;
         try {
-            checkUserResult = await users.checkUser(validEmail, validPassword);
+            user = await users.checkUser(validEmail, validPassword);
         } catch (e) {
             errors.push(e);
         }
@@ -70,8 +70,12 @@ loginRouter
             return;
         }
 
-        if (checkUserResult.authenticatedUser) {
-            req.session.user = { email: validEmail };
+        if (user) {
+            req.session.user = {
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.emailAddress
+            };
             res.redirect('/account');
         } else {
             errors.push('An invalid email and/or password was provided.');
