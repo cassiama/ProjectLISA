@@ -202,11 +202,11 @@ export const subtractPoints = async (userId, rewardPoints) => {
 	const userCollection = await users();
 	const user = await getUserById(userId);
 	// check if the user has enough points to subtract
-	if (user.rewardPoints < rewardPoints) {
+	if (user.points < rewardPoints) {
 		throw "Error: User does not have enough points to subtract";
 	}
 	// subtract the points
-	const newPoints = user.rewardPoints - rewardPoints;
+	const newPoints = user.points - rewardPoints;
 	const updatedUser = await userCollection.updateOne(
 		{ _id: new ObjectId(userId) },
 		{ $set: { points: newPoints } }
@@ -219,7 +219,7 @@ export const addPoints = async (userId, rewardPoints) => {
 	const userCollection = await users();
 	const user = await getUserById(userId);
 	// add the points
-	const newPoints = user.rewardPoints + rewardPoints;
+	const newPoints = user.points + rewardPoints;
 	const updatedUser = await userCollection.updateOne(
 		{ _id: new ObjectId(userId) },
 		{ $set: { points: newPoints } }
