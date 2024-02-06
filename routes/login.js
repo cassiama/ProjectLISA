@@ -1,6 +1,11 @@
 import { Router } from "express";
-import * as helpers from "../utils/helpers";
-import * as users from "../data/users";
+import {
+    checkEmail,
+    checkPassword
+} from "../utils/helpers.js";
+import {
+    checkUser
+} from "../data/users.js";
 const loginRouter = Router();
 
 /**
@@ -35,14 +40,14 @@ loginRouter
 
         let validEmail;
         try {
-            validEmail = helpers.checkEmail(email);
+            validEmail = checkEmail(email);
         } catch (e) {
             errors.push(e);
         }
 
         let validPassword;
         try {
-            validPassword = helpers.checkPassword(password);
+            validPassword = checkPassword(password);
         } catch (e) {
             errors.push(e);
         }
@@ -57,7 +62,7 @@ loginRouter
 
         let user;
         try {
-            user = await users.checkUser(validEmail, validPassword);
+            user = await checkUser(validEmail, validPassword);
         } catch (e) {
             errors.push(e);
         }

@@ -2,6 +2,10 @@ import express from 'express';
 import { configRoutes } from './routes/index.js';
 import { engine } from 'express-handlebars';
 import session from 'express-session';
+import path from 'path';
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const staticDir = express.static(__dirname + '/public');
 
 const app = express();

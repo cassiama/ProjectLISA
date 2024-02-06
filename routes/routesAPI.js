@@ -1,6 +1,12 @@
 import { Router } from "express";
-import * as helpers from "../utils/helpers";
-import * as users from "../data/users";
+import {
+    checkEmail,
+    checkName,
+    checkPassword
+} from "../utils/helpers.js";
+import {
+    registerUser
+} from "../data/users.js";
 const routes = Router();
 
 /**
@@ -51,28 +57,28 @@ routes
 
         let validEmail;
         try {
-            validEmail = helpers.checkEmail(email);
+            validEmail = hecheckEmail(email);
         } catch (e) {
             errors.push(e);
         }
 
         let validFirstName;
         try {
-            validFirstName = helpers.checkName(firstName, "First Name");
+            validFirstName = hecheckName(firstName, "First Name");
         } catch (e) {
             errors.push(e);
         }
 
         let validLastName;
         try {
-            validLastName = helpers.checkName(lastName, "Last Name");
+            validLastName = hecheckName(lastName, "Last Name");
         } catch (e) {
             errors.push(e);
         }
 
         let validPassword;
         try {
-            validPassword = helpers.checkPassword(password);
+            validPassword = hecheckPassword(password);
         } catch (e) {
             errors.push(e);
         }
@@ -87,7 +93,7 @@ routes
 
         let user;
         try {
-            user = await users.registerUser(
+            user = await registerUser(
                 validFirstName,
                 validLastName,
                 validEmail,

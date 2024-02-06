@@ -1,5 +1,5 @@
-import { checkName, checkEmail, checkPassword, checkString, checkId } from "../utils/helpers";
-import { users } from "../config/mongoCollections";
+import { checkName, checkEmail, checkPassword, checkString, checkId } from "../utils/helpers.js";
+import { users } from "../config/mongoCollections.js";
 import { ObjectId } from 'mongodb';
 import bcrypt from 'bcrypt';
 const saltRounds = 8;
