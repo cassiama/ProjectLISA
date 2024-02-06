@@ -1,0 +1,34 @@
+<main>
+  <form action="login" method="POST" id="login-form" class="column">
+    <h1>Login!</h1>
+
+    <label for="emailAddressInput">
+      Email:
+      <input
+        type="email"
+        name="emailAddressInput"
+        id="emailAddressInput"
+        placeholder="Enter email address"
+      >
+    </label>
+
+    <label for="passwordInput">
+      Password:
+      <input
+        type="password"
+        name="passwordInput"
+        id="passwordInput"  
+        placeholder="Enter password"
+      >
+    </label>
+
+    {{#if error}}
+      <p class="error">{{message}}</p>
+    {{/if}}
+
+    <br>     
+
+    <button type="submit" class="btn">Submit</button>
+    <p>New user? Sign up <a href="/user/register" class="register">here!</a></p>
+  </form>
+</main>

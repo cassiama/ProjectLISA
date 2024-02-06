@@ -1,0 +1,28 @@
+<main>
+    <form method="post" id="registerUser-form" class="column">
+        <h2>Register Here!</h2>
+        
+        <label for="emailAddress">Email:</label>
+        <input type="email" id="emailAddress" name="emailAddress">
+
+        <label for="firstName">First Name:</label>
+        <input type="text" id="firstName" name="firstName">
+
+        <label for="lastName">Last Name:</label>
+        <input type="text" id="lastName" name="lastName">
+
+        <label for="password">Password (must have at least 8 characters, 1 special character, 1 number, and 1 capital letter):</label>
+        <input type="password" id="password" name="password">
+
+        <label for="confirmPassword">Confirm Password:</label>
+        <input type="password" id="confirmPassword" name="confirmPassword">
+
+        {{#if error}}
+            <p class="error">{{message}}</p>
+        {{/if}}
+
+        <br>     
+
+        <button type="submit">Submit</button>
+    </form>
+</main>
