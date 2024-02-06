@@ -1,4 +1,5 @@
 import { Router } from "express";
+import xss from "xss";
 import {
     checkEmail,
     checkName,
@@ -94,10 +95,10 @@ routes
         let user;
         try {
             user = await registerUser(
-                validFirstName,
-                validLastName,
-                validEmail,
-                validPassword
+                xss(validFirstName),
+                xss(validLastName),
+                xss(validEmail),
+                xss(validPassword)
             );
         } catch (e) {
             errors.push(e);

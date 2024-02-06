@@ -62,7 +62,7 @@ loginRouter
 
         let user;
         try {
-            user = await checkUser(validEmail, validPassword);
+            user = await checkUser(xss(validEmail), xss(validPassword));
         } catch (e) {
             errors.push(e);
         }
@@ -94,8 +94,10 @@ loginRouter
 
 loginRouter
     .route('/forgot')
-    .get(async (req, res) => {})
-    .post(async (req, res) => {});
+    .get(async (req, res) => { res.render('forgotPassword'); })
+    .post(async (req, res) => {
+        // should send an email to req.body.emailAddress
+    });
 
 loginRouter
     .route('/new')

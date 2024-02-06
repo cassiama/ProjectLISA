@@ -24,6 +24,12 @@ app.use(session({
     cookie: { maxAge: 1800000 } // maxAge = 30 min
 }));
 
+app.use('*', (req, res, next) => {
+    console.log(`${req.method} ${req.originalUrl}`);
+    next();
+    console.log();
+});
+
 configRoutes(app);
 
 app.listen(3000, () => {
