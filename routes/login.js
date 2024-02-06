@@ -4,7 +4,8 @@ import {
     checkPassword
 } from "../utils/helpers.js";
 import {
-    checkUser
+    checkUser,
+    updateUser
 } from "../data/users.js";
 const loginRouter = Router();
 
@@ -65,9 +66,6 @@ loginRouter
             user = await checkUser(xss(validEmail), xss(validPassword));
         } catch (e) {
             errors.push(e);
-        }
-
-        if (errors.length > 0) {
             res.status(400).render('login', {
                 error: true,
                 errors: errors
@@ -75,21 +73,14 @@ loginRouter
             return;
         }
 
-        if (user) {
-            req.session.user = {
-                firstName: user.firstName,
-                lastName: user.lastName,
-                email: user.emailAddress
-            };
-            res.redirect('/account');
-        } else {
-            errors.push('An invalid email and/or password was provided.');
-            res.status(400).render('login', {
-                error: true,
-                errors: errors
-            });
-            return;
-        }
+        req.session.user = {
+            id: user.id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.emailAddress,
+            devices: user.devices
+        };
+        res.redirect('/account');
     });
 
 loginRouter
@@ -101,7 +92,63 @@ loginRouter
 
 loginRouter
     .route('/new')
-    .get(async (req, res) => {})
-    .post(async (req, res) => {});
+    .get(async (req, res) => { res.render('newPassword'); })
+    .post(async (req, res) => {
+        let errors = [];
+        let password1 = req.body.password1;
+        let password2 = req.body.password2;
+
+        if (typeof password1 === 'undefined' || typeof password2 === 'undefined') {
+            errors.push('New password must be provided.');
+            res.status(400).render('newPassword', {
+                error: true,
+                errors: errors
+            });
+            return;
+        }
+
+        if (password1 !== password2) {
+            errors.push('Passwords do not match.');
+            res.status(400).render('newPassword', {
+                error: true,
+                errors: errors
+            });
+            return;
+        }
+
+        let validPassword;
+        try {
+            validPassword = checkPassword(password1);
+        } catch (e) {
+            errors.push(e);
+        }
+
+        if (errors.length > 0) {
+            res.status(400).render('newPassword', {
+                error: true,
+                errors: errors
+            });
+            return;
+        }
+
+        let updatedUser;
+        try {
+            updatedUser = await updateUser(
+                xss(req.session.user.id),
+                xss(req.session.user.firstName),
+                xss(req.session.user.lastName),
+                xss(req.session.user.email),
+                xss(validPassword)
+            );
+            res.redirect('/account');
+        } catch (e) {
+            errors.push(e);
+            res.status(400).render('newPassword', {
+                error: true,
+                errors: errors
+            });
+            return;
+        }
+    });
 
 export default loginRouter;
