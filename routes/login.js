@@ -1,4 +1,5 @@
 import { Router } from "express";
+import xss from "xss";
 import {
     checkEmail,
     checkPassword
@@ -22,6 +23,7 @@ loginRouter
         else res.render('login');
     })
     .post(async (req, res) => {
+        // console.log(req.body);
         let errors = [];
         let email = req.body.email;
         let password = req.body.password;
@@ -32,6 +34,7 @@ loginRouter
             errors.push('No password provided.');
 
         if (errors.length > 0) {
+            console.log(errors);
             res.status(400).render('login', {
                 error: true,
                 errors: errors
@@ -54,6 +57,7 @@ loginRouter
         }
 
         if (errors.length > 0) {
+            console.log(errors);
             res.status(400).render('login', {
                 error: true,
                 errors: errors
@@ -66,6 +70,7 @@ loginRouter
             user = await checkUser(xss(validEmail), xss(validPassword));
         } catch (e) {
             errors.push(e);
+            console.log(errors);
             res.status(400).render('login', {
                 error: true,
                 errors: errors
@@ -94,12 +99,14 @@ loginRouter
     .route('/new')
     .get(async (req, res) => { res.render('newPassword'); })
     .post(async (req, res) => {
+        // console.log(req.body);
         let errors = [];
         let password1 = req.body.password1;
         let password2 = req.body.password2;
 
         if (typeof password1 === 'undefined' || typeof password2 === 'undefined') {
             errors.push('New password must be provided.');
+            console.log(errors);
             res.status(400).render('newPassword', {
                 error: true,
                 errors: errors
@@ -109,6 +116,7 @@ loginRouter
 
         if (password1 !== password2) {
             errors.push('Passwords do not match.');
+            console.log(errors);
             res.status(400).render('newPassword', {
                 error: true,
                 errors: errors
@@ -124,6 +132,7 @@ loginRouter
         }
 
         if (errors.length > 0) {
+            console.log(errors);
             res.status(400).render('newPassword', {
                 error: true,
                 errors: errors

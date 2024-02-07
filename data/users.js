@@ -11,9 +11,9 @@ export const registerUser = async (firstName, lastName, email, password) => {
     }
     firstName = checkName(firstName, "First name");
     lastName = checkName(lastName, "Last name");
-    emailAddress = checkEmail(emailAddress);
+    email = checkEmail(email);
     password = checkPassword(password);
-    let emailExists = await emailAlreadyExists(emailAddress);
+    let emailExists = await emailAlreadyExists(email);
     if (emailExists) {
         throw `emailAddress already exists (createUser)`;
     }

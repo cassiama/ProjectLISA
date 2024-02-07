@@ -34,6 +34,7 @@ routes
         else res.render('register');
     })
     .post(async (req, res) => {
+        // console.log(req.body);
         let errors = [];
         let email = req.body.email;
         let firstName = req.body.firstName;
@@ -50,6 +51,7 @@ routes
             errors.push('No password provided.');
 
         if (errors.length > 0) {
+            console.log(errors);
             res.status(400).render('login', {
                 error: true,
                 errors: errors
@@ -86,6 +88,7 @@ routes
         }
 
         if (errors.length > 0) {
+            console.log(errors);
             res.status(400).render('login', {
                 error: true,
                 errors: errors
@@ -106,6 +109,7 @@ routes
         }
 
         if (errors.length > 0) {
+            console.log(errors);
             res.status(400).render('login', {
                 error: true,
                 errors: errors
@@ -123,6 +127,7 @@ routes
             res.redirect('/account');
         } else {
             errors.push('Internal Server Error');
+            console.log(errors);
             res.status(500).render('register', {
                 error: true,
                 errors: errors
