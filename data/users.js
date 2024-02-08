@@ -66,7 +66,8 @@ export const checkUser = async (email, password) => {
         let lastName = user.lastName;
         let emailAddress = user.email;
         let _id = user._id.toString();
-        return {_id, firstName, lastName, emailAddress};
+		let devices = user.devices;
+        return {_id, firstName, lastName, emailAddress, devices};
     } else {
         throw "Either the email address or password is invalid";
     }

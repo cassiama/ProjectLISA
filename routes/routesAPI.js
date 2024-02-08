@@ -30,6 +30,7 @@ routes.get('/', (req, res) => {
 routes
     .route('/register')
     .get(async (req, res) => {
+        console.log(req.session.user);
         if (req.session.user) res.redirect('/account');
         else res.render('register');
     })

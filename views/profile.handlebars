@@ -8,13 +8,34 @@
     {{!-- not sure if we want to have this on this page or link to another page --}}
   </div>
     <div class="column">
-    <h2>User Userson</h2>
-    <h4>user@usermail.com</h4>
+    <h2>{{firstName}} {{lastName}}</h2>
+    <h4>{{email}}</h4>
   </div>
   <div class="column">
     <div>
-        <h2>My Devices:</h2>
-        <div class="row">
+        {{!-- <h2>My Devices:</h2> --}}
+        {{#if devices}}
+        <ol>My Devices:
+          {{#each devices}}
+          <li>
+            <div class="submission">
+              <div class="row">
+                  <p>Serial Number: {{this.serialNum}}</p>
+              </div>
+              <ul>Device Goals: 
+                {{#each this.deviceGoals}}
+                  <li>{{this}}</li>
+                {{/each}}
+              </ul>
+            </div>
+          </li>
+            <br/>
+          {{/each}}
+        </ol>
+        {{else}}
+          <p>No devices added</p>
+        {{/if}}
+        {{!-- <div class="row">
             <div class="column">
                 <img>
             </div>
@@ -29,7 +50,7 @@
             <div class="column">
                 <p>description</p>
             </div>
-        </div>
+        </div> --}}
         <button>Add Device</button>
         <a href="leaderboard">Check out the leaderboard!</a>
     </div>

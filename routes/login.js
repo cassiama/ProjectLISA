@@ -79,7 +79,7 @@ loginRouter
         }
 
         req.session.user = {
-            id: user.id,
+            id: user._id,
             firstName: user.firstName,
             lastName: user.lastName,
             email: user.emailAddress,
