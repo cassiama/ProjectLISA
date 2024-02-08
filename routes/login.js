@@ -25,8 +25,8 @@ loginRouter
     .post(async (req, res) => {
         // console.log(req.body);
         let errors = [];
-        let email = req.body.emailAddressInput;
-        let password = req.body.passwordInput;
+        let email = req.body.email;
+        let password = req.body.password;
 
         if (typeof email === 'undefined')
             errors.push('No email provided.');
