@@ -1,0 +1,20 @@
+<div>
+    <h1>Leaderboard</h1>
+    <h3>See where you rank below!</h3>
+    <div class="leaderboard">
+        <table>
+            <tr>
+                <th>Rank</th>
+                <th>Username</th>
+                <th>Points</th>
+            </tr>
+        {{#each users}}
+            <tr>
+                <td>#{{math @index "+" 1}}</td>
+                <td>{{this.username}}</td>
+                <td>{{this.points}}</td>
+            </tr>
+        {{/each}}
+        </table>
+    </div>
+</div>
