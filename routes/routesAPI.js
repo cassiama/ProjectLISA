@@ -55,7 +55,7 @@ routes
             console.log(errors);
             res.status(400).render('login', {
                 error: true,
-                errors: errors
+                message: errors[0]
             });
             return;
         }
@@ -92,7 +92,7 @@ routes
             console.log(errors);
             res.status(400).render('login', {
                 error: true,
-                errors: errors
+                message: errors[0]
             });
             return;
         }
@@ -113,7 +113,7 @@ routes
             console.log(errors);
             res.status(400).render('login', {
                 error: true,
-                errors: errors
+                message: errors
             });
             return;
         }
@@ -131,7 +131,7 @@ routes
             console.log(errors);
             res.status(500).render('register', {
                 error: true,
-                errors: errors
+                message: errors[0]
             });
             return;
         }
@@ -175,7 +175,7 @@ routes
         if (errors.length > 0) {
             res.status(400).render('profile', {
                 error: true,
-                errors: errors
+                message: errors[0]
             });
             return;
         }
@@ -218,7 +218,7 @@ routes
         if (errors.length > 0) {
             res.status(400).render('profile', {
                 error: true,
-                errors: errors
+                message: errors[0]
             });
             return;
         }
@@ -236,7 +236,7 @@ routes
             errors.push(e);
             res.status(400).render('profile', {
                 error: true,
-                errors: errors
+                message: errors[0]
             });
             return;
         }
@@ -253,6 +253,79 @@ routes
             email: req.session.user.email,
             devices: req.session.user.devices
         });
+    });
+
+routes
+    .route('/forgetpassword')
+    .get(async (req, res) => { res.render('forgetpassword'); })
+    .post(async (req, res) => {
+        // should send an email to req.body.emailAddress
+        res.redirect('/newpassword');
+    });
+
+routes
+    .route('/newpassword')
+    .get(async (req, res) => { res.render('newpassword'); })
+    .post(async (req, res) => {
+        // console.log(req.body);
+        let errors = [];
+        let password1 = req.body.password1;
+        let password2 = req.body.password2;
+
+        if (typeof password1 === 'undefined' || typeof password2 === 'undefined') {
+            errors.push('New password must be provided.');
+            console.log(errors);
+            res.status(400).render('newpassword', {
+                error: true,
+                message: errors[0]
+            });
+            return;
+        }
+
+        if (password1 !== password2) {
+            errors.push('Passwords do not match.');
+            console.log(errors);
+            res.status(400).render('newpassword', {
+                error: true,
+                message: errors[0]
+            });
+            return;
+        }
+
+        let validPassword;
+        try {
+            validPassword = checkPassword(password1);
+        } catch (e) {
+            errors.push(e);
+        }
+
+        if (errors.length > 0) {
+            console.log(errors);
+            res.status(400).render('newpassword', {
+                error: true,
+                message: errors[0]
+            });
+            return;
+        }
+
+        let updatedUser;
+        try {
+            updatedUser = await updateUser(
+                xss(req.session.user.id),
+                xss(req.session.user.firstName),
+                xss(req.session.user.lastName),
+                xss(req.session.user.email),
+                xss(validPassword)
+            );
+            res.redirect('/account');
+        } catch (e) {
+            errors.push(e);
+            res.status(400).render('newpassword', {
+                error: true,
+                message: errors[0]
+            });
+            return;
+        }
     });
 
 export default routes;

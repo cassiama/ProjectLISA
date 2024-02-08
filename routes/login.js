@@ -25,8 +25,8 @@ loginRouter
     .post(async (req, res) => {
         // console.log(req.body);
         let errors = [];
-        let email = req.body.email;
-        let password = req.body.password;
+        let email = req.body.emailAddressInput;
+        let password = req.body.passwordInput;
 
         if (typeof email === 'undefined')
             errors.push('No email provided.');
@@ -37,7 +37,7 @@ loginRouter
             console.log(errors);
             res.status(400).render('login', {
                 error: true,
-                errors: errors
+                message: errors[0]
             });
             return;
         }
@@ -60,7 +60,7 @@ loginRouter
             console.log(errors);
             res.status(400).render('login', {
                 error: true,
-                errors: errors
+                message: errors[0]
             });
             return;
         }
@@ -73,7 +73,7 @@ loginRouter
             console.log(errors);
             res.status(400).render('login', {
                 error: true,
-                errors: errors
+                message: errors[0]
             });
             return;
         }
@@ -86,78 +86,6 @@ loginRouter
             devices: user.devices
         };
         res.redirect('/account');
-    });
-
-loginRouter
-    .route('/forgot')
-    .get(async (req, res) => { res.render('forgetPassword'); })
-    .post(async (req, res) => {
-        // should send an email to req.body.emailAddress
-    });
-
-loginRouter
-    .route('/new')
-    .get(async (req, res) => { res.render('newpassword'); })
-    .post(async (req, res) => {
-        // console.log(req.body);
-        let errors = [];
-        let password1 = req.body.password1;
-        let password2 = req.body.password2;
-
-        if (typeof password1 === 'undefined' || typeof password2 === 'undefined') {
-            errors.push('New password must be provided.');
-            console.log(errors);
-            res.status(400).render('newpassword', {
-                error: true,
-                errors: errors
-            });
-            return;
-        }
-
-        if (password1 !== password2) {
-            errors.push('Passwords do not match.');
-            console.log(errors);
-            res.status(400).render('newpassword', {
-                error: true,
-                errors: errors
-            });
-            return;
-        }
-
-        let validPassword;
-        try {
-            validPassword = checkPassword(password1);
-        } catch (e) {
-            errors.push(e);
-        }
-
-        if (errors.length > 0) {
-            console.log(errors);
-            res.status(400).render('newpassword', {
-                error: true,
-                errors: errors
-            });
-            return;
-        }
-
-        let updatedUser;
-        try {
-            updatedUser = await updateUser(
-                xss(req.session.user.id),
-                xss(req.session.user.firstName),
-                xss(req.session.user.lastName),
-                xss(req.session.user.email),
-                xss(validPassword)
-            );
-            res.redirect('/account');
-        } catch (e) {
-            errors.push(e);
-            res.status(400).render('newpassword', {
-                error: true,
-                errors: errors
-            });
-            return;
-        }
     });
 
 export default loginRouter;
