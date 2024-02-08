@@ -90,14 +90,14 @@ loginRouter
 
 loginRouter
     .route('/forgot')
-    .get(async (req, res) => { res.render('forgotPassword'); })
+    .get(async (req, res) => { res.render('forgetPassword'); })
     .post(async (req, res) => {
         // should send an email to req.body.emailAddress
     });
 
 loginRouter
     .route('/new')
-    .get(async (req, res) => { res.render('newPassword'); })
+    .get(async (req, res) => { res.render('newpassword'); })
     .post(async (req, res) => {
         // console.log(req.body);
         let errors = [];
@@ -107,7 +107,7 @@ loginRouter
         if (typeof password1 === 'undefined' || typeof password2 === 'undefined') {
             errors.push('New password must be provided.');
             console.log(errors);
-            res.status(400).render('newPassword', {
+            res.status(400).render('newpassword', {
                 error: true,
                 errors: errors
             });
@@ -117,7 +117,7 @@ loginRouter
         if (password1 !== password2) {
             errors.push('Passwords do not match.');
             console.log(errors);
-            res.status(400).render('newPassword', {
+            res.status(400).render('newpassword', {
                 error: true,
                 errors: errors
             });
@@ -133,7 +133,7 @@ loginRouter
 
         if (errors.length > 0) {
             console.log(errors);
-            res.status(400).render('newPassword', {
+            res.status(400).render('newpassword', {
                 error: true,
                 errors: errors
             });
@@ -152,7 +152,7 @@ loginRouter
             res.redirect('/account');
         } catch (e) {
             errors.push(e);
-            res.status(400).render('newPassword', {
+            res.status(400).render('newpassword', {
                 error: true,
                 errors: errors
             });

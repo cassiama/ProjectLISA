@@ -1,16 +1,32 @@
-import { checkName, checkEmail, checkPassword, checkString, checkId, checkDeviceGoals } from "../utils/helpers";
-import { users } from "../config/mongoCollections";
+import { checkName, checkEmail, checkPassword, checkString, checkId, checkDeviceGoals } from "../utils/helpers.js";
+import { users } from "../config/mongoCollections.js";
 import { ObjectId } from 'mongodb';
 
+//May need to be changed
+export const serialNumAlreadyExists = async (serialNum) => {
+    if (!serialNum) {
+      throw `Error: Serial number must be inputed`;
+    }
+    serialNum = checkString(serialNum);
+  
+    const userCollection = await users();
+    const user = await userCollection.findOne({ 'devices.serialNum': serialNum });
+    if (!user) {
+      return false;
+    } else {
+      return true;
+    }
+};
+
 export const registerDevice = async (userId, serialNum, deviceGoals) => {
-    if (!userId, serialNum, deviceGoals) {
+    if (!userId || !serialNum || !deviceGoals) {
         throw `Error: All inputs must be provided (registerDevice)`;
     }
     userId = checkId(userId);
     serialNum = checkString(serialNum, "Serial number");
     deviceGoals = checkDeviceGoals(deviceGoals);
-    let serialNumAlreadyExists = await serialNumAlreadyExists(serialNum);
-    if (serialNumAlreadyExists) {
+    let serialAlreadyExists = await serialNumAlreadyExists(serialNum);
+    if (serialAlreadyExists) {
         throw `Error: Device already registered`;
     }
     let newDevice = {
@@ -29,22 +45,6 @@ export const registerDevice = async (userId, serialNum, deviceGoals) => {
         throw `Error: Could not register device`;
     }
     return device.value;
-};
-
-//May need to be changed
-export const serialNumAlreadyExists = async (serialNum) => {
-    if (!serialNum) {
-      throw `Error: Serial number must be inputed`;
-    }
-    serialNum = checkString(serialNum);
-  
-    const userCollection = await users();
-    const user = await userCollection.findOne({ 'devices.serialNum': serialNum });
-    if (!user) {
-      return false;
-    } else {
-      return true;
-    }
 };
 
 export const getDevice = async (userId, deviceId) => {
