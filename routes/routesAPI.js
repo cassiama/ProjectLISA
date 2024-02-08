@@ -7,7 +7,9 @@ import {
     checkPassword
 } from "../utils/helpers.js";
 import {
-    registerUser, updateUser
+    registerUser,
+    updateUser,
+    checkUser
 } from "../data/users.js";
 const routes = Router();
 
@@ -111,7 +113,7 @@ routes
                 id: user.id,
                 firstName: user.firstName,
                 lastName: user.lastName,
-                email: user.emailAddress
+                email: user.email
             };
             res.redirect('/account');
         } else {
@@ -126,7 +128,7 @@ routes
     });
 
 routes
-    .route('/')
+    .route('/login')
     .get(async (req, res) => {
         if (req.session.user) res.redirect('/account');
         else res.render('login');
@@ -389,18 +391,18 @@ routes
 
 routes
     .route('/rewards')
-    .get(req, res => {});
+    .get(async (req, res) => {});
 
 routes
     .route('/rewards/redeem')
-    .get(req, res => {});
+    .get(async (req, res) => {});
 
 routes
     .route('/devices')
-    .get(req, res => {});
+    .get(async (req, res) => {});
 
 routes
     .route('/device/:id')
-    .get(req, res => {});
+    .get(async (req, res) => {});
 
 export default routes;
