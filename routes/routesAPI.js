@@ -11,18 +11,6 @@ import {
 } from "../data/users.js";
 const routes = Router();
 
-/**
- * potential routes:
- * / (landing page)
- * /register (self-explanatory)
- * /logout (self-explanatory)
- * /dashboard (for dashboard)
- * /account (for profile page)
- * /leaderboard (self-explanatory)
- * /help (self-explanatory)
- * /goals (for sustainability goals)
- */
-
 routes.get('/', (req, res) => {
     res.json({message: "Hello World!"});
 });
@@ -135,6 +123,78 @@ routes
             });
             return;
         }
+    });
+
+routes
+    .route('/')
+    .get(async (req, res) => {
+        if (req.session.user) res.redirect('/account');
+        else res.render('login');
+    })
+    .post(async (req, res) => {
+        // console.log(req.body);
+        let errors = [];
+        let email = req.body.email;
+        let password = req.body.password;
+
+        if (typeof email === 'undefined')
+            errors.push('No email provided.');
+        else if (typeof password === 'undefined')
+            errors.push('No password provided.');
+
+        if (errors.length > 0) {
+            console.log(errors);
+            res.status(400).render('login', {
+                error: true,
+                message: errors[0]
+            });
+            return;
+        }
+
+        let validEmail;
+        try {
+            validEmail = checkEmail(email);
+        } catch (e) {
+            errors.push(e);
+        }
+
+        let validPassword;
+        try {
+            validPassword = checkPassword(password);
+        } catch (e) {
+            errors.push(e);
+        }
+
+        if (errors.length > 0) {
+            console.log(errors);
+            res.status(400).render('login', {
+                error: true,
+                message: errors[0]
+            });
+            return;
+        }
+
+        let user;
+        try {
+            user = await checkUser(xss(validEmail), xss(validPassword));
+        } catch (e) {
+            errors.push(e);
+            console.log(errors);
+            res.status(400).render('login', {
+                error: true,
+                message: errors[0]
+            });
+            return;
+        }
+
+        req.session.user = {
+            id: user._id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.emailAddress,
+            devices: user.devices
+        };
+        res.redirect('/account');
     });
 
 routes.get('/logout', async (req, res) => {
@@ -269,10 +329,10 @@ routes
     .post(async (req, res) => {
         // console.log(req.body);
         let errors = [];
-        let password1 = req.body.password1;
-        let password2 = req.body.password2;
+        let newPassword = req.body.newPassword;
+        let newPasswordInput = req.body.newPasswordInput;
 
-        if (typeof password1 === 'undefined' || typeof password2 === 'undefined') {
+        if (typeof newPassword === 'undefined' || typeof newPasswordInput === 'undefined') {
             errors.push('New password must be provided.');
             console.log(errors);
             res.status(400).render('newpassword', {
@@ -282,7 +342,7 @@ routes
             return;
         }
 
-        if (password1 !== password2) {
+        if (newPassword !== newPasswordInput) {
             errors.push('Passwords do not match.');
             console.log(errors);
             res.status(400).render('newpassword', {
@@ -294,7 +354,7 @@ routes
 
         let validPassword;
         try {
-            validPassword = checkPassword(password1);
+            validPassword = checkPassword(newPassword);
         } catch (e) {
             errors.push(e);
         }
@@ -308,16 +368,15 @@ routes
             return;
         }
 
-        let updatedUser;
         try {
-            updatedUser = await updateUser(
+            await updateUser(
                 xss(req.session.user.id),
                 xss(req.session.user.firstName),
                 xss(req.session.user.lastName),
                 xss(req.session.user.email),
                 xss(validPassword)
             );
-            res.redirect('/account');
+            res.redirect('/account'); // change this to dashboard
         } catch (e) {
             errors.push(e);
             res.status(400).render('newpassword', {
@@ -327,5 +386,21 @@ routes
             return;
         }
     });
+
+routes
+    .route('/rewards')
+    .get(req, res => {});
+
+routes
+    .route('/rewards/redeem')
+    .get(req, res => {});
+
+routes
+    .route('/devices')
+    .get(req, res => {});
+
+routes
+    .route('/device/:id')
+    .get(req, res => {});
 
 export default routes;
