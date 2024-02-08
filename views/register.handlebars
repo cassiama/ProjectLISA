@@ -1,21 +1,26 @@
 <main>
-    <form method="post" id="registerUser-form" class="column">
+    <form method="post" id="registerUser-form">
         <h2>Register Here!</h2>
         
         <label for="email">Email:</label>
         <input type="email" id="email" name="email">
+        <br/>
 
         <label for="firstName">First Name:</label>
         <input type="text" id="firstName" name="firstName">
+        <br/>
 
         <label for="lastName">Last Name:</label>
         <input type="text" id="lastName" name="lastName">
+        <br/>
 
         <label for="password">Password (must have at least 8 characters, 1 special character, 1 number, and 1 capital letter):</label>
         <input type="password" id="password" name="password">
+        <br/>
 
         <label for="confirmPassword">Confirm Password:</label>
         <input type="password" id="confirmPassword" name="confirmPassword">
+        <br/>
 
         {{#if error}}
             <p class="error">{{message}}</p>
