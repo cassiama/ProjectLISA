@@ -23,7 +23,7 @@ export const registerDevice = async (userId, serialNum, deviceGoals) => {
         throw `Error: All inputs must be provided (registerDevice)`;
     }
     userId = checkId(userId);
-    serialNum = checkString(serialNum, "Serial number");
+    serialNum = checkString(serialNum, "Serial Number");
     deviceGoals = checkDeviceGoals(deviceGoals);
     let serialAlreadyExists = await serialNumAlreadyExists(serialNum);
     if (serialAlreadyExists) {

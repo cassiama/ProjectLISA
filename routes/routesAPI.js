@@ -11,6 +11,12 @@ import {
     updateUser,
     checkUser
 } from "../data/users.js";
+import {
+    serialNumAlreadyExists,
+    registerDevice,
+    getDevice,
+    removeDevice
+} from "../data/devices.js";
 const routes = Router();
 
 routes.get('/', (req, res) => {
@@ -399,10 +405,45 @@ routes
 
 routes
     .route('/devices')
-    .get(async (req, res) => {});
+    .get(async (req, res) => { res.render('registerDevice');})
+    .post(async (req, res) => {
+        let errors = [];
+        let serialNum = req.body.serialNumber;
+        let devGoals = req.body.deviceGoals;
+        if (typeof serialNum === 'undefined' || serialNum.trim().length === 0) {
+           return res.status(400).render('registerDevice', {
+            error: true,
+            message: errors[0]
+        });
+        }
+        try {
+            await registerDevice(
+                xss(req.session.user.id),
+                xss(serialNum),
+                xss(devGoals)
+            );
+            res.redirect('/account'); // change this to dashboard
+        } catch (e) {
+            errors.push(e);
+            res.status(400).render('registerDevice', {
+                error: true,
+                message: errors[0]
+            });
+            return;
+        }
+    });
 
 routes
-    .route('/device/:id')
+    .route('/devices/:id')
     .get(async (req, res) => {});
+
+routes //sustainability facts
+    .route('/facts')
+    .get(async (req, res) => {res.render('facts');});
+
+routes //sustainable goals
+    .route('/goals')
+    .get(async (req, res) => {res.render('goals');});
+
 
 export default routes;

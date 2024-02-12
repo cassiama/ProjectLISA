@@ -1,0 +1,21 @@
+<main>
+    <form method="post" id="registerDevice-form">
+        <h2>Device Registration</h2>
+
+        <label for="serialNum">Serial Number: </label>
+        <input type="text" id="serialNumber" required>
+        <br/>
+        
+        <label for="devGoals">Device Goals: </label>
+        <input type="text" id="deviceGoals" required>
+        <br/>
+       
+        {{#if error}}
+            <p class="error">{{message}}</p>
+        {{/if}}
+
+        <br>     
+
+        <button type="submit">Submit</button>
+    </form>
+</main>
