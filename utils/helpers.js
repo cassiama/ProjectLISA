@@ -1,12 +1,23 @@
 import { ObjectId } from "mongodb";
 
 export const checkDeviceGoals = (goals) => {
+    if (typeof goals === 'undefined' || goals.length === 0)
+        throw 'Error: Device goals must be provided.';
+    if (!Array.isArray(goals))
+        throw 'Error: Device goals must be an array.';
+    for (let i = 0; i < goals.length; i++)
+        goals[i] = checkString(goals[i], "Device goal");
     return goals;
 }
 
 export const checkString = (str, stringName) => {
     if (typeof str !== 'string' || str.trim().length === 0) {
-        throw `${stringName} must be a valid string`;
+        throw `Error: ${stringName} must be a valid string`;
+    }
+    if (stringName === 'Serial Number') {
+        let alphaNumRegex = /[a-zA-Z0-9]+/;
+        if (!alphaNumRegex.test(str))
+            throw 'Error: Serial number is invalid.';
     }
     return str.trim();
 }

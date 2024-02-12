@@ -5,13 +5,13 @@
         <table>
             <tr>
                 <th>Rank</th>
-                <th>Username</th>
+                <th>First Name</th>
                 <th>Points</th>
             </tr>
         {{#each users}}
             <tr>
                 <td>#{{math @index "+" 1}}</td>
-                <td>{{this.username}}</td>
+                <td>{{this.firstName}}</td>
                 <td>{{this.points}}</td>
             </tr>
         {{/each}}

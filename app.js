@@ -13,7 +13,14 @@ const app = express();
 app.use('/public', staticDir);
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
-app.engine('handlebars', engine({defaultLayout: 'main'}));
+app.engine('handlebars', engine({
+    defaultLayout: 'main',
+    helpers: {
+        math: function(l, op="+", r) {
+            return parseFloat(l) + parseFloat(r);
+        }
+    }
+}));
 app.set('view engine', 'handlebars');
 
 app.use(session({

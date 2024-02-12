@@ -9,7 +9,8 @@ import {
 import {
     registerUser,
     updateUser,
-    checkUser
+    checkUser,
+    getAllUsers
 } from "../data/users.js";
 import {
     serialNumAlreadyExists,
@@ -448,5 +449,24 @@ routes //sustainable goals
     .route('/goals')
     .get(async (req, res) => {res.render('goals');});
 
+
+routes
+    .route('/leaderboard')
+    .get(async (req, res) => {
+        let errors = [];
+        try {
+            const allUsers = await getAllUsers();
+            res.render('leaderboard', {
+                users: allUsers
+            });
+        } catch (e) {
+            errors.push('Internal Server Error');
+            res.status(500).render('leaderboard', {
+                error: true,
+                message: errors[0]
+            });
+            return;
+        }
+    });
 
 export default routes;
