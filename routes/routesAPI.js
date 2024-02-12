@@ -405,24 +405,27 @@ routes
 
 routes
     .route('/devices')
-    .get(async (req, res) => { res.render('registerDevice');})
+    .get(async (req, res) => { if (req.session.user) res.render('registerDevice'); else res.redirect('/login'); })
     .post(async (req, res) => {
         let errors = [];
         let serialNum = req.body.serialNumber;
         let devGoals = req.body.deviceGoals;
         if (typeof serialNum === 'undefined' || serialNum.trim().length === 0) {
-           return res.status(400).render('registerDevice', {
+           errors.push('Invalid Serial Number');
+           res.status(400).render('registerDevice', {
             error: true,
             message: errors[0]
-        });
+           });
+           return;
         }
         try {
-            await registerDevice(
+            let device = await registerDevice(
                 xss(req.session.user.id),
                 xss(serialNum),
                 xss(devGoals)
             );
-            res.redirect('/account'); // change this to dashboard
+            req.session.user.devices.push(device);
+            res.redirect('/account');
         } catch (e) {
             errors.push(e);
             res.status(400).render('registerDevice', {

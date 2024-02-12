@@ -44,7 +44,7 @@ export const registerDevice = async (userId, serialNum, deviceGoals) => {
     if (!device) {
         throw `Error: Could not register device`;
     }
-    return device.value;
+    return newDevice;
 };
 
 export const getDevice = async (userId, deviceId) => {
