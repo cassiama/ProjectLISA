@@ -207,8 +207,11 @@ routes
     });
 
 routes.get('/logout', async (req, res) => {
+    res.render('logout', {
+        firstName: req.session.user.firstName
+    });
     req.session.destroy();
-    res.render('logout');
+    
 });
 
 routes
@@ -443,13 +446,47 @@ routes
 
 routes //sustainability facts
     .route('/facts')
-    .get(async (req, res) => {res.render('facts');});
+    .get(async (req, res) => {res.render('facts', {
+        firstName: req.session.user.firstName
+    });});
 
 routes //sustainable goals
     .route('/goals')
     .get(async (req, res) => {res.render('goals');});
 
+routes //help -- incomplete
+    .route('/help')
+    .get(async (req, res) => {res.render('help');})
+    .post(async (req, res) => {
+        let errors = [];
+        let email = req.body.email;
+        let issue = req.body.issue;
 
+        if (typeof email === 'undefined') {
+            errors.push('Enter Email!');
+            res.status(400).render('help', {
+             error: true,
+             message: errors[0]
+            });
+            return;
+         }
+
+         if (typeof issue === 'undefined' || issue.trim().length === 0) {
+            errors.push('Please describe your issue!');
+            res.status(400).render('help', {
+             error: true,
+             message: errors[0]
+            });
+            return;
+         }
+        let validEmail;
+        try {
+            validEmail = checkEmail(email);
+        } catch (e) {
+            errors.push(e);
+        }
+        
+    });
 routes
     .route('/leaderboard')
     .get(async (req, res) => {

@@ -1,1 +1,30 @@
-<h1>This is a WIP</h1>
+<h1>Help Page</h1>
+<h2 class = "FAQs">FAQs</h2>
+    <p></p>
+<h2 class="helpTicket">Submit a Help Ticket</h2>
+  <form method="POST" id="help-form" class="column">
+    <label for="email">
+      Email:
+      <input
+        type="email"
+        name="email"
+        id="email"
+        placeholder="Enter email address"
+      required>
+    </label>
+    <label for="issue">
+      Issue:
+      <textarea
+        type="text"
+        name="issue"
+        id="issue"  
+        placeholder="Describe issue"
+      required></textarea>
+    </label>
+
+    {{#if error}}
+      <p class="error">{{message}}</p>
+    {{/if}}
+    <br>     
+    <button type="submit" class="btn">Submit</button>
+  </form>
