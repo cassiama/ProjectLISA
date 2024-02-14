@@ -18,16 +18,18 @@ import {
     getDevice,
     removeDevice
 } from "../data/devices.js";
+import { allGoals } from "../utils/goals.js";
 const routes = Router();
 
 routes.get('/', (req, res) => {
-    res.json({message: "Hello World!"});
+    if (req.session.user) res.redirect('/dashboard');
+    else res.redirect('/login');
 });
 
 routes
     .route('/register')
     .get(async (req, res) => {
-        console.log(req.session.user);
+        // console.log(req.session.user);
         if (req.session.user) res.redirect('/account');
         else res.render('register');
     })
@@ -186,6 +188,25 @@ routes
         let user;
         try {
             user = await checkUser(xss(validEmail), xss(validPassword));
+            const {
+                _id: id,
+                firstName,
+                lastName,
+                emailAddress: email
+            } = user;
+            const devices = user.devices.length > 0
+                ? user.devices.map(dev => dev._id)
+                : [];
+            req.session.user = {
+                id: id,
+                firstName: firstName,
+                lastName: lastName,
+                email: email,
+                devices: devices
+            };
+            // console.log(req.session);
+            // console.log(user);
+            res.redirect('/account');
         } catch (e) {
             errors.push(e);
             console.log(errors);
@@ -195,15 +216,6 @@ routes
             });
             return;
         }
-
-        req.session.user = {
-            id: user._id,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            email: user.emailAddress,
-            devices: user.devices
-        };
-        res.redirect('/account');
     });
 
 routes.get('/logout', async (req, res) => {
@@ -218,12 +230,40 @@ routes
     .route('/account')
     .get(async (req, res) => {
         if (!req.session.user) res.redirect('/login');
-        else res.render('profile', {
-            firstName: req.session.user.firstName,
-            lastName: req.session.user.lastName,
-            email: req.session.user.email,
-            devices: req.session.user.devices
-        });
+        else {
+            let errors = [];
+            const {
+                id: userId,
+                firstName,
+                lastName,
+                email,
+                devices: deviceIds
+            } = req.session.user
+            // console.log(userId, firstName, lastName, email, deviceIds);
+            let devices = [];
+            try {
+                for (let devId of deviceIds) {
+                    // console.log(devId);
+                    let device = await getDevice(userId, devId);
+                    // console.log(device);
+                    devices.push(device);
+                }
+                // console.log(devices);
+                res.render('profile', {
+                    firstName: firstName,
+                    lastName: lastName,
+                    email: email,
+                    devices: devices
+                });
+            } catch (e) {
+                errors.push("Internal Servor Error");
+                res.render('profile', {
+                    error: true,
+                    message: errors[0]
+                });
+                return;
+            }
+        }
     })
     .patch(async (req, res) => {
         let errors = [];
@@ -409,16 +449,18 @@ routes
 
 routes
     .route('/devices')
-    .get(async (req, res) => { if (req.session.user) res.render('registerDevice'); else res.redirect('/login'); })
+    .get(async (req, res) => { if (req.session.user) res.render('registerDevice', {goals: allGoals}); else res.redirect('/login'); })
     .post(async (req, res) => {
         let errors = [];
         let serialNum = req.body.serialNumber;
         let devGoals = req.body.deviceGoals;
+        // console.log(req.body);
         if (typeof serialNum === 'undefined' || serialNum.trim().length === 0) {
            errors.push('Invalid Serial Number');
            res.status(400).render('registerDevice', {
             error: true,
-            message: errors[0]
+            message: errors[0],
+            goals: allGoals
            });
            return;
         }
@@ -426,15 +468,17 @@ routes
             let device = await registerDevice(
                 xss(req.session.user.id),
                 xss(serialNum),
-                xss(devGoals)
+                devGoals
             );
-            req.session.user.devices.push(device);
+            // console.log(device);
+            req.session.user.devices.push(device._id.toString());
             res.redirect('/account');
         } catch (e) {
             errors.push(e);
             res.status(400).render('registerDevice', {
                 error: true,
-                message: errors[0]
+                message: errors[0],
+                goals: allGoals
             });
             return;
         }
@@ -487,6 +531,48 @@ routes //help -- incomplete
         }
         
     });
+
+routes
+    .route('/dashboard')
+    .get(async (req, res) => {
+        if (res.session.user) {
+            const {
+                firstName,
+                devices
+            } = req.session.user;
+            // get current device from cookie or get the first device's id
+            const currentDevice = req.session.user.currentDevice ?? req.session.user.devices[0].id;
+            // get current device goals and other goals
+            const allDeviceGoals = req.session.user.devices.goals;
+            const currentGoal = req.session.user.currentGoal ?? 'N/A';
+            const otherGoals = [
+                (req.session.user.currentGoal) ? 
+                allDeviceGoals.filter(goal !== currentGoal) : 
+                [...allDeviceGoals]
+            ];
+
+            // render dashboard page
+            res.render('dashboard', {
+                firstName: firstName,
+                devices: devices,
+                currentDevice: currentDevice,
+                currentGoal: currentGoal,
+                otherGoals: otherGoals
+            });
+        } else res.redirect('/login');
+    });
+
+// update current goal
+routes
+    .post('/dashboard/goals', async (req, res) => {
+        let currentGoal = req.body.goal;
+        req.session.user.currentGoal = currentGoal;
+    });
+
+// update current device
+routes
+    .post('/dashbord/devices', async (req, res) => {});
+
 routes
     .route('/leaderboard')
     .get(async (req, res) => {
