@@ -1,0 +1,25 @@
+        <form method="post" id="editUser-form" class="column">
+        {{!-- Need to add correct action --}}
+            <label for="firstName">First Name:</label>
+            <input type="text" id="firstName" name="firstName">
+
+            <label for="lastName">Last Name:</label>
+            <input type="text" id="lastName" name="lastName">
+
+            <label for="emailAddress">Email:</label>
+            <input type="email" id="emailAddress" name="emailAddress">
+
+            <label for="password">Password (must have at least 8 characters, 1 special character, 1 number, and 1 capital letter):</label>
+            <input type="password" id="password" name="password">
+
+            <label for="confirmPassword">Confirm Password:</label>
+            <input type="password" id="confirmPassword" name="confirmPassword">
+
+            {{#if error}}
+                <p id="error">{{message}}</p>
+            {{/if}}
+
+            <br>     
+            {{!-- <input type="hidden" name="_method" value="PUT"> --}}
+            <button type="submit">Submit</button>
+        </form>
