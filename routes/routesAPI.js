@@ -546,8 +546,7 @@ routes
             try {
                 for (let devId of devIds) {
                     let device = await getDevice(userId, devId);
-                    for (let goal of device.deviceGoals)
-                        deviceGoals.push(goal);
+                    deviceGoals.push(...device.deviceGoals);
                 }
                 // console.log(deviceGoals);
             } catch (e) {
@@ -580,7 +579,7 @@ routes
             // });
             res.render('dashboard', {
                 firstName: firstName,
-                deviceGoals: deviceGoals
+                deviceGoals: deviceGoals.length ? deviceGoals : ['No goals available.']
             });
         } else res.redirect('/login');
     });
