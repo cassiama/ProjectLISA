@@ -139,7 +139,7 @@ routes
 routes
     .route('/login')
     .get(async (req, res) => {
-        if (req.session.user) res.redirect('/account');
+        if (req.session.user) res.redirect('/dashboard');
         else res.render('login');
     })
     .post(async (req, res) => {
@@ -206,7 +206,7 @@ routes
             };
             // console.log(req.session);
             // console.log(user);
-            res.redirect('/account');
+            res.redirect('/dashboard');
         } catch (e) {
             errors.push(e);
             console.log(errors);
@@ -428,7 +428,7 @@ routes
                 xss(req.session.user.email),
                 xss(validPassword)
             );
-            res.redirect('/account'); // change this to dashboard
+            res.redirect('/dashboard');
         } catch (e) {
             errors.push(e);
             res.status(400).render('newpassword', {
@@ -535,29 +535,52 @@ routes //help -- incomplete
 routes
     .route('/dashboard')
     .get(async (req, res) => {
-        if (res.session.user) {
+        if (req.session.user) {
             const {
+                id: userId,
                 firstName,
-                devices
+                devices: devIds
             } = req.session.user;
-            // get current device from cookie or get the first device's id
-            const currentDevice = req.session.user.currentDevice ?? req.session.user.devices[0].id;
-            // get current device goals and other goals
-            const allDeviceGoals = req.session.user.devices.goals;
-            const currentGoal = req.session.user.currentGoal ?? 'N/A';
-            const otherGoals = [
-                (req.session.user.currentGoal) ? 
-                allDeviceGoals.filter(goal !== currentGoal) : 
-                [...allDeviceGoals]
-            ];
+            
+            let deviceGoals = [];
+            try {
+                for (let devId of devIds) {
+                    let device = await getDevice(userId, devId);
+                    for (let goal of device.deviceGoals)
+                        deviceGoals.push(goal);
+                }
+                // console.log(deviceGoals);
+            } catch (e) {
+                res.render('dashboard', {
+                    firstName: firstName,
+                    deviceGoals: ['No goals available'],
+                    error: true,
+                    message: 'Internal Server Error'
+                });
+            }
+
+            // // get current device from cookie or get the first device's id
+            // const currentDevice = req.session.user.currentDevice ?? req.session.user.devices[0].id;
+            // // get current device goals and other goals
+            // const allDeviceGoals = req.session.user.devices.goals;
+            // const currentGoal = req.session.user.currentGoal ?? 'N/A';
+            // const otherGoals = [
+            //     (req.session.user.currentGoal) ? 
+            //     allDeviceGoals.filter(goal !== currentGoal) : 
+            //     [...allDeviceGoals]
+            // ];
 
             // render dashboard page
+            // res.render('dashboard', {
+            //     firstName: firstName,
+            //     devices: devices,
+            //     currentDevice: currentDevice,
+            //     currentGoal: currentGoal,
+            //     otherGoals: otherGoals
+            // });
             res.render('dashboard', {
                 firstName: firstName,
-                devices: devices,
-                currentDevice: currentDevice,
-                currentGoal: currentGoal,
-                otherGoals: otherGoals
+                deviceGoals: deviceGoals
             });
         } else res.redirect('/login');
     });
