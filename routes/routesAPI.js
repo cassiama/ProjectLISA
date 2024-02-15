@@ -42,7 +42,7 @@ routes
 		let password = req.body.password;
 		let confirmPassword = req.body.confirmPassword;
 
-		if (confirmPassword !== validPassword) {
+		if (confirmPassword !== password) {
 			errors.push(`Password and Confirm Password do not match`);
 		}
 
@@ -56,7 +56,7 @@ routes
 
 		if (errors.length > 0) {
 			console.log(errors);
-			res.status(400).render("login", {
+			res.status(400).render("register", {
 				error: true,
 				message: errors[0],
 			});
@@ -93,7 +93,7 @@ routes
 
 		if (errors.length > 0) {
 			console.log(errors);
-			res.status(400).render("login", {
+			res.status(400).render("register", {
 				error: true,
 				message: errors[0],
 			});
@@ -114,7 +114,7 @@ routes
 
 		if (errors.length > 0) {
 			console.log(errors);
-			res.status(400).render("login", {
+			res.status(400).render("register", {
 				error: true,
 				message: errors,
 			});
