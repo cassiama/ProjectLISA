@@ -14,6 +14,18 @@
         <input type="text" id="lastName" name="lastName" required>
         <br/>
 
+        <label for="ageInput">Age:</label>
+        <input type="number" id="ageInput" name="ageInput">
+        <br/>
+
+        <label for="occupation">Occupation:</label>
+        <input type="text" id="occupation" name="occupation">
+        <br/>
+
+        <label for="numberDevices">Number of devices owned:</label>
+        <input type="text" id="numberDevices" name="numberDevices">
+        <br/>
+
         <label for="password">Password (must have at least 8 characters, 1 special character, 1 number, and 1 capital letter):</label>
         <input type="password" id="password" name="password" required>
         <br/>
@@ -21,6 +33,36 @@
         <label for="confirmPassword">Confirm Password:</label>
         <input type="password" id="confirmPassword" name="confirmPassword" required>
         <br/>
+
+        <p>Please select your geographical location:</p>
+          <input type="radio" id="urban" name="geography" value="urban">
+          <label for="urban">Urban</label><br>
+          <input type="radio" id="suburban" name="geography" value="suburban">
+          <label for="suburban">Suburban</label><br>
+          <input type="radio" id="rural" name="geography" value="rural">
+          <label for="rural">Rural</label>
+        <br/>
+
+        <p>What is your operating system of choice?</p>
+          <input type="radio" id="windows" name="os" value="windows">
+          <label for="windows">Windows</label><br>
+          <input type="radio" id="macOS" name="os" value="macOS">
+          <label for="macOS">Mac OS</label><br>
+          <input type="radio" id="linux" name="os" value="linux">
+          <label for="linux">Linux</label></br>
+          <input type="radio" id="chrome" name="os" value="chrome">
+          <label for="chrome">Chrome</label>
+        
+        <br/>
+
+        <p>What is your phone system of choice?</p>
+          <input type="radio" id="andriod" name="os" value="android">
+          <label for="android">Android</label><br>
+          <input type="radio" id="ios" name="os" value="ios">
+          <label for="ios">IOS</label><br>
+        <br/>
+
+        
 
         {{#if error}}
             <p class="error">{{message}}</p>
