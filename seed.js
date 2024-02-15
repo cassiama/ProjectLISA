@@ -35,11 +35,13 @@ async function main() {
         device1 = await registerDevice(
             user1._id.toString(),
             "fh938hr0rq0irih0rjrjs",
+            "Lenovo ThinkPad X1 Carbon Gen 11",
             ["Unplug charger from device before bedtime", "Download content instead of streaming"]
         )
         device2 = await registerDevice(
             user1._id.toString(),
             "qhw4hr9iasdhsi0rjqwrw",
+            "Legion Pro 7i Gen 9",
             ["Clean out inbox", "Recharge before device reaches 20%", "Turn off wifi at night"]
         )
     } catch (e) {

@@ -8,6 +8,7 @@
     <br>
     <h2>Edit Profile</h2>
     <a href="/editProfile">Click here to edit your profile!</a>
+    {{!-- Currently no route for editProfile --}}
   </div>
   <div class="column">
     <div>
@@ -16,16 +17,14 @@
         <ol>My Devices:
           {{#each devices}}
           <li>
-            <div class="submission">
               <div class="row">
-                  <p>Serial Number: {{this.serialNum}}</p>
+                  <p>{{this.deviceName}}</p>
               </div>
               <ul>Device Goals: 
                 {{#each this.deviceGoals}}
                   <li>{{this}}</li>
                 {{/each}}
               </ul>
-            </div>
           </li>
             <br/>
           {{/each}}
