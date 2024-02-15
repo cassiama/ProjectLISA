@@ -1,76 +1,81 @@
-import { checkName, checkEmail, checkPassword, checkString, checkId } from "../utils/helpers.js";
+import {
+	checkName,
+	checkEmail,
+	checkPassword,
+	checkString,
+	checkId,
+} from "../utils/helpers.js";
 import { users } from "../config/mongoCollections.js";
-import { ObjectId } from 'mongodb';
-import bcrypt from 'bcrypt';
+import { ObjectId } from "mongodb";
+import bcrypt from "bcrypt";
 const saltRounds = 8;
 
-
 export const registerUser = async (firstName, lastName, email, password) => {
-    if (!firstName || !lastName || !email || !password) {
-        throw 'All input fields must be provided (registerUser)';
-    }
-    firstName = checkName(firstName, "First name");
-    lastName = checkName(lastName, "Last name");
-    email = checkEmail(email);
-    password = checkPassword(password);
-    let emailExists = await emailAlreadyExists(email);
-    if (emailExists) {
-        throw `emailAddress already exists (createUser)`;
-    }
-    const hashed = await bcrypt.hash(password, saltRounds);
-    let newUser = {
-        firstName: firstName,
-        lastName: lastName,
-        email: email,
-        password: hashed,
+	if (!firstName || !lastName || !email || !password) {
+		throw "All input fields must be provided (registerUser)";
+	}
+	firstName = checkName(firstName, "First name");
+	lastName = checkName(lastName, "Last name");
+	email = checkEmail(email);
+	password = checkPassword(password);
+	let emailExists = await emailAlreadyExists(email);
+	if (emailExists) {
+		throw `emailAddress already exists (createUser)`;
+	}
+	const hashed = await bcrypt.hash(password, saltRounds);
+	let newUser = {
+		firstName: firstName,
+		lastName: lastName,
+		email: email,
+		password: hashed,
 		devices: [],
-		points: 0
-    };
-    const userCollection = await users();
-    const newInsertInformation = await userCollection.insertOne(newUser);
-    if (!newInsertInformation.insertedId) {
-        throw 'Insert failed!';
-    }
-    return await getUserById(newInsertInformation.insertedId.toString());
+		points: 0,
+	};
+	const userCollection = await users();
+	const newInsertInformation = await userCollection.insertOne(newUser);
+	if (!newInsertInformation.insertedId) {
+		throw "Insert failed!";
+	}
+	return await getUserById(newInsertInformation.insertedId.toString());
 };
 
 export const emailAlreadyExists = async (email) => {
-    if (!email) {
-      throw `Error: email must be inputed`;
-    }
-    email = checkEmail(email);
-  
-    const userCollection = await users();
-    const user = await userCollection.findOne({ email: email });
-    if (!user) {
-      return false;
-    } else {
-      return true;
-    }
+	if (!email) {
+		throw `Error: email must be inputed`;
+	}
+	email = checkEmail(email);
+
+	const userCollection = await users();
+	const user = await userCollection.findOne({ email: email });
+	if (!user) {
+		return false;
+	} else {
+		return true;
+	}
 };
 
 export const checkUser = async (email, password) => {
-    if (!email || !password) {
-        throw "All input fields must be provided";
-    }
-    
-    email = checkEmail(email);
-    password = checkString(password, "Password");
+	if (!email || !password) {
+		throw "All input fields must be provided";
+	}
 
-    const userCollection = await users();
+	email = checkEmail(email);
+	password = checkString(password, "Password");
 
-    const user = await userCollection.findOne({email: email});
-    let validPassword = await bcrypt.compare(password, user.password);
-    if (validPassword) {
-        let firstName = user.firstName;
-        let lastName = user.lastName;
-        let emailAddress = user.email;
-        let _id = user._id.toString();
+	const userCollection = await users();
+
+	const user = await userCollection.findOne({ email: email });
+	let validPassword = await bcrypt.compare(password, user.password);
+	if (validPassword) {
+		let firstName = user.firstName;
+		let lastName = user.lastName;
+		let emailAddress = user.email;
+		let _id = user._id.toString();
 		let devices = user.devices;
-        return {_id, firstName, lastName, emailAddress, devices};
-    } else {
-        throw "Either the email address or password is invalid";
-    }
+		return { _id, firstName, lastName, emailAddress, devices };
+	} else {
+		throw "Either the email address or password is invalid";
+	}
 };
 
 export const updateUser = async (id, firstName, lastName, email, password) => {
@@ -100,7 +105,7 @@ export const updateUser = async (id, firstName, lastName, email, password) => {
 	if (oldUser.email !== email && email) {
 		emailExists = await emailAlreadyExists(emailAddress);
 		if (emailExists) {
-			throw `Email already exists (updateUser)`
+			throw `Email already exists (updateUser)`;
 		}
 	}
 
@@ -112,12 +117,15 @@ export const updateUser = async (id, firstName, lastName, email, password) => {
 		username: username ? username : oldUser.username,
 		age: age ? age : oldUser.age,
 		devices: oldUser.devices,
-		points: oldUser.points
+		points: oldUser.points,
 	};
 
 	const userCollection = await users();
 
-	const updateInfo = await userCollection.replaceOne({_id: new ObjectId(id)}, userUpdate);
+	const updateInfo = await userCollection.replaceOne(
+		{ _id: new ObjectId(id) },
+		userUpdate
+	);
 
 	if (updateInfo.modifiedCount === 0) {
 		throw `At least one field must be different to successfully update user`;
@@ -129,16 +137,18 @@ export const updateUser = async (id, firstName, lastName, email, password) => {
 export const deleteUser = async (id) => {
 	if (!id) {
 		throw `Error: Id must be inputed`;
-	  }
-	  id = checkId(id);
-	
-	  const userCollection = await users();
-	  const user = await userCollection.findOneAndDelete({ _id: new ObjectId(id) });
-	  if (deletionInfo.lastErrorObject.n === 0) {
+	}
+	id = checkId(id);
+
+	const userCollection = await users();
+	const user = await userCollection.findOneAndDelete({
+		_id: new ObjectId(id),
+	});
+	if (deletionInfo.lastErrorObject.n === 0) {
 		throw `Error: Could not delete user with id of ${id}`;
-	  }
-	
-	  return { ...deletionInfo.value, deleted: true };
+	}
+
+	return { ...deletionInfo.value, deleted: true };
 };
 
 export const getAllUsers = async () => {
@@ -200,6 +210,28 @@ export const helpTicket = async (email, message) => {
 };
 
 export const subtractPoints = async (userId, rewardPoints) => {
+	if (!userId) {
+		throw "Error: User Id must be inputed";
+	}
+	if (typeof userId != "string") {
+		throw "Error: User Id must be a string";
+	}
+	if (!rewardPoints) {
+		throw "Error: Reward Points must be inputed";
+	}
+	if (typeof rewardPoints != "number") {
+		throw "Error: Reward Points must be a number";
+	}
+	if (rewardPoints <= 0) {
+		throw "Error: Reward Points must be greater than 0";
+	}
+	if (rewardPoints % 1 != 0) {
+		throw "Error: Reward Points must be an integer";
+	}
+	if (userId.length == 0 || userId.trim().length == 0) {
+		throw "Error: User Id must not be an empty string or only include empty spaces";
+	}
+	userId = userId.trim();
 	const userCollection = await users();
 	const user = await getUserById(userId);
 	// check if the user has enough points to subtract
@@ -217,6 +249,28 @@ export const subtractPoints = async (userId, rewardPoints) => {
 };
 
 export const addPoints = async (userId, rewardPoints) => {
+	if (!userId) {
+		throw "Error: User Id must be inputed";
+	}
+	if (typeof userId != "string") {
+		throw "Error: User Id must be a string";
+	}
+	if (userId.length == 0 || userId.trim().length == 0) {
+		throw "Error: User Id must not be an empty string or only include empty spaces";
+	}
+	if (!rewardPoints) {
+		throw "Error: Reward Points must be inputed";
+	}
+	if (typeof rewardPoints != "number") {
+		throw "Error: Reward Points must be a number";
+	}
+	if (rewardPoints <= 0) {
+		throw "Error: Reward Points must be greater than 0";
+	}
+	if (rewardPoints % 1 != 0) {
+		throw "Error: Reward Points must be an integer";
+	}
+	userId = userId.trim();
 	const userCollection = await users();
 	const user = await getUserById(userId);
 	// add the points
@@ -253,4 +307,3 @@ export const getTips = async () => {
 	// returns the array of 3 tips
 	return randomTips;
 };
-
