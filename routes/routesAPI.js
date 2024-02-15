@@ -40,6 +40,11 @@ routes
 		let firstName = req.body.firstName;
 		let lastName = req.body.lastName;
 		let password = req.body.password;
+		let confirmPassword = req.body.confirmPassword;
+
+		if (confirmPassword !== validPassword) {
+			errors.push(`Password and Confirm Password do not match`);
+		}
 
 		if (typeof email === "undefined") errors.push("No email provided.");
 		else if (typeof firstName === "undefined")
