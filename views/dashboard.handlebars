@@ -1,7 +1,16 @@
 {{!-- using some code from https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_collapse_sidebar to create sidebar--}}
-<div class="sidebar" id="bar">
+
+{{!-- 1. fix sidebar
+2. drop down for goals --}}
+
+
+<div id="sidebar" class="bar">
     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">☰</a>
-    <a href="/devices">Add Device</a>
+    <br>
+    <a href="/devices" id="add">Add Device</a>
+    <br>
+    <br>
+    <br>
     <br>
     <br>
     <br>
@@ -17,12 +26,7 @@
         <div class="column">
             <div>
             <h3>Lenovo ThinkPad X1 Carbon Gen 11 Stats</h3>
-            <div class="row">
-                <div class="column">
-                    <img>
-                </div>
-                <div class="column">
-                    <h5>Carbon Emissions Saved By:</h5>
+            <h5>Carbon Emissions Saved By:</h5>
                     <ul>
                         <li>Charging Less Often</li>
                         <ul>
@@ -34,34 +38,40 @@
                         </ul>
                     </ul>
                     <a href="/facts">Learn More</a>
-                    </div>
-                </div>
-                <br>
-                <br>
-                <h3>{{firstName}}'s Other Goals:</h3>
-                <ol> 
-                {{#each this.deviceGoals}}
-                  <li>{{this}}</li>
-                {{/each}}
-                </ol>
             </div>
-            <div class="column">
-                <div>
+            <br>
+            <br>
+            <h3>{{firstName}}'s Other Goals:</h3>
+            <form action="">
+                <label for="goals">Choose a goal to focus on</label>
+                <br>
+                <br>
+                <select name="goals" id="goals">
+                    {{#each this.deviceGoals}}
+                    <option>{{this}}</option>
+                    {{/each}}
+                </select>
+                <br>
+                <br>
+                <button type="submit" class="btn">Submit</button>
+            </form>
+        </div>
+        <div class="column">
+            <div>
                 <h3>Current Goal:</h3>
                 <p>Recharge before device reaches 20%</p>
                 <progress value="32" max="100"> 75% </progress>
                 <h3>You're so close!</h3>
                 <a href="/leaderboard">Check out the leaderboard</a>
-                </div>
-                <br>
-                <br>
+            </div>
+            <br>
+            <br>
                 <h3>Sustainability Tips</h3>
                 <ul> 
-                {{#each this.deviceGoals}}
-                  <li>{{this}}</li>
-                {{/each}}
+                  <li>Ask suppliers to email you a receipt instead of printing</li>
+                  <li>Use natural light during the day instead of overhead lights or lamps</li>
+                  <li>Organize carpools to work, sports, events, and other activities</li>
                 </ul>
-            </div>
         </div>
     </div>
     </div>
