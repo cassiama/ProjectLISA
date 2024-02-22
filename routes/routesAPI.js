@@ -41,6 +41,12 @@ routes
 		let lastName = req.body.lastName;
 		let password = req.body.password;
 		let confirmPassword = req.body.confirmPassword;
+		let ageInput = req.body.ageInput;
+		let occupation = req.body.occupation;
+		let numberDevices = req.body.numberDevices;
+		let geography = req.body.geography;
+		let os = req.body.os;
+		let phoneSys = req.body.phoneSys;
 
 		if (confirmPassword !== password) {
 			errors.push(`Password and Confirm Password do not match`);
@@ -106,7 +112,13 @@ routes
 				xss(validFirstName),
 				xss(validLastName),
 				xss(validEmail),
-				xss(validPassword)
+				xss(validPassword),
+				ageInput, 
+				occupation,
+				geography, 
+				numberDevices, 
+				os, 
+				phoneSys
 			);
 		} catch (e) {
 			errors.push(e);
@@ -127,6 +139,13 @@ routes
 				firstName: user.firstName,
 				lastName: user.lastName,
 				email: user.email,
+				ageInput: user.ageInput, 
+				occupation: user.occupation,
+				geography: user.geography, 
+				numberDevices: user.numberDevices, 
+				os: user.os, 
+				phoneSys: user.phoneSys
+				
 			};
 			res.redirect("/account");
 		} else {

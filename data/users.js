@@ -10,8 +10,9 @@ import { ObjectId } from "mongodb";
 import bcrypt from "bcrypt";
 const saltRounds = 8;
 
-export const registerUser = async (firstName, lastName, email, password) => {
-	if (!firstName || !lastName || !email || !password) {
+export const registerUser = async (firstName, lastName, email, password, ageInput, occupation, geography, numberDevices, os, phoneSys) => {
+	if (!firstName || !lastName || !email || !password || !ageInput || !occupation || !geography || !numberDevices || !os || !phoneSys) {
+		console.log("Missing input fields:", { firstName, lastName, email, password, ageInput, occupation, geography, numberDevices, os, phoneSys });
 		throw "All input fields must be provided (registerUser)";
 	}
 	firstName = checkName(firstName, "First name");
@@ -30,6 +31,12 @@ export const registerUser = async (firstName, lastName, email, password) => {
 		password: hashed,
 		devices: [],
 		points: 0,
+		ageInput: ageInput,
+		occupation: occupation,
+		geography: geography,
+		numberDevices: numberDevices,
+		os: os,
+		phoneSys: phoneSys,
 	};
 	const userCollection = await users();
 	const newInsertInformation = await userCollection.insertOne(newUser);

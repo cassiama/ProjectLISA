@@ -13,19 +13,38 @@ async function main() {
             "Areeb",
             "Chaudhry",
             "areeb@gmail.com",
-            "Qwertyuiop@123"
+            "Qwertyuiop@123",
+            '21',
+            'student',
+            'urban',
+            '3',
+            'windows',
+            'ios'
         );
         user2 = await registerUser(
             "Shailaja",
             "Vyas",
             "svyaslol@gmail.com",
-            "Hello!123"
+            "Hello!123",
+            '22',
+            'student',
+            'suburban',
+            '2',
+            'windows',
+            'android'
+
         );
         user3 = await registerUser(
             "Mariam",
             "Dardir", 
             "mariamd@gmail.com", 
-            "Happy123!"
+            "Happy123!",
+            '21',
+            'student',
+            'suburban',
+            '1',
+            'windows',
+            'ios'
         );
     } catch (e) {
         console.log("User: " + e);
