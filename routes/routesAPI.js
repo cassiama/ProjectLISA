@@ -281,6 +281,13 @@ routes
 				return;
 			}
 		}
+	});
+
+routes
+	.route('/editProfile')
+	.get(async (req, res) => {
+		if (req.session.user) res.render('editProfile');
+		else res.redirect('/login');
 	})
 	.patch(async (req, res) => {
 		let errors = [];
@@ -301,7 +308,7 @@ routes
 			errors.push("No password provided.");
 
 		if (errors.length > 0) {
-			res.status(400).render("profile", {
+			res.status(400).render("editProfile", {
 				error: true,
 				message: errors[0],
 			});
@@ -362,9 +369,9 @@ routes
 			);
 		} catch (e) {
 			errors.push(e);
-			res.status(400).render("profile", {
+			res.status(400).render("editProfile", {
 				error: true,
-				message: errors[0],
+				message: errors[0]
 			});
 			return;
 		}
@@ -476,7 +483,9 @@ routes
 		let errors = [];
 		let serialNum = req.body.serialNumber;
 		let devName = req.body.deviceName;
-		let devGoals = req.body.deviceGoals;
+		let devGoals = Array.isArray(req.body.deviceGoals) 
+			? req.body.deviceGoals
+			: [req.body.deviceGoals];
 		// console.log(req.body);
 		if (typeof serialNum === "undefined" || serialNum.trim().length === 0) {
 			errors.push("Invalid Serial Number");
