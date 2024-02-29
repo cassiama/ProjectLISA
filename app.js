@@ -37,6 +37,17 @@ app.use('*', (req, res, next) => {
     console.log();
 });
 
+app.use('*', (req, res, next) => {
+    if (req.originalUrl !== '/login' && req.originalUrl !== '/register' && req.originalUrl !== '/forgetpassword' && req.originalUrl !== '/newpassword') {
+        if (!req.session.user) {
+            return res.status(403).json({error: "User must be logged in to access this page."});
+        }
+        next();
+    } else {
+        next();
+    }
+});
+
 configRoutes(app);
 
 app.listen(3000, () => {
