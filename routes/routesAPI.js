@@ -28,6 +28,7 @@ routes.get("/", (req, res) => {
 
 routes
 	.route("/register")
+	// Render 
 	.get(async (req, res) => {
 		// console.log(req.session.user);
 		if (req.session.user) res.redirect("/account");
@@ -47,10 +48,6 @@ routes
 		let geography = req.body.geography;
 		let os = req.body.os;
 		let phoneSys = req.body.phoneSys;
-
-		if (confirmPassword !== password) {
-			errors.push(`Password and Confirm Password do not match`);
-		}
 
 		if (typeof email === "undefined") errors.push("No email provided.");
 		else if (typeof firstName === "undefined")
@@ -92,6 +89,7 @@ routes
 
 		let validPassword;
 		try {
+			if (password !== confirmPassword) throw `Passwords do not match.`;
 			validPassword = checkPassword(password);
 		} catch (e) {
 			errors.push(e);
@@ -289,13 +287,15 @@ routes
 		if (req.session.user) res.render('editProfile');
 		else res.redirect('/login');
 	})
-	.patch(async (req, res) => {
+	.post(async (req, res) => {
 		let errors = [];
-		let id = req.body.id;
-		let email = req.body.email;
+		// console.log(req.body);
+		let id = req.body.id ?? req.session.user.id;
+		let email = req.body.emailAddress;
 		let firstName = req.body.firstName;
 		let lastName = req.body.lastName;
 		let password = req.body.password;
+		let confirmPassword = req.body.confirmPassword;
 
 		if (typeof id === "undefined") errors.push("No user ID provided.");
 		else if (typeof email === "undefined")
@@ -345,6 +345,7 @@ routes
 
 		let validPassword;
 		try {
+			if (password !== confirmPassword) throw 'Passwords do not match.';
 			validPassword = checkPassword(password);
 		} catch (e) {
 			errors.push(e);
@@ -492,19 +493,23 @@ routes
 			res.status(400).render("registerDevice", {
 				error: true,
 				message: errors[0],
-				goals: allGoals,
+				goals: allGoals
 			});
 			return;
 		}
 		try {
-			let device = await registerDevice(
+			const { _id: deviceId } = await registerDevice(
 				xss(req.session.user.id),
 				xss(serialNum),
 				xss(devName),
 				devGoals
 			);
-			// console.log(device);
-			req.session.user.devices.push(device._id.toString());
+
+			// Add the new device ID to the current logged user.
+			req.session.user.devices.push(deviceId.toString());
+			req.session.user.numberDevices += 1;
+
+			// Redirect to the user's profile page.
 			res.redirect("/account");
 		} catch (e) {
 			errors.push(e);
