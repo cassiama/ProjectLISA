@@ -28,7 +28,7 @@ routes.get("/", (req, res) => {
 
 routes
 	.route("/register")
-	// Render 
+	// Render the register page if the user is logged out; else, redirect to profile page.
 	.get(async (req, res) => {
 		// console.log(req.session.user);
 		if (req.session.user) res.redirect("/account");
@@ -169,7 +169,8 @@ routes
 		let email = req.body.email;
 		let password = req.body.password;
 
-		if (typeof email === "undefined") errors.push("No email provided.");
+		if (typeof email === "undefined")
+			errors.push("No email provided.");
 		else if (typeof password === "undefined")
 			errors.push("No password provided.");
 
@@ -271,8 +272,8 @@ routes
 					devices: devices,
 				});
 			} catch (e) {
-				errors.push("Internal Servor Error");
-				res.render("profile", {
+				errors.push("Internal Server Error");
+				res.status(500).render("profile", {
 					error: true,
 					message: errors[0],
 				});
@@ -289,15 +290,18 @@ routes
 	})
 	.post(async (req, res) => {
 		let errors = [];
-		// console.log(req.body);
-		let id = req.body.id ?? req.session.user.id;
+		let userId = req.body.id ?? req.session.user.id;
 		let email = req.body.emailAddress;
 		let firstName = req.body.firstName;
 		let lastName = req.body.lastName;
 		let password = req.body.password;
 		let confirmPassword = req.body.confirmPassword;
+		// console.log(req.body);
+		// console.log(req.session.user);
+		// console.log(req.body.id);
 
-		if (typeof id === "undefined") errors.push("No user ID provided.");
+		if (typeof userId === "undefined")
+			errors.push("No user ID provided.");
 		else if (typeof email === "undefined")
 			errors.push("No email provided.");
 		else if (typeof firstName === "undefined")
@@ -315,9 +319,9 @@ routes
 			return;
 		}
 
-		let validId;
+		let validUserId;
 		try {
-			validId = checkId(req.body.id);
+			validUserId = checkId(userId);
 		} catch (e) {
 			errors.push(e);
 		}
@@ -352,7 +356,7 @@ routes
 		}
 
 		if (errors.length > 0) {
-			res.status(400).render("profile", {
+			res.status(400).render("editProfile", {
 				error: true,
 				message: errors[0],
 			});
@@ -362,7 +366,7 @@ routes
 		let updatedUser;
 		try {
 			updatedUser = await updateUser(
-				xss(validId),
+				xss(validUserId),
 				xss(validFirstName),
 				xss(validLastName),
 				xss(validEmail),
@@ -377,18 +381,37 @@ routes
 			return;
 		}
 
-		req.session.user = {
+		req.session.user = Object.assign({
 			id: updatedUser.id,
 			firstName: updatedUser.firstName,
 			lastName: updatedUser.lastName,
-			email: updatedUser.emailAddress,
-		};
-		res.render("profile", {
-			firstName: req.session.user.firstName,
-			lastName: req.session.user.lastName,
-			email: req.session.user.email,
-			devices: req.session.user.devices,
-		});
+			email: updatedUser.email,
+		}, req.session.user);
+
+		let deviceIds = req.session.user.devices;
+		let devices = [];
+		try {
+			for (let devId of deviceIds) {
+				// console.log(devId);
+				let device = await getDevice(validUserId, devId);
+				// console.log(device);
+				devices.push(device);
+			}
+			// console.log(devices);
+			res.render("profile", {
+				firstName: req.session.user.firstName,
+				lastName: req.session.user.lastName,
+				email: req.session.user.email,
+				devices: devices,
+			});
+		} catch (e) {
+			errors.push("Internal Server Error");
+			res.status(500).render("editProfile", {
+				error: true,
+				message: errors[0],
+			});
+			return;
+		}
 	});
 
 routes
