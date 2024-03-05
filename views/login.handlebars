@@ -1,9 +1,10 @@
 <main>
   <form action="login" method="POST" id="login-form" class="column">
-    <h1>Login!</h1>
-
+    <div class="login-container">
+    <h1 class="title">Login!</h1>
     <label for="email">
       Email:
+      <br>
       <input
         type="email"
         name="email"
@@ -11,9 +12,11 @@
         placeholder="Enter email address"
       >
     </label>
-
+<br>
+<br>
     <label for="password">
       Password:
+      <br>
       <input
         type="password"
         name="password"
@@ -26,10 +29,11 @@
       <p class="error">{{message}}</p>
     {{/if}}
 
-    <br>     
-
+    <br>
+    <br> 
     <button type="submit" class="btn">Submit</button>
     <p>New user? Sign up <a href="/register" class="register">here!</a></p>
     <a href="/forgetpassword">Forgot Password?</a>
   </form>
+    </div>
 </main>
