@@ -87,3 +87,18 @@ export const checkId = (id) => {
     return id;
 }
 
+export const checkAge = (age) => {
+    if (typeof age !== 'number') {
+        throw  `Age must be a valid number`;
+    }
+    if (age < 13 || age > 120) {
+        throw `Must be between 13-120 years of age to sign-up`;
+    }
+    return age;
+}
+
+export const checkInt = (value) => {
+    if (!isNaN(value) && parseInt(Number(value)) == value && !isNaN(parseInt(value, 10))) {
+        return parseInt(value);
+    }
+}
