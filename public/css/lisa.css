@@ -9,10 +9,16 @@ body {
 .login-container {
   background-color: rgba(238, 238, 238, 0.70);
   width: 290%;
-  height: 200%;
+  height: 575px;
   padding: 20px;
-  flex-shrink: 0;
   /* display: flex; */
+}
+#link {
+  color: #096CD5;
+  font-weight: bold;
+}
+.login-text {
+  padding-left: 30px;
 }
 .title {
   color: #000;
