@@ -4,14 +4,17 @@
 		<h2 class="title">Device Registration</h2>
 
 		<label for="serialNum">Serial Number: </label>
+		<br>
 		<input type="text" name="serialNumber" id="serialNumber" required />
 		<br />
-
+		<br>
 		<label for="devName">Device Name: </label>
+		<br>
 		<input type="text" name="deviceName" id="deviceName" required />
 		<br />
-
+		<br>
 		<label for="devGoals">Device Goals: </label>
+		<br>
 		<select name="deviceGoals" id="deviceGoals" multiple required>
 			<option value="Test 0">Test 0</option>
 			{{#each goals}}
@@ -19,16 +22,16 @@
 			{{/each}}
 		</select>
 		<br />
-
+		<br>
 		{{#if error}}
 			<p class="error">{{message}}</p>
 		{{/if}}
 
 		<br />
-		<a href="/goals">Learn More About Device Goals</a>
+		<a href="/goals" id="link">Learn More About Device Goals</a>
 		</br>
 		</br>
-		<button type="submit">Submit</button>
+		<button type="submit" class="button">Submit</button>
 		</div>
 	</form>
 </main>
