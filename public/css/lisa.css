@@ -13,6 +13,14 @@ body {
   padding: 20px;
   /* display: flex; */
 }
+.vertical-container {
+  background: rgba(238, 238, 238, 0.70);
+  margin: auto;
+  text-align: left;
+  width: fit-content;
+  padding: 30px;
+  border-radius: 30px;
+}
 #link {
   color: #096CD5;
   font-weight: bold;
