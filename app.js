@@ -40,7 +40,8 @@ app.use('*', (req, res, next) => {
 app.use('*', (req, res, next) => {
     if (req.originalUrl !== '/login' && req.originalUrl !== '/register' && req.originalUrl !== '/forgetpassword') {
         if (!req.session.user) {
-            return res.status(403).json({error: "User must be logged in to access this page."});
+            res.redirect("/login");         
+            return;
         }
         next();
     } else {
@@ -51,5 +52,5 @@ app.use('*', (req, res, next) => {
 configRoutes(app);
 
 app.listen(3000, () => {
-    console.log('The server is now running on http://localhost:3000/login.');
+    console.log('The server is now running on http://localhost:3000.');
 });
