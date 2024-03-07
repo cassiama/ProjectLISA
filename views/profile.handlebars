@@ -1,21 +1,29 @@
 <main>
-  <h1>Profile</h1>
 <div class="row">
-    <img>
     <div class="column">
-    <h2>{{firstName}} {{lastName}}</h2>
-    <h4>{{email}}</h4>
+      <div class="image-text">
+        <div class="image">
+      <img src="https://pngimg.com/d/smiley_PNG158.png" width="200px" height="200px">
+    </div>
+    <div class="profile-text">
+    <h1>{{firstName}} {{lastName}}</h1>
+    <h3>{{email}}</h3>
+    </div>
+    </div>
+    <br>
+    <br>
+    <br>
     <br>
     <h2>Edit Profile</h2>
     <a href="/editProfile">Click here to edit your profile!</a>
     </br>
     </br>
-    <a href="/dashboard">Back to Dashboard</a>
-    {{!-- Currently no route for editProfile --}}
+    <a href="/dashboard" class="button">Back to Dashboard</a>
   </div>
   <div class="column">
     <div>
         {{!-- <h2>My Devices:</h2> --}}
+        <div class="vertical-container">
         {{#if devices}}
         <ol>My Devices:
           {{#each devices}}
@@ -52,16 +60,17 @@
             </div>
         </div> --}}
         <a href="/devices">
-        <button>Add Device</button>
+        <button class="button">Add Device</button>
         </a>
         </br>
         </br>
-        <a href="/leaderboard">Check out the leaderboard!</a>
+        <a href="/leaderboard" id="link">Check out the leaderboard!</a>
         </br>
         </br>
         <a href="/help">Need Help?</a>
         </br>
         <a href="/logout">Logout</a>
+        </div>
     </div>
   </div>
 </div>

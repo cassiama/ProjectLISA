@@ -73,6 +73,29 @@ body {
 .dashboard-text {
   color: #FFFFFF;
 }
+.image-text {
+  display: flex;
+  align-items: center;
+  justify-content: center
+}
+.profile-text {
+  padding-left: 20px;
+  color: #FFFFFF;
+}
+a {
+  color:#FFFFFF;
+  text-decoration: none;
+}
+a:visited {
+  text-decoration: none;
+}
+.button {
+  background-color: rgba(128, 0, 255, 0.38);
+  color:#000;
+  padding: 10px;
+  border-radius: 10px;
+  font-weight: bold;
+}
 .column {
     float: left;
     width: 33%;
