@@ -3,8 +3,10 @@
     <p></p>
 <h2 class="helpTicket">Submit a Help Ticket</h2>
   <form method="POST" id="help-form" class="column">
+    <br>
     <label for="email">
       Email:
+      <br>
       <input
         type="email"
         name="email"
@@ -12,8 +14,11 @@
         placeholder="Enter email address"
       required>
     </label>
+    <br>
+    <br>
     <label for="issue">
       Issue:
+      <br>
       <textarea
         type="text"
         name="issue"
@@ -21,14 +26,16 @@
         placeholder="Describe issue"
       required></textarea>
     </label>
+    <br>
+    <br>
 
     {{#if error}}
       <p class="error">{{message}}</p>
     {{/if}}
     <br>     
-    <button type="submit" class="btn">Submit</button>
+    <button type="submit" class="btn button">Submit</button>
   </form>
 
   </br>
-    </br>
-    <a href="/dashboard">Back to Dashboard</a>
+  </br>
+    <a href="/dashboard" class="button">Back to Dashboard</a>

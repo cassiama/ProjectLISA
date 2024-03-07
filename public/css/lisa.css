@@ -96,6 +96,15 @@ a:visited {
   border-radius: 10px;
   font-weight: bold;
 }
+table {
+  width: 100%;
+  background-color: #FFFFFF;
+  border: 1px solid;
+}
+td, th {
+  background-color: #FFFFFF;
+  border: 1px solid;
+}
 .column {
     float: left;
     width: 33%;
