@@ -41,6 +41,38 @@ body {
   font-weight: 700;
   line-height: normal;
 }
+#dashboard-title {
+  color: #FFFFFF;
+  font-size: 50px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  text-align: center;
+}
+.left-box {
+  background: rgba(238, 238, 238, 0.70);
+  margin: auto;
+  text-align: left;
+  width: fit-content;
+  padding: 20px;
+  border-radius: 30px;
+}
+.right-box {
+  background: rgba(238, 238, 238, 0.70);
+  margin: auto;
+  text-align: left;
+  width: 90%;
+  height: 215px;
+  padding: 20px;
+  border-radius: 30px;
+}
+.center {
+  margin: auto;
+  width: 130%;
+}
+.dashboard-text {
+  color: #FFFFFF;
+}
 .column {
     float: left;
     width: 33%;

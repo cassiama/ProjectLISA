@@ -21,10 +21,11 @@
 <main>
     <div id="fullsite">
     <button class="openbtn" onclick="openNav()">☰</button>
-    <h1>Hi, {{firstName}}!</h1>
+    <h1 id="dashboard-title">Hi, {{firstName}}!</h1>
+    <div class="center">
     <div class="row">
         <div class="column">
-            <div>
+            <div class="left-box">
             <h3>Lenovo ThinkPad X1 Carbon Gen 11 Stats</h3>
             <h5>Carbon Emissions Saved By:</h5>
                     <ul>
@@ -37,13 +38,13 @@
                             <li>Equivalent to driving 27 miles</li>
                         </ul>
                     </ul>
-                    <a href="/facts">Learn More</a>
+                    <a href="/facts" id="link">Learn More</a>
             </div>
             <br>
             <br>
-            <h3>{{firstName}}'s Other Goals:</h3>
+            <h3 class="dashboard-text">{{firstName}}'s Other Goals:</h3>
             <form action="">
-                <label for="goals">Choose a goal to focus on</label>
+                <label for="goals" class="dashboard-text">Choose a goal to focus on</label>
                 <br>
                 <br>
                 <select name="goals" id="goals">
@@ -57,22 +58,24 @@
             </form>
         </div>
         <div class="column">
-            <div>
+            <div class="right-box">
                 <h3>Current Goal:</h3>
                 <p>Recharge before device reaches 20%</p>
                 <progress value="32" max="100"> 75% </progress>
-                <h3>You're so close!</h3>
-                <a href="/leaderboard">Check out the leaderboard</a>
+                <h4>You're so close!</h4>
+                <p>You have reduced your carbon footprint by 5%</p>
+                <a href="/leaderboard" id="link">Check out the leaderboard</a>
             </div>
             <br>
             <br>
-                <h3>Sustainability Tips</h3>
-                <ul> 
-                  <li>Ask suppliers to email you a receipt instead of printing</li>
-                  <li>Use natural light during the day instead of overhead lights or lamps</li>
-                  <li>Organize carpools to work, sports, events, and other activities</li>
+                <h3 class="dashboard-text">Sustainability Tips</h3>
+                <ul class="dashboard-text"> 
+                  <li class="dashboard-text">Ask suppliers to email you a receipt instead of printing</li>
+                  <li class="dashboard-text">Use natural light during the day instead of overhead lights or lamps</li>
+                  <li class="dashboard-text">Organize carpools to work, sports, events, and other activities</li>
                 </ul>
         </div>
+    </div>
     </div>
     </div>
     <script>
