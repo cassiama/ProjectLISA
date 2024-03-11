@@ -381,12 +381,17 @@ routes
 			return;
 		}
 
-		req.session.user = Object.assign({
-			id: updatedUser.id,
-			firstName: updatedUser.firstName,
-			lastName: updatedUser.lastName,
-			email: updatedUser.email,
-		}, req.session.user);
+		// req.session.user = Object.assign({
+		// 	id: updatedUser._id,
+		// 	firstName: updatedUser.firstName,
+		// 	lastName: updatedUser.lastName,
+		// 	email: updatedUser.email,
+		// }, req.session.user);
+		req.session.user.id = updatedUser._id;
+		req.session.user.firstName = updatedUser.firstName;
+		req.session.user.lastName = updatedUser.lastName;
+		req.session.user.email = updatedUser.email;
+		console.log(req.session.user);
 
 		let deviceIds = req.session.user.devices;
 		let devices = [];
