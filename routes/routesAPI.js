@@ -291,11 +291,17 @@ routes
 	.post(async (req, res) => {
 		let errors = [];
 		let userId = req.body.id ?? req.session.user.id;
-		let email = req.body.emailAddress;
+		let email = req.body.email;
 		let firstName = req.body.firstName;
 		let lastName = req.body.lastName;
 		let password = req.body.password;
 		let confirmPassword = req.body.confirmPassword;
+		let ageInput = req.body.ageInput;
+		let occupation = req.body.occupation;
+		let numberDevices = req.body.numberDevices;
+		let geography = req.body.devices;
+		let os = req.body.os;
+		let phoneSys = req.body.phoneSys;
 		// console.log(req.body);
 		// console.log(req.session.user);
 		// console.log(req.body.id);
@@ -370,7 +376,13 @@ routes
 				xss(validFirstName),
 				xss(validLastName),
 				xss(validEmail),
-				xss(validPassword)
+				xss(validPassword),
+				ageInput,
+				occupation,
+				geography,
+				numberDevices,
+				os,
+				phoneSys
 			);
 		} catch (e) {
 			errors.push(e);

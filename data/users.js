@@ -85,7 +85,7 @@ export const checkUser = async (email, password) => {
 	}
 };
 
-export const updateUser = async (id, firstName, lastName, email, password) => {
+export const updateUser = async (id, firstName, lastName, email, password, ageInput, occupation, geography, numberDevices, os, phoneSys) => {
 	let hashed1;
 	if (id) {
 		id = checkId(id);
@@ -110,7 +110,7 @@ export const updateUser = async (id, firstName, lastName, email, password) => {
 	let emailExists = false;
 
 	if (oldUser.email !== email && email) {
-		emailExists = await emailAlreadyExists(emailAddress);
+		emailExists = await emailAlreadyExists(email);
 		if (emailExists) {
 			throw `Email already exists (updateUser)`;
 		}
@@ -121,23 +121,27 @@ export const updateUser = async (id, firstName, lastName, email, password) => {
 		lastName: lastName ? lastName : oldUser.lastName,
 		email: email ? email : oldUser.email,
 		password: hashed1 ? hashed1 : oldUser.password,
-		username: username ? username : oldUser.username,
-		age: age ? age : oldUser.age,
 		devices: oldUser.devices,
 		points: oldUser.points,
+		ageInput: ageInput ? ageInput : oldUser.ageInput,
+		occupation: occupation ? occupation : oldUser.occupation,
+		geography: geography ? geography : oldUser.geography,
+		numberDevices: numberDevices ? numberDevices : oldUser.numberDevices,
+		os: os ? os : oldUser.os,
+		phoneSys: phoneSys ? phoneSys : oldUser.phoneSys,
+
 	};
 
 	const userCollection = await users();
 
-	const updateInfo = await userCollection.replaceOne(
-		{ _id: new ObjectId(id) },
-		userUpdate
-	);
+	const updateInfo = await userCollection.replaceOne({_id: new ObjectId(id)}, userUpdate);
+	console.log("update" + updateInfo)
 
 	if (updateInfo.modifiedCount === 0) {
 		throw `At least one field must be different to successfully update user`;
 	}
 	let newInfo = await getUserById(id);
+	console.log("new" + newInfo);
 	return newInfo;
 };
 
@@ -168,18 +172,21 @@ export const getUserById = async (id) => {
 	if (!id) {
 		throw "Error: Id must be inputed";
 	}
-	if (typeof id != "string") {
-		throw "Error: Id must be a string";
-	}
-	if (id.length == 0 || id.trim().length == 0) {
-		throw "Error: Id must not be an empty string or only include empty spaces";
-	}
-	id = id.trim();
-	if (!ObjectId.isValid(id)) {
-		throw "Error: Invalid Object Id";
-	}
+	id = checkId(id);
 	const userCollection = await users();
 	const user = await userCollection.findOne({ _id: new ObjectId(id) });
+	if (!user) throw "Error: User not found";
+	user._id = user._id.toString();
+	return user;
+};
+
+export const getUserByEmail = async (email) => {
+	if (!email) {
+		throw "Error: Email must be inputed";
+	}
+	email = checkEmail(email);
+	const userCollection = await users();
+	const user = await userCollection.findOne({ email: email });
 	if (!user) throw "Error: User not found";
 	user._id = user._id.toString();
 	return user;

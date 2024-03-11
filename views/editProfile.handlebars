@@ -1,19 +1,77 @@
         <form action="/editProfile" method="POST" id="editProfile-form" class="column">
         {{!-- Might need to add correct action --}}
-            <label for="firstName">First Name:</label>
-            <input type="text" id="firstName" name="firstName">
+        
+        
+        <div class="vertical-container">
+        <h2 class="title">Edit Profile</h2>
+        <label for="firstName">First Name:</label>
+        <br>
+        <input type="text" id="firstName" name="firstName" required>
+        <br/>
+        <br>
+        <label for="lastName">Last Name:</label>
+        <br>
+        <input type="text" id="lastName" name="lastName" required>
+        <br/>
+        <br>
+        <label for="email">Email:</label>
+        <br>
+        <input type="email" id="email" name="email" required>
+        <br/>
+        <br>
+        <label for="ageInput">Age:</label>
+        <br>
+        <input type="number" id="ageInput" name="ageInput">
+        <br/>
+        <br>
+        <label for="occupation">Occupation:</label>
+        <br>
+        <input type="text" id="occupation" name="occupation">
+        <br/>
+        <br>
+        <label for="numberDevices">Number of devices owned:</label>
+        <br>
+        <input type="text" id="numberDevices" name="numberDevices">
+        <br/>
+        <br>
+        <label for="password">Password (must have at least 8 characters, 1 special character, 1 number, and 1 capital letter):</label>
+        <br>
+        <input type="password" id="password" name="password" required>
+        <br/>
+        <br>
+        <label for="confirmPassword">Confirm Password:</label>
+        <br>
+        <input type="password" id="confirmPassword" name="confirmPassword" required>
+        <br/>
+        <br>
+        <p>Please select your geographical location:</p>
+          <input type="radio" id="urban" name="geography" value="urban">
+          <label for="urban">Urban</label><br>
+          <input type="radio" id="suburban" name="geography" value="suburban">
+          <label for="suburban">Suburban</label><br>
+          <input type="radio" id="rural" name="geography" value="rural">
+          <label for="rural">Rural</label>
+        <br/>
+        <br>
+        <p>What is your operating system of choice?</p>
+          <input type="radio" id="windows" name="os" value="windows">
+          <label for="windows">Windows</label><br>
+          <input type="radio" id="macOS" name="os" value="macOS">
+          <label for="macOS">Mac OS</label><br>
+          <input type="radio" id="linux" name="os" value="linux">
+          <label for="linux">Linux</label></br>
+          <input type="radio" id="chrome" name="os" value="chrome">
+          <label for="chrome">Chrome</label>
+          <br>
+        <br/>
 
-            <label for="lastName">Last Name:</label>
-            <input type="text" id="lastName" name="lastName">
+        <p>What is your phone system of choice?</p>
+          <input type="radio" id="andriod" name="phoneSys" value="android">
+          <label for="android">Android</label><br>
+          <input type="radio" id="ios" name="phoneSys" value="ios">
+          <label for="ios">IOS</label><br>
+        <br/>
 
-            <label for="emailAddress">Email:</label>
-            <input type="email" id="emailAddress" name="emailAddress">
-
-            <label for="password">Password (must have at least 8 characters, 1 special character, 1 number, and 1 capital letter):</label>
-            <input type="password" id="password" name="password">
-
-            <label for="confirmPassword">Confirm Password:</label>
-            <input type="password" id="confirmPassword" name="confirmPassword">
 
             {{#if error}}
                 <p id="error">{{message}}</p>
@@ -27,3 +85,4 @@
     </br>
     </br>
     <a href="/account">Back to Profile</a>
+    </div>
