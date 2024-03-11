@@ -11,6 +11,8 @@ import {
 	updateUser,
 	checkUser,
 	getAllUsers,
+	getUserById,
+	addPoints,
 } from "../data/users.js";
 import {
 	serialNumAlreadyExists,
@@ -510,9 +512,29 @@ routes
 		}
 	});
 
-routes.route("/rewards").get(async (req, res) => {});
+routes
+	.route("/rewards")
+	.get(async (req, res) => {
+		if (req.session.user) res.render("redeem", {points: req.session.user.points});
+		else res.redirect("/login");
+	})
+	.post(async (req, res) => {
+		let errors = []
+		let rewardPoints = req.body.points;
+		let id = req.session.user.id;
+		if (rewardPoints.length === 0){
+			errors.push("Sorry! You do not have any points!")
+		}
+		await addPoints(id,rewardPoints);
 
-routes.route("/rewards/redeem").get(async (req, res) => {});
+	});
+
+	// you redeemed your rewards
+routes.route("/rewards/redeem")
+	.get(async (req, res) => {
+		if (req.session.user) res.render("redeemed");
+		else res.redirect("/login");
+	});
 
 routes
 	.route("/devices")
@@ -578,7 +600,7 @@ routes //sustainable goals
 		res.render("goals");
 	});
 
-routes //help -- incomplete
+routes 
 	.route("/help")
 	.get(async (req, res) => {
 		res.render("help");

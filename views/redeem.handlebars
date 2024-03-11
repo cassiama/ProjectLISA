@@ -1,1 +1,23 @@
-<h1>This is a WIP</h1>
+<div>
+    <h1>Redeem Rewards</h1>
+    <h3>See what rewards you can get!</h3>
+    <h3>Points: {{this.points}}</h3>
+     <div class="redeem"> {{!--this is just random --}}
+        {{#each users}}
+            <tr>
+                <td>{{this.points}}</td>
+            </tr>
+        {{/each}}
+        
+    </div>
+</div>
+
+</br>
+</br>
+<a href="/rewards/redeem" id="link">Redeem</a>
+<br>
+<br>
+<a href="/dashboard" class="button">Back to Dashboard</a>
+
+</br>
+</br>
