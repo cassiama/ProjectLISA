@@ -1,12 +1,10 @@
 {{!-- using some code from https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_collapse_sidebar to create sidebar--}}
 
-{{!-- 1. fix sidebar
-2. drop down for goals --}}
-
 
 <div id="sidebar" class="bar">
     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">☰</a>
     <br>
+    {{#if this.devices}}
     <form action="/dashboard" method="POST" id="choose-device-form">
         <ul>
             {{#each this.devices}}
@@ -16,6 +14,7 @@
         <input type="hidden" name="type" value="devices">
         <input type="hidden" name="deviceId" value="">
     </form>
+    {{/if}}
     <a href="/devices" id="add" class="button">Add Device</a>
     <br>
     <br>
@@ -35,7 +34,11 @@
     <div class="row">
         <div class="column">
             <div class="left-box">
-            <h3>Lenovo ThinkPad X1 Carbon Gen 11 Stats</h3>
+            {{#if deviceName}}
+            <h3>{{deviceName}} Stats</h3>
+            {{else}}
+            <h3>Stats Unavailable</h3>
+            {{/if}}
             <h5>Carbon Emissions Saved By:</h5>
                     <ul>
                         <li>Charging Less Often</li>
@@ -71,9 +74,9 @@
             <div class="right-box">
                 <h3>Current Goal:</h3>
                 <p>{{this.currentGoal}}</p>
-                <progress value="32" max="100"> 75% </progress>
-                <h4>You're so close!</h4>
-                <p>You have reduced your carbon footprint by 5%</p>
+                <progress value={{{percentage}}} max="100"> {{percentage}}% </progress>
+                <h4>{{progressMessage}}</h4>
+                <p>You have reduced your carbon footprint by {{percentage}}%</p>
                 <a href="/leaderboard" id="link">Check out the leaderboard</a>
             </div>
             <br>
