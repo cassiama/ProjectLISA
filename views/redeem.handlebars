@@ -8,16 +8,60 @@
                 <td>{{this.points}}</td>
             </tr>
         {{/each}}
-        
+        <form action="/rewards" method="POST" id="rewards-form">
+            <div class="donate">
+                <h4>A $10 Donation to fight against Climate Change</h4>
+                <progress value={{{this.points}}} max="100"></progress>
+                <h5>100 Points</h5>
+                <button type="submit" href="/rewards/redeem" id="link">Redeem</a>
+                <input type="hidden" name="points" value="100">
+            </div>
+            <div class="donate">
+                <h4>A $20 Donation to fight against Climate Change</h4>
+                <progress value={{{this.points}}} max="200"></progress>
+                <h5>200 Points</h5>
+                <button type="submit" href="/rewards/redeem" id="link">Redeem</a>
+                <input type="hidden" name="points" value="200">
+
+            </div>
+            <div class="carbon offset">
+                <h4>Earn a Carbon Offset Credit For Your Device</h4>
+                <progress value={{{this.points}}} max="350"></progress>
+                <h5>350 Points</h5>
+                <button type="submit" href="/rewards/redeem" id="link">Redeem</a>
+                <input type="hidden" name="points" value="350">
+
+            </div>
+            <div class="lenovo">
+                <h4>$50 Towards Any Lenovo Product</h4>
+                <progress value={{{this.points}}} max="500"></progress>
+                <h5>500 Points</h5>
+                <button type="submit" href="/rewards/redeem" id="link">Redeem</a>
+                <input type="hidden" name="points" value="500">
+
+            </div>
+              <div class="lenovo">
+                <h4>$100 Towards Any Lenovo Product</h4>
+                <progress value={{{this.poin}}} max="1000"></progress>
+                <h5>1000 Points</h5>
+                <button type="submit" href="/rewards/redeem" id="link">Redeem</a>
+                <input type="hidden" name="points" value="1000">
+
+            </div>
+        </form>
     </div>
-</div>
+    {{#if error}}
+        <p class="error">{{message}}</p>
+    {{/if}}
+
 
 </br>
 </br>
-<a href="/rewards/redeem" id="link">Redeem</a>
+
 <br>
 <br>
 <a href="/dashboard" class="button">Back to Dashboard</a>
 
 </br>
 </br>
+</div>

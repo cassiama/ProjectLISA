@@ -1,4 +1,4 @@
-import { registerUser } from './data/users.js';
+import { addPoints, registerUser } from './data/users.js';
 import { registerDevice } from './data/devices.js';
 import { dbConnection, closeConnection } from './config/mongoConnection.js';
 
@@ -46,6 +46,9 @@ async function main() {
             'windows',
             'ios'
         );
+        await addPoints(user1._id, 100);
+        await addPoints(user2._id, 250);
+        await addPoints(user3._id, 1150);
     } catch (e) {
         console.log("User: " + e);
     }

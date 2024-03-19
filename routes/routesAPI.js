@@ -15,6 +15,7 @@ import {
 	getUserById,
 	addPoints,
 	getTotalPoints,
+	subtractPoints,
 } from "../data/users.js";
 import {
 	serialNumAlreadyExists,
@@ -661,18 +662,25 @@ routes
 	.route("/rewards")
 	.get(async (req, res) => {
 		let id = req.session.user.id;
-		const totalPoints = await getTotalPoints(id);
+		const totalPoints = await getTotalPoints(id); //user's total points currently
 		if (req.session.user) res.render("redeem", {points: totalPoints});
 		else res.redirect("/login");
 	})
 	.post(async (req, res) => {
-		let errors = []
-		let rewardPoints = req.body.points;
 		let id = req.session.user.id;
-		if (rewardPoints === 0){
-			errors.push("Sorry! You do not have any points!")
+		const totalPoints = await getTotalPoints(id); //user's total points currently
+		let errors = []
+		let rewardPoints = Number.parseInt(req.body.points); //rewardpoints = whats getting added or subtracted after clicking redeem
+		if (totalPoints < rewardPoints){
+			errors.push("Sorry! You do not enough points to redeem!")
+			res.status(400).render("redeem", {
+				points: totalPoints,
+				error: true,
+				message: errors[0],
+			});
+			return;
 		}
-		await addPoints(id, rewardPoints);
+		await subtractPoints(id, rewardPoints);
 		res.redirect('/rewards/redeem');
 	});
 

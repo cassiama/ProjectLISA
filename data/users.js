@@ -222,24 +222,12 @@ export const helpTicket = async (email, message) => {
 	if (insertInfo.insertedCount === 0) throw "Error: Could not add ticket";
 	return newTicket;
 };
-export const getTotalPoints = async (userId, rewardPoints) => {
+export const getTotalPoints = async (userId) => {
 	if (!userId) {
 		throw "Error: User Id must be inputed";
 	}
 	if (typeof userId != "string") {
 		throw "Error: User Id must be a string";
-	}
-	if (!rewardPoints) {
-		throw "Error: Reward Points must be inputed";
-	}
-	if (typeof rewardPoints != "number") {
-		throw "Error: Reward Points must be a number";
-	}
-	if (rewardPoints <= 0) {
-		throw "Error: Reward Points must be greater than 0";
-	}
-	if (rewardPoints % 1 != 0) {
-		throw "Error: Reward Points must be an integer";
 	}
 	if (userId.length == 0 || userId.trim().length == 0) {
 		throw "Error: User Id must not be an empty string or only include empty spaces";
@@ -247,14 +235,14 @@ export const getTotalPoints = async (userId, rewardPoints) => {
 	userId = userId.trim();
 	const userCollection = await users();
 	const user = await getUserById(userId);
-	const totalPoints = user.points
+	const totalPoints = user.points;
 
-	const updatedUser = await userCollection.find(
+	const updatedUser = await userCollection.findOne(
 		{ _id: new ObjectId(userId) },
 		{ points: totalPoints } 
 	);
-	if (updatedUser.modifiedCount === 0) throw "Error: Could not update user";
-	return true;
+	// console.log(updatedUser);
+	return updatedUser.points;
 };
 
 export const subtractPoints = async (userId, rewardPoints) => {
