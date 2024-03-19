@@ -14,6 +14,7 @@ import {
 	getAllUsers,
 	getUserById,
 	addPoints,
+	getTotalPoints,
 } from "../data/users.js";
 import {
 	serialNumAlreadyExists,
@@ -239,14 +240,14 @@ routes
 		try {
 			validEmail = checkEmail(email);
 		} catch (e) {
-			errors.push(e);
+			errors.push("EMAIL NOT VALID!");
 		}
 
 		let validPassword;
 		try {
 			validPassword = checkPassword(password);
 		} catch (e) {
-			errors.push(e);
+			errors.push("PASSWORD NOT VALID!");
 		}
 
 		if (errors.length > 0) {
@@ -657,22 +658,25 @@ routes
 routes
 	.route("/rewards")
 	.get(async (req, res) => {
-		if (req.session.user) res.render("redeem", {points: req.session.user.points});
+		let id = req.session.user.id;
+		const totalPoints = await getTotalPoints(id);
+		if (req.session.user) res.render("redeem", {points: totalPoints});
 		else res.redirect("/login");
 	})
 	.post(async (req, res) => {
 		let errors = []
 		let rewardPoints = req.body.points;
 		let id = req.session.user.id;
-		if (rewardPoints.length === 0){
+		if (rewardPoints === 0){
 			errors.push("Sorry! You do not have any points!")
 		}
-		await addPoints(id,rewardPoints);
-
+		await addPoints(id, rewardPoints);
+		res.redirect('/rewards/redeem');
 	});
 
 	// you redeemed your rewards
-routes.route("/rewards/redeem")
+routes
+	.route("/rewards/redeem")
 	.get(async (req, res) => {
 		if (req.session.user) res.render("redeemed");
 		else res.redirect("/login");
