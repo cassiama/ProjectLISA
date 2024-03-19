@@ -273,8 +273,9 @@ routes
 				os,
 				phoneSys
 			} = user;
-			const deviceGoals = user.devices[0].deviceGoals;
-			const currentGoal = deviceGoals[0];
+			const currDeviceName = user.devices[0] ? user.devices[0].deviceName : '';
+			const deviceGoals = user.devices[0] ? user.devices[0].deviceGoals : [];
+			const currentGoal = deviceGoals ? deviceGoals[0] : '';
 			const devices =
 				user.devices.length > 0
 					? user.devices.map((dev) => dev._id)
@@ -287,6 +288,7 @@ routes
 				devices: devices,
 				deviceGoals: deviceGoals,
 				currentDevice: devices[0],
+				currentDeviceName: currDeviceName,
 				currentGoal: currentGoal,
 				ageInput: age, 
 				occupation: occupation,
@@ -702,7 +704,7 @@ routes
 			return;
 		}
 		try {
-			const { _id: deviceId, deviceGoals } = await registerDevice(
+			const { _id: deviceId, deviceGoals, deviceName } = await registerDevice(
 				xss(req.session.user.id),
 				xss(serialNum),
 				xss(devName),
@@ -711,11 +713,12 @@ routes
 
 			// Add the new device information to the logged user.
 			req.session.user.devices.push(deviceId.toString());
-			req.session.user.numberDevices = req.session.user.numberDevices
+			req.session.user.numberDevices = req.session.user.numberDevices > 0
 				? req.session.user.numberDevices + 1 
 				: 1;
 			req.session.user.deviceGoals = deviceGoals;
 			req.session.user.currentDevice = deviceId.toString();
+			req.session.user.currentDeviceName = deviceName;
 			req.session.user.currentGoal = devGoals[0];
 
 			// Redirect to the user's profile page.
@@ -786,7 +789,36 @@ routes
 	.route("/dashboard")
 	.get(async (req, res) => {
 		if (req.session.user) {
-			const { id: userId, firstName, devices: devIds, currentDevice, currentGoal } = req.session.user;
+			const {
+				id: userId,
+				firstName,
+				devices: devIds,
+				currentDevice,
+				currentDeviceName: currDeviceName,
+				currentGoal
+			} = req.session.user;
+
+			// for now, the percentage of carbon footprint reduction is random
+			let percentage = Math.trunc(Math.random() * 100);
+			let progressMessage = '';
+			if (currentGoal) {
+				if (percentage >= 25 && percentage < 50) progressMessage = "Nice work!";
+				else if (percentage >= 50 && percentage < 75) progressMessage = "Great job! Keep going!";
+				else if (percentage >= 75 && percentage !== 100) progressMessage = "You're so close!";
+				else progressMessage = "You did it!";
+			}
+
+			// if the user doesn't have any devices registered, render the page accordingly
+			if (devIds.length === 0) {
+				res.render("dashboard", {
+					firstName: firstName,
+					deviceGoals: ["No goals available"],
+					currentGoal: "N/A",
+					percentage: percentage,
+					progressMessage: progressMessage
+				});
+				return;
+			}
 
 			// Get all of the device goals for the current device.
 			let deviceGoals = [];
@@ -800,27 +832,36 @@ routes
 				}
 				
 				// console.log(deviceGoals);
-				console.log(currentGoal);
+				console.log(`Current Goal: ${currentGoal}`);
 			} catch (e) {
 				res.render("dashboard", {
 					firstName: firstName,
 					deviceGoals: ["No goals available"],
-					currentGoal: "Recharge before device reaches 20%",
+					currentGoal: "N/A",
 					error: true,
 					message: "Internal Server Error",
+					percentage: percentage,
+					progressMessage: progressMessage
 				});
+				return;
 			}
+
+			// TODO: for remaining hardcoding removal, stats for carbon emissions must be generated
+			// TODO: also make sure to include those stats for the renders below
 
 			// Render dashboard page
 			deviceGoals = deviceGoals.filter(goal => goal !== currentGoal);
 			console.log(deviceGoals);
 			res.render('dashboard', {
 				firstName: firstName,
+				deviceName: currDeviceName,
 				devices: devices,
-				currentDevice: currentDevice,
 				currentGoal: currentGoal,
-				deviceGoals: deviceGoals
+				deviceGoals: deviceGoals,
+				percentage: percentage,
+				progressMessage: progressMessage
 			});
+			return;
 		} else res.redirect("/login");
 	})
 	.post(async (req, res) => {
@@ -829,9 +870,37 @@ routes
 			console.log(req.body);
 			let newGoal = req.body.goals;
 			console.log(newGoal);
-			req.session.user.currentGoal = newGoal;
-			const { id: userId, firstName, devices: devIds, currentDevice, currentGoal } = req.session.user;
+
+			const {
+				id: userId,
+				firstName,
+				devices: devIds,
+				currentDevice,
+				currentDeviceName: currDeviceName,
+			} = req.session.user;
 			console.log(req.session.user);
+
+			// for now, the percentage of carbon footprint reduction is random
+			let percentage = Math.trunc(Math.random() * 100);
+			let progressMessage = '';
+			if (percentage >= 25 && percentage < 50) progressMessage = "Nice work!";
+			else if (percentage >= 50 && percentage < 75) progressMessage = "Great job! Keep going!";
+			else if (percentage >= 75 && percentage !== 100) progressMessage = "You're so close!";
+			else progressMessage = "You did it!";
+
+			// if the user doesn't have any devices registered, render the page accordingly
+			if (!currentDevice) {
+				res.render("dashboard", {
+					firstName: firstName,
+					deviceGoals: ["No goals available"],
+					currentGoal: "N/A",
+					percentage: percentage,
+					progressMessage: progressMessage
+				});
+				return;
+			}
+
+			req.session.user.currentGoal = newGoal;
 
 			// Get every goal associated with the current device
 			let allDeviceGoals = [];
@@ -846,19 +915,18 @@ routes
 			// const currentGoal = req.session.user.currentGoal ?? 'N/A';
 
 			// get every goal except the current goal
-			const deviceGoals = (req.session.user.currentGoal) ?
-				allDeviceGoals.filter(goal => goal !== currentGoal) :
-				[...allDeviceGoals];
-
+			const deviceGoals = allDeviceGoals.filter(goal => goal !== newGoal);
 			console.log(deviceGoals);
 
 			// re-render the page with the new other goals
 			res.render('dashboard', {
 				firstName: firstName,
+				deviceName: currDeviceName,
 				devices: devices,
-				currentDevice: currentDevice,
-				currentGoal: currentGoal,
-				deviceGoals: deviceGoals
+				currentGoal: newGoal,
+				deviceGoals: deviceGoals,
+				percentage: percentage,
+				progressMessage: progressMessage
 			});
 		}
 		// update current device
@@ -874,22 +942,40 @@ routes
 				deviceGoals
 			} = req.session.user;
 
+			// for now, the percentage of carbon footprint reduction is random
+			let percentage = Math.trunc(Math.random() * 100);
+			let progressMessage = '';
+			if (percentage >= 25 && percentage < 50) progressMessage = "Nice work!";
+			else if (percentage >= 50 && percentage < 75) progressMessage = "Great job! Keep going!";
+			else if (percentage >= 75 && percentage !== 100) progressMessage = "You're so close!";
+			else progressMessage = "You did it!";
+
 			// if the user selected the same device, then do nothing
 			if (currentDevId == newDevId) {
 				console.log(deviceGoals);
 				console.log(currentGoal);
+				let currentDevice = await getDevice(userId, currentDevId);
+				let currDeviceName = currentDevice.deviceName;
 				let devices = [];
-				for (let devId of devIds) devices.push(await getDevice(userId, devId));
+				devices.push(currentDevice);
+				for (let devId of devIds) {
+					if (currentDevId == devId) continue;
+					devices.push(await getDevice(userId, devId));
+				}
 				let otherGoals = deviceGoals.filter((goal) => goal !== currentGoal);
 				res.render('dashboard', {
 					firstName: firstName,
+					deviceName: currDeviceName,
 					devices: devices,
 					currentDevice: currentDevId,
 					currentGoal: currentGoal,
-					deviceGoals: otherGoals
+					deviceGoals: otherGoals,
+					percentage: percentage,
+					progressMessage: progressMessage
 				});
 			} else {
 				let newDevice = await getDevice(userId, newDevId);
+				let newDeviceName = newDevice.deviceName;
 				let devices = [];
 				devices.push(newDevice);
 				for (let devId of devIds) { 
@@ -900,16 +986,20 @@ routes
 				console.log(newDevice);
 		
 				req.session.user.currentDevice = newDevId;
+				req.session.user.currentDeviceName = newDeviceName;
 				req.session.user.currentGoal = newGoals[0];
 				req.session.user.deviceGoals = newGoals.slice(1);
+
 				// re-render the page with the info from the new current device
 				console.log(req.session.user);
 				res.render('dashboard', {
 					firstName: firstName,
+					deviceName: newDeviceName,
 					devices: devices,
-					currentDevice: newDevId,
 					currentGoal: newGoals[0],
-					deviceGoals: newGoals.slice(1)
+					deviceGoals: newGoals.slice(1),
+					percentage: percentage,
+					progressMessage: progressMessage
 				});
 			}
 		}
