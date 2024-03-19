@@ -5,42 +5,42 @@
         
         <label for="email">Email:</label>
         <br>
-        <input type="email" id="email" name="email" required>
+        <input type="email" id="email" name="email" required class="register-input">
         <br/>
         <br>
         <label for="firstName">First Name:</label>
         <br>
-        <input type="text" id="firstName" name="firstName" required>
+        <input type="text" id="firstName" name="firstName" required class="register-input">
         <br/>
         <br>
         <label for="lastName">Last Name:</label>
         <br>
-        <input type="text" id="lastName" name="lastName" required>
+        <input type="text" id="lastName" name="lastName" required class="register-input">
         <br/>
         <br>
         <label for="ageInput">Age:</label>
         <br>
-        <input type="number" id="ageInput" name="ageInput">
+        <input type="number" id="ageInput" name="ageInput" class="register-input">
         <br/>
         <br>
         <label for="occupation">Occupation:</label>
         <br>
-        <input type="text" id="occupation" name="occupation">
+        <input type="text" id="occupation" name="occupation" class="register-input">
         <br/>
         <br>
         <label for="numberDevices">Number of devices owned:</label>
         <br>
-        <input type="text" id="numberDevices" name="numberDevices">
+        <input type="text" id="numberDevices" name="numberDevices" class="register-input">
         <br/>
         <br>
         <label for="password">Password (must have at least 8 characters, 1 special character, 1 number, and 1 capital letter):</label>
         <br>
-        <input type="password" id="password" name="password" required>
+        <input type="password" id="password" name="password" required class="register-input">
         <br/>
         <br>
         <label for="confirmPassword">Confirm Password:</label>
         <br>
-        <input type="password" id="confirmPassword" name="confirmPassword" required>
+        <input type="password" id="confirmPassword" name="confirmPassword" required class="register-input">
         <br/>
         <br>
         <p>Please select your geographical location:</p>
@@ -78,9 +78,10 @@
         {{/if}}
 
         <br>     
-
+        <div id="register-text">
         <button type="submit" class="button">Submit</button>
         <p>Already a user? <a href="/login" id="link">Sign in here!</a></p>
+        </div>
         </div>
     </form>
 </main>
