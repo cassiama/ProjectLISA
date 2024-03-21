@@ -1,3 +1,4 @@
+<main>
 <div>
     <h1>Redeem Rewards</h1>
     <h3>See what rewards you can get!</h3>
@@ -13,40 +14,36 @@
                 <h4>A $10 Donation to fight against Climate Change</h4>
                 <progress value={{{this.points}}} max="100"></progress>
                 <h5>100 Points</h5>
-                <button type="submit" href="/rewards/redeem" id="link">Redeem</a>
-                <input type="hidden" name="points" value="100">
+                <button type="submit" onclick="submitForm()" class="link">Redeem</a>
+                <input type="hidden" name="points">
             </div>
             <div class="donate">
                 <h4>A $20 Donation to fight against Climate Change</h4>
                 <progress value={{{this.points}}} max="200"></progress>
                 <h5>200 Points</h5>
-                <button type="submit" href="/rewards/redeem" id="link">Redeem</a>
-                <input type="hidden" name="points" value="200">
-
+                <button type="submit" onclick="submitForm()" class="link">Redeem</a>
+                <input type="hidden" name="points">
             </div>
             <div class="carbon offset">
                 <h4>Earn a Carbon Offset Credit For Your Device</h4>
                 <progress value={{{this.points}}} max="350"></progress>
                 <h5>350 Points</h5>
-                <button type="submit" href="/rewards/redeem" id="link">Redeem</a>
-                <input type="hidden" name="points" value="350">
-
+                <button type="submit" onclick="submitForm()" class="link">Redeem</a>
+                <input type="hidden" name="points">
             </div>
             <div class="lenovo">
                 <h4>$50 Towards Any Lenovo Product</h4>
                 <progress value={{{this.points}}} max="500"></progress>
                 <h5>500 Points</h5>
-                <button type="submit" href="/rewards/redeem" id="link">Redeem</a>
-                <input type="hidden" name="points" value="500">
-
+                <button type="submit" onclick="submitForm()" class="link">Redeem</a>
+                <input type="hidden" name="points">
             </div>
-              <div class="lenovo">
+            <div class="lenovo">
                 <h4>$100 Towards Any Lenovo Product</h4>
-                <progress value={{{this.poin}}} max="1000"></progress>
+                <progress value={{{this.points}}} max="1000"></progress>
                 <h5>1000 Points</h5>
-                <button type="submit" href="/rewards/redeem" id="link">Redeem</a>
-                <input type="hidden" name="points" value="1000">
-
+                <button type="submit" onclick="submitForm()" class="link">Redeem</a>
+                <input type="hidden" name="points">
             </div>
         </form>
     </div>
@@ -65,3 +62,27 @@
 </br>
 </br>
 </div>
+<script>
+    var redeemValue = '';
+    async function redeemClickListener(e) {
+        e.preventDefault();
+        console.log(e);
+        let parentElem = e.target.parentElement;
+        let progressValue = parentElem.getElementsByTagName("progress").item(0).getAttribute("max");
+        redeemValue = progressValue;
+    }
+    function addClickListeners(evt) {
+        // add click event listeners to the button elements
+        var buttons = document.querySelectorAll("button");
+        for (let button of buttons) {
+            button.addEventListener("mousedown", redeemClickListener);
+        }
+    }
+    window.addEventListener("load", addClickListeners);
+    function submitForm() {
+        let pointsElem = document.querySelector("input[name='points']");
+        pointsElem.setAttribute("value", redeemValue);
+        document.getElementById("rewards-form").submit();
+    }
+</script>
+</main>
