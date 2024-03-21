@@ -320,26 +320,32 @@ export const addPoints = async (userId, rewardPoints) => {
 };
 
 export const getTips = async () => {
-	// array of tips as a string
-	let tipArray = [
-		"Ask suppliers to email you a receipt instead of printing it out",
-		"Use natural light during the day instead of overhead lighting or lamps",
-		"Organize carpool to work/events",
-		"Tip 4",
-		"Tip 5",
-		"Tip 6",
-		"Tip 7",
-		"Tip 8",
-		"Tip 9",
-		"Tip 10",
-	];
-	let randomTips = [];
-	// randomizes through the array and generates an array of 3 tips
-	for (let i = 0; i < 3; i++) {
-		let randomIndex = Math.floor(Math.random() * tipArray.length);
-		randomTips.push(tipArray[randomIndex]);
-		tipArray.splice(randomIndex, 1);
-	}
-	// returns the array of 3 tips
-	return randomTips;
+    // array of tips as a string
+    let tipArray = [
+        "Ask suppliers to email you a receipt instead of printing it out",
+        "Use natural light during the day instead of overhead lighting or lamps",
+        "Organize carpool to work/events",
+        "Follow scheduled maintenance for vehicles",
+        "Switch to LED lighting",
+        "Unplug large electronics when not in use",
+        "Turn off your car when parked or in a gridlocked traffic jam",
+        "Change the air filter in your air conditioning unit",
+        "Keep the coils in the back of your refrigerator clean",
+        "Consider travel alternatives to flying",
+    ];
+    let randomTips = [];
+    // randomizes through the array and generates an array of 3 tips
+    for (let i = 0; i < 3; i++) {
+        let randomIndex = Math.floor(Math.random() * tipArray.length);
+        randomTips.push(tipArray[randomIndex]);
+        tipArray.splice(randomIndex, 1);
+    }
+    // returns the array of 3 tips
+    return randomTips;
+};
+
+export const getTopUsers = async () => {
+	const userCollection = await users();
+	const topUsers = await userCollection.find({}).sort({points: -1}).toArray();
+	return topUsers;
 };

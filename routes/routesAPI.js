@@ -12,8 +12,10 @@ import {
 	updateUser,
 	checkUser,
 	getAllUsers,
+	getTopUsers,
 	getUserById,
 	addPoints,
+	getTips,
 	getTotalPoints,
 	subtractPoints,
 } from "../data/users.js";
@@ -826,6 +828,7 @@ routes
 					firstName: firstName,
 					deviceGoals: ["No goals available"],
 					currentGoal: "N/A",
+					tips: await getTips(),
 					percentage: percentage,
 					progressMessage: progressMessage
 				});
@@ -850,6 +853,7 @@ routes
 					firstName: firstName,
 					deviceGoals: ["No goals available"],
 					currentGoal: "N/A",
+					tips: await getTips(),
 					error: true,
 					message: "Internal Server Error",
 					percentage: percentage,
@@ -870,6 +874,7 @@ routes
 				devices: devices,
 				currentGoal: currentGoal,
 				deviceGoals: deviceGoals,
+				tips: await getTips(),
 				percentage: percentage,
 				progressMessage: progressMessage
 			});
@@ -906,6 +911,7 @@ routes
 					firstName: firstName,
 					deviceGoals: ["No goals available"],
 					currentGoal: "N/A",
+					tips: await getTips(),
 					percentage: percentage,
 					progressMessage: progressMessage
 				});
@@ -937,6 +943,7 @@ routes
 				devices: devices,
 				currentGoal: newGoal,
 				deviceGoals: deviceGoals,
+				tips: await getTips(),
 				percentage: percentage,
 				progressMessage: progressMessage
 			});
@@ -981,6 +988,7 @@ routes
 					devices: devices,
 					currentDevice: currentDevId,
 					currentGoal: currentGoal,
+					tips: await getTips(),
 					deviceGoals: otherGoals,
 					percentage: percentage,
 					progressMessage: progressMessage
@@ -1010,6 +1018,7 @@ routes
 					devices: devices,
 					currentGoal: newGoals[0],
 					deviceGoals: newGoals.slice(1),
+					tips: await getTips(),
 					percentage: percentage,
 					progressMessage: progressMessage
 				});
@@ -1022,9 +1031,9 @@ routes
 routes.route("/leaderboard").get(async (req, res) => {
 	let errors = [];
 	try {
-		const allUsers = await getAllUsers();
+		const topUsers = await getTopUsers();
 		res.render("leaderboard", {
-			users: allUsers,
+			users: topUsers,
 		});
 	} catch (e) {
 		errors.push("Internal Server Error");

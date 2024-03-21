@@ -82,10 +82,11 @@
             <br>
             <br>
                 <h3 class="dashboard-text">Sustainability Tips</h3>
-                <ul class="dashboard-text"> 
-                  <li class="dashboard-text">Ask suppliers to email you a receipt instead of printing</li>
-                  <li class="dashboard-text">Use natural light during the day instead of overhead lights or lamps</li>
-                  <li class="dashboard-text">Organize carpools to work, sports, events, and other activities</li>
+                <ul class="dashboard-text">
+                    {{#each this.tips}}
+                        <li>{{this}}</li>
+                        <br />
+                    {{/each}}
                 </ul>
         </div>
     </div>
