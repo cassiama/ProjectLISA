@@ -1,6 +1,11 @@
-<h1>Help Page</h1>
-<h2 class = "FAQs">FAQs</h2>
-    <p></p>
+<div class="help-container">
+<h1 class="title">Help Page</h1>
+<div class ="row">
+  <div class="column">
+<h2 class = "FAQs faqs-text ">FAQs</h2>
+    <br>
+  </div>
+    <div class="column">
 <h2 class="helpTicket">Submit a Help Ticket</h2>
   <form method="POST" id="help-form" class="column">
     <br>
@@ -23,7 +28,7 @@
         type="text"
         name="issue"
         id="issue"  
-        placeholder="Describe issue"
+        placeholder="Describe your issue here!"
       required></textarea>
     </label>
     <br>
@@ -35,7 +40,9 @@
     <br>     
     <button type="submit" class="btn button">Submit</button>
   </form>
-
+  </div>
+</div>
   </br>
   </br>
     <a href="/dashboard" class="button">Back to Dashboard</a>
+</div>

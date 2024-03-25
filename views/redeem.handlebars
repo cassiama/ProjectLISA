@@ -1,6 +1,6 @@
 <main>
 <div>
-    <h1>Redeem Rewards</h1>
+    <h1 class="title">Redeem Rewards</h1>
     <h3>See what rewards you can get!</h3>
     <h3>Points: {{this.points}}</h3>
      <div class="redeem"> {{!--this is just random --}}
@@ -9,6 +9,7 @@
                 <td>{{this.points}}</td>
             </tr>
         {{/each}}
+        <div class="column">
         <form action="/rewards" method="POST" id="rewards-form">
             <div class="donate">
                 <h4>A $10 Donation to fight against Climate Change</h4>
@@ -31,6 +32,8 @@
                 <button type="submit" onclick="submitForm()" class="link">Redeem</a>
                 <input type="hidden" name="points">
             </div>
+            </div>
+            <div class="column">
             <div class="lenovo">
                 <h4>$50 Towards Any Lenovo Product</h4>
                 <progress value={{{this.points}}} max="500"></progress>
@@ -45,6 +48,10 @@
                 <button type="submit" onclick="submitForm()" class="link">Redeem</a>
                 <input type="hidden" name="points">
             </div>
+            <br>
+            <br>
+            <a href="/dashboard" class="button">Back to Dashboard</a>
+            </div>
         </form>
     </div>
     {{#if error}}
@@ -54,11 +61,6 @@
 
 </br>
 </br>
-
-<br>
-<br>
-<a href="/dashboard" class="button">Back to Dashboard</a>
-
 </br>
 </br>
 </div>

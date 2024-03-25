@@ -11,15 +11,27 @@ body {
   width: 290%;
   height: 575px;
   padding: 20px;
-  /* display: flex; */
+}
+.help-container {
+  background-color: rgba(238, 238, 238, 0.70);
+  width: 100%;
+  height: 575px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-radius: 10px;
+  padding-bottom: 50px;
+}
+.faq-text {
+  margin-left: 50px;
 }
 .facts-container {
   background-color: rgba(238, 238, 238, 0.70);
   width: fit-content;
-  height: 575px;
+  height: 500px;
   padding: 20px;
   margin: auto;
   border-radius: 15px;
+
 }
 .vertical-container {
   background: rgba(238, 238, 238, 0.70);
@@ -127,14 +139,14 @@ a:visited {
 .register-input {
   width: 40%;
 }
+td, th {
+  border: 2px solid black;
+  padding: 15px;
+  background-color: #FFFFFF;
+  text-align: center;
+}
 table {
   width: 100%;
-  background-color: #FFFFFF;
-  border: 1px solid;
-}
-td, th {
-  background-color: #FFFFFF;
-  border: 1px solid;
 }
 .facts-text {
   font-size: 30px;
