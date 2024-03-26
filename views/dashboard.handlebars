@@ -30,7 +30,6 @@
     <div id="fullsite">
     <button class="openbtn" onclick="openNav()">☰</button>
     <h1 id="dashboard-title">Hi, {{firstName}}!</h1>
-    <div class="center">
     <div class="row">
         <div class="column">
             <div class="left-box">
@@ -52,9 +51,11 @@
             </div>
             <br>
             <br>
+            <div class="other-goals">
             <h3 class="dashboard-text">{{firstName}}'s Other Goals:</h3>
+            <div class="form-align">
             <form action="/dashboard" method="POST" id="choose-goal-form" class="column">
-                <label for="goals" class="dashboard-text">Choose a goal to focus on</label>
+                <label for="goals"class="dashboard-text other-goals">Choose a goal to focus on!</label>
                 <br>
                 <br>
                 <select name="goals" id="goals">
@@ -67,18 +68,21 @@
                 <button type="submit" class="btn button">Submit</button>
                 <input type="hidden" name="type" value="goals">
             </form>
+            </div>
+            </div>
         </div>
         <div class="column">
             <div class="right-box">
                 <h3>Current Goal:</h3>
                 <p>{{this.currentGoal}}</p>
                 <progress value={{{percentage}}} max="100"> {{percentage}}% </progress>
-                <h4>{{progressMessage}}</h4>
+                <h5>{{progressMessage}}</h5>
                 <p>You have reduced your carbon footprint by {{percentage}}%</p>
                 <a href="/leaderboard" id="link">Check out the leaderboard</a>
             </div>
             <br>
             <br>
+            <div class="center">
                 <h3 class="dashboard-text">Sustainability Tips</h3>
                 <ul class="dashboard-text">
                     {{#each this.tips}}
@@ -86,8 +90,8 @@
                         <br />
                     {{/each}}
                 </ul>
+            </div>
         </div>
-    </div>
     </div>
     </div>
     <script>

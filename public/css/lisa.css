@@ -1,3 +1,4 @@
+/* general css */
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital@0;1&family=Poppins:wght@700&display=swap');
 body {
   background: linear-gradient(115deg, #E00849 0%, rgba(186, 0, 89, 0.73) 31.66%, rgba(153, 0, 183, 0.65) 62.83%, #6300C6 94.99%) fixed;
@@ -6,12 +7,18 @@ body {
 * {
   font-family: "Montserrat";
 }
+#link {
+  color: #096CD5;
+  font-weight: bold;
+}
+/* login page */
 .login-container {
   background-color: rgba(238, 238, 238, 0.70);
   width: 290%;
   height: 575px;
   padding: 20px;
 }
+/* help page */
 .help-container {
   background-color: rgba(238, 238, 238, 0.70);
   width: 100%;
@@ -24,6 +31,7 @@ body {
 .faq-text {
   margin-left: 50px;
 }
+/* facts page */
 .facts-container {
   background-color: rgba(238, 238, 238, 0.70);
   width: fit-content;
@@ -33,6 +41,7 @@ body {
   border-radius: 15px;
 
 }
+
 .vertical-container {
   background: rgba(238, 238, 238, 0.70);
   margin: auto;
@@ -40,10 +49,6 @@ body {
   width: fit-content;
   padding: 30px;
   border-radius: 30px;
-}
-#link {
-  color: #096CD5;
-  font-weight: bold;
 }
 .login-text {
   padding-left: 30px;
@@ -71,24 +76,36 @@ body {
 }
 .left-box {
   background: rgba(238, 238, 238, 0.70);
-  margin: auto;
+  margin: 0 auto;
   text-align: left;
   width: fit-content;
   padding: 20px;
+  height: 112%;
   border-radius: 30px;
 }
 .right-box {
   background: rgba(238, 238, 238, 0.70);
-  margin: auto;
+  margin: 0 auto;
   text-align: left;
-  width: 90%;
-  height: 215px;
+  width: fit-content;
+  height: 114%;
   padding: 20px;
   border-radius: 30px;
 }
 .center {
-  margin: auto;
-  width: 130%;
+  text-align: center;
+}
+.other-goals {
+  display:grid;
+  text-align: center;
+}
+.form-align {
+  padding-left: 140px;
+}
+ul {
+  display: table;
+  margin: 0 auto;
+  text-align: left;
 }
 .dashboard-text {
   color: #FFFFFF;
@@ -154,14 +171,17 @@ table {
 }
 .column {
     float: left;
-    width: 33%;
+    width: 48%;
     padding: 10px;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
   }
   
   /* Clear floats after the columns */
   .row:after {
     content: "";
-    display: table;
+    display: flex;
     clear: both;
   }
 
