@@ -10,6 +10,35 @@ import { ObjectId } from "mongodb";
 import bcrypt from "bcrypt";
 const saltRounds = 8;
 
+export const createLog = () => {
+	let battery = Math.floor(Math.random() * 101);
+	let screenTime = Math.floor(Math.random() * 86401);
+	let normal = Math.floor(Math.random() * 90);
+	let performance = Math.floor(Math.random() * (100 - normal));
+	let energySaver = 100 - normal - performance;
+	let downloaded = Math.floor(Math.random() * 1001);
+	let streamTime = Math.floor(Math.random() * screenTime);
+	let idleTime = Math.floor(Math.random() * (screenTime - streamTime));
+	let start1 = Math.floor(Math.random() * 100);
+	let end1 = Math.floor(Math.random() * (101 - start1)) + start1;
+	let lastCycle = {start: start1, end: end1};
+	let previousDeleted = Math.floor(Math.random() * (1000));
+	let currentDeleted = Math.floor(Math.random() * (1000));
+	let log = {
+		currentBattery: battery,
+		screenTime: screenTime,
+		normal: normal,
+		performance: performance,
+		energySaver: energySaver,
+		downloaded: downloaded,
+		streamTime: streamTime,
+		idleTime: idleTime,
+		lastCycle: lastCycle,
+		previousDeleted: previousDeleted,
+		currentDeleted: currentDeleted};
+	return log;
+};
+
 export const registerUser = async (firstName, lastName, email, password, ageInput, occupation, geography, numberDevices, os, phoneSys) => {
 	if (!firstName || !lastName || !email || !password || !ageInput || !occupation || !geography || !numberDevices || !os || !phoneSys) {
 		console.log("Missing input fields:", { firstName, lastName, email, password, ageInput, occupation, geography, numberDevices, os, phoneSys });
@@ -24,6 +53,8 @@ export const registerUser = async (firstName, lastName, email, password, ageInpu
 		throw `emailAddress already exists (createUser)`;
 	}
 	const hashed = await bcrypt.hash(password, saltRounds);
+	let log = createLog();
+
 	let newUser = {
 		firstName: firstName,
 		lastName: lastName,
@@ -37,6 +68,7 @@ export const registerUser = async (firstName, lastName, email, password, ageInpu
 		numberDevices: numberDevices,
 		os: os,
 		phoneSys: phoneSys,
+		log: log
 	};
 	const userCollection = await users();
 	const newInsertInformation = await userCollection.insertOne(newUser);
@@ -61,6 +93,33 @@ export const emailAlreadyExists = async (email) => {
 	}
 };
 
+export const updateLog = async (userId) => {
+	if (!userId) {
+		throw "Error: User ID must be provided";
+	}
+	userId = checkId(userId);
+
+	const userCollection = await users();
+	const user = await userCollection.findOne({ _id: new ObjectId(userId) });
+
+	if (!user) {
+		throw "Error: User not found";
+	}
+
+	const log = createLog();
+
+	const updateResult = await userCollection.updateOne(
+		{ _id: new ObjectId(userId) },
+		{ $set: { log: log } }
+	);
+
+	if (updateResult.modifiedCount === 0) {
+		throw "Error: Log update failed";
+	}
+
+	return log;
+};
+
 export const checkUser = async (email, password) => {
 	if (!email || !password) {
 		throw "All input fields must be provided";
@@ -71,15 +130,26 @@ export const checkUser = async (email, password) => {
 
 	const userCollection = await users();
 
-	const user = await userCollection.findOne({ email: email });
-	let validPassword = await bcrypt.compare(password, user.password);
+	const user1 = await userCollection.findOne({ email: email });
+	let validPassword = await bcrypt.compare(password, user1.password);
 	if (validPassword) {
-		let firstName = user.firstName;
-		let lastName = user.lastName;
-		let emailAddress = user.email;
-		let _id = user._id.toString();
-		let devices = user.devices;
-		return { _id, firstName, lastName, emailAddress, devices };
+		const log = createLog();
+		const updateResult = await userCollection.updateOne(
+			{ _id: user1._id },
+			{ $set: { log: log } }
+		);
+		if (updateResult.modifiedCount === 0) {
+			throw "Error: Log update failed";
+		} else {
+			const user = await userCollection.findOne({ email: email });
+			let firstName = user.firstName;
+			let lastName = user.lastName;
+			let emailAddress = user.email;
+			let _id = user._id.toString();
+			let devices = user.devices;
+			let log = user.log;
+			return { _id, firstName, lastName, emailAddress, devices, log};
+		}
 	} else {
 		throw "Either the email address or password is invalid";
 	}
@@ -129,7 +199,7 @@ export const updateUser = async (id, firstName, lastName, email, password, ageIn
 		numberDevices: numberDevices ? numberDevices : oldUser.numberDevices,
 		os: os ? os : oldUser.os,
 		phoneSys: phoneSys ? phoneSys : oldUser.phoneSys,
-
+		log: oldUser.log
 	};
 
 	const userCollection = await users();
