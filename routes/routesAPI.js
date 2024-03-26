@@ -26,6 +26,7 @@ import {
 	removeDevice,
 } from "../data/devices.js";
 import { allGoals } from "../utils/goals.js";
+import { getEmissionsFacts } from "../utils/emissionsFacts.js";
 const routes = Router();
 
 routes.get("/", (req, res) => {
@@ -830,7 +831,8 @@ routes
 					currentGoal: "N/A",
 					tips: await getTips(),
 					percentage: percentage,
-					progressMessage: progressMessage
+					progressMessage: progressMessage,
+					emissionsFacts: await getEmissionsFacts()
 				});
 				return;
 			}
@@ -857,13 +859,11 @@ routes
 					error: true,
 					message: "Internal Server Error",
 					percentage: percentage,
-					progressMessage: progressMessage
+					progressMessage: progressMessage,
+					emissionsFacts: await getEmissionsFacts()
 				});
 				return;
 			}
-
-			// TODO: for remaining hardcoding removal, stats for carbon emissions must be generated
-			// TODO: also make sure to include those stats for the renders below
 
 			// Render dashboard page
 			deviceGoals = deviceGoals.filter(goal => goal !== currentGoal);
@@ -876,7 +876,8 @@ routes
 				deviceGoals: deviceGoals,
 				tips: await getTips(),
 				percentage: percentage,
-				progressMessage: progressMessage
+				progressMessage: progressMessage,
+				emissionsFacts: await getEmissionsFacts()
 			});
 			return;
 		} else res.redirect("/login");
@@ -913,7 +914,8 @@ routes
 					currentGoal: "N/A",
 					tips: await getTips(),
 					percentage: percentage,
-					progressMessage: progressMessage
+					progressMessage: progressMessage,
+					emissionsFacts: await getEmissionsFacts()
 				});
 				return;
 			}
@@ -945,7 +947,8 @@ routes
 				deviceGoals: deviceGoals,
 				tips: await getTips(),
 				percentage: percentage,
-				progressMessage: progressMessage
+				progressMessage: progressMessage,
+				emissionsFacts: await getEmissionsFacts()
 			});
 		}
 		// update current device
@@ -991,7 +994,8 @@ routes
 					tips: await getTips(),
 					deviceGoals: otherGoals,
 					percentage: percentage,
-					progressMessage: progressMessage
+					progressMessage: progressMessage,
+					emissionsFacts: await getEmissionsFacts()
 				});
 			} else {
 				let newDevice = await getDevice(userId, newDevId);
@@ -1020,7 +1024,8 @@ routes
 					deviceGoals: newGoals.slice(1),
 					tips: await getTips(),
 					percentage: percentage,
-					progressMessage: progressMessage
+					progressMessage: progressMessage,
+					emissionsFacts: await getEmissionsFacts()
 				});
 			}
 		}

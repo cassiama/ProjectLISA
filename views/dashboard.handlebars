@@ -41,14 +41,12 @@
             {{/if}}
             <h5>Carbon Emissions Saved By:</h5>
                     <ul>
-                        <li>Charging Less Often</li>
+                        {{#each this.emissionsFacts}}
+                        <li>{{this.action}}</li>
                         <ul>
-                            <li>Equivalent to charging 1,293 smartphones</li>
+                            <li>{{this.stats}}</li>
                         </ul>
-                        <li>Lessening Time Spent on Device Per Week</li>
-                        <ul>
-                            <li>Equivalent to driving 27 miles</li>
-                        </ul>
+                        {{/each}}
                     </ul>
                     <a href="/facts" id="link">Learn More</a>
             </div>
