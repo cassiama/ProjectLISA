@@ -41,15 +41,19 @@
         placeholder="Describe your issue here!"
       required></textarea>
     </label>
+    <br>  
     <br>
+    <button type="submit" class="btn button" href="/help">Submit</button>
+  </form>
     <br>
 
     {{#if error}}
       <p class="error">{{message}}</p>
     {{/if}}
-    <br>     
-    <button type="submit" class="btn button">Submit</button>
-  </form>
+    {{#if success}}
+      <p class="success">{{message}}</p>
+    {{/if}}
+    <br>  
   </div>
 </div>
   </br>

@@ -194,12 +194,12 @@ routes
 				firstName: user.firstName,
 				lastName: user.lastName,
 				email: user.email,
-				ageInput: user.ageInput, 
+				ageInput: user.ageInput,
 				occupation: user.occupation,
-				geography: user.geography, 
-				numberDevices: user.numberDevices, 
-				os: user.os, 
-				phoneSys: user.phoneSys
+				geography: user.geography,
+				numberDevices: user.numberDevices,
+				os: user.os,
+				phoneSys: user.phoneSys,
 			};
 			console.log(req.session.user);
 			res.redirect("/account");
@@ -226,8 +226,7 @@ routes
 		let email = req.body.email;
 		let password = req.body.password;
 
-		if (typeof email === "undefined")
-			errors.push("No email provided.");
+		if (typeof email === "undefined") errors.push("No email provided.");
 		else if (typeof password === "undefined")
 			errors.push("No password provided.");
 
@@ -276,11 +275,15 @@ routes
 				geography,
 				numberDevices,
 				os,
-				phoneSys
+				phoneSys,
 			} = user;
-			const currDeviceName = user.devices[0] ? user.devices[0].deviceName : '';
-			const deviceGoals = user.devices[0] ? user.devices[0].deviceGoals : [];
-			const currentGoal = deviceGoals ? deviceGoals[0] : '';
+			const currDeviceName = user.devices[0]
+				? user.devices[0].deviceName
+				: "";
+			const deviceGoals = user.devices[0]
+				? user.devices[0].deviceGoals
+				: [];
+			const currentGoal = deviceGoals ? deviceGoals[0] : "";
 			const devices =
 				user.devices.length > 0
 					? user.devices.map((dev) => dev._id)
@@ -295,12 +298,12 @@ routes
 				currentDevice: devices[0],
 				currentDeviceName: currDeviceName,
 				currentGoal: currentGoal,
-				ageInput: age, 
+				ageInput: age,
 				occupation: occupation,
-				geography: geography, 
-				numberDevices: numberDevices, 
-				os: os, 
-				phoneSys: phoneSys
+				geography: geography,
+				numberDevices: numberDevices,
+				os: os,
+				phoneSys: phoneSys,
 			};
 			// console.log(req.session);
 			// console.log(user);
@@ -323,57 +326,55 @@ routes.get("/logout", async (req, res) => {
 	req.session.destroy();
 });
 
-routes
-	.route("/account")
-	.get(async (req, res) => {
-		if (!req.session.user) res.redirect("/login");
-		else {
-			console.log(req.session.user);
-			let errors = [];
-			const {
-				id: userId,
-				firstName,
-				lastName,
-				email,
-				devices: deviceIds,
-			} = req.session.user;
-			// console.log(userId, firstName, lastName, email, deviceIds);
-			let devices = [];
-			try {
-				for (let devId of deviceIds) {
-					// console.log(devId);
-					let device = await getDevice(userId, devId);
-					// console.log(device);
-					devices.push(device);
-				}
-				// console.log(devices);
-			} catch (e) {
-				errors.push("Internal Server Error");
-				res.status(500).render("profile", {
-					firstName: firstName,
-					lastName: lastName,
-					email: email,
-					devices: devices,
-					error: true,
-					message: errors[0],
-				});
-				return;
+routes.route("/account").get(async (req, res) => {
+	if (!req.session.user) res.redirect("/login");
+	else {
+		console.log(req.session.user);
+		let errors = [];
+		const {
+			id: userId,
+			firstName,
+			lastName,
+			email,
+			devices: deviceIds,
+		} = req.session.user;
+		// console.log(userId, firstName, lastName, email, deviceIds);
+		let devices = [];
+		try {
+			for (let devId of deviceIds) {
+				// console.log(devId);
+				let device = await getDevice(userId, devId);
+				// console.log(device);
+				devices.push(device);
 			}
-
-			res.render("profile", {
+			// console.log(devices);
+		} catch (e) {
+			errors.push("Internal Server Error");
+			res.status(500).render("profile", {
 				firstName: firstName,
 				lastName: lastName,
 				email: email,
 				devices: devices,
+				error: true,
+				message: errors[0],
 			});
+			return;
 		}
-	});
+
+		res.render("profile", {
+			firstName: firstName,
+			lastName: lastName,
+			email: email,
+			devices: devices,
+		});
+	}
+});
 
 routes
-	.route('/editProfile')
+	.route("/editProfile")
 	.get(async (req, res) => {
-		if (req.session.user) res.render('editProfile');
-		else res.redirect('/login');
+		if (req.session.user) res.render("editProfile");
+		else res.redirect("/login");
 	})
 	.post(async (req, res) => {
 		let errors = [];
@@ -393,8 +394,7 @@ routes
 		// console.log(req.session.user);
 		// console.log(req.body.id);
 
-		if (typeof userId === "undefined")
-			errors.push("No user ID provided.");
+		if (typeof userId === "undefined") errors.push("No user ID provided.");
 		else if (typeof email === "undefined")
 			errors.push("No email provided.");
 		else if (typeof firstName === "undefined")
@@ -411,8 +411,7 @@ routes
 			errors.push("Number of devices not provided.");
 		else if (typeof geography === "undefined")
 			errors.push("No geography provided.");
-		else if (typeof os === "undefined")
-			errors.push("No OS provided.");
+		else if (typeof os === "undefined") errors.push("No OS provided.");
 		else if (typeof phoneSys === "undefined")
 			errors.push("No phone system provided.");
 
@@ -454,7 +453,7 @@ routes
 
 		let validPassword;
 		try {
-			if (password !== confirmPassword) throw 'Passwords do not match.';
+			if (password !== confirmPassword) throw "Passwords do not match.";
 			validPassword = checkPassword(password);
 		} catch (e) {
 			errors.push(e);
@@ -536,7 +535,7 @@ routes
 			errors.push(e);
 			res.status(400).render("editProfile", {
 				error: true,
-				message: errors[0]
+				message: errors[0],
 			});
 			return;
 		}
@@ -547,12 +546,12 @@ routes
 			firstName: updatedUser.firstName,
 			lastName: updatedUser.lastName,
 			email: updatedUser.email,
-			ageInput: updatedUser.ageInput, 
+			ageInput: updatedUser.ageInput,
 			occupation: updatedUser.occupation,
-			geography: updatedUser.geography, 
-			numberDevices: updatedUser.numberDevices, 
-			os: updatedUser.os, 
-			phoneSys: updatedUser.phoneSys
+			geography: updatedUser.geography,
+			numberDevices: updatedUser.numberDevices,
+			os: updatedUser.os,
+			phoneSys: updatedUser.phoneSys,
 		};
 		console.log(req.session.user);
 
@@ -666,16 +665,16 @@ routes
 	.get(async (req, res) => {
 		let id = req.session.user.id;
 		const totalPoints = await getTotalPoints(id); //user's total points currently
-		if (req.session.user) res.render("redeem", {points: totalPoints});
+		if (req.session.user) res.render("redeem", { points: totalPoints });
 		else res.redirect("/login");
 	})
 	.post(async (req, res) => {
 		let id = req.session.user.id;
 		const totalPoints = await getTotalPoints(id); //user's total points currently
-		let errors = []
+		let errors = [];
 		let rewardPoints = Number.parseInt(req.body.points); //rewardpoints = whats getting added or subtracted after clicking redeem
-		if (totalPoints < rewardPoints){
-			errors.push("Sorry! You do not enough points to redeem!")
+		if (totalPoints < rewardPoints) {
+			errors.push("Sorry! You do not enough points to redeem!");
 			res.status(400).render("redeem", {
 				points: totalPoints,
 				error: true,
@@ -684,16 +683,14 @@ routes
 			return;
 		}
 		await subtractPoints(id, rewardPoints);
-		res.redirect('/rewards/redeem');
+		res.redirect("/rewards/redeem");
 	});
 
-	// you redeemed your rewards
-routes
-	.route("/rewards/redeem")
-	.get(async (req, res) => {
-		if (req.session.user) res.render("redeemed");
-		else res.redirect("/login");
-	});
+// you redeemed your rewards
+routes.route("/rewards/redeem").get(async (req, res) => {
+	if (req.session.user) res.render("redeemed");
+	else res.redirect("/login");
+});
 
 routes
 	.route("/devices")
@@ -705,7 +702,7 @@ routes
 		let errors = [];
 		let serialNum = req.body.serialNumber;
 		let devName = req.body.deviceName;
-		let devGoals = Array.isArray(req.body.deviceGoals) 
+		let devGoals = Array.isArray(req.body.deviceGoals)
 			? req.body.deviceGoals
 			: [req.body.deviceGoals];
 		// console.log(req.body);
@@ -714,12 +711,16 @@ routes
 			res.status(400).render("registerDevice", {
 				error: true,
 				message: errors[0],
-				goals: allGoals
+				goals: allGoals,
 			});
 			return;
 		}
 		try {
-			const { _id: deviceId, deviceGoals, deviceName } = await registerDevice(
+			const {
+				_id: deviceId,
+				deviceGoals,
+				deviceName,
+			} = await registerDevice(
 				xss(req.session.user.id),
 				xss(serialNum),
 				xss(devName),
@@ -728,9 +729,10 @@ routes
 
 			// Add the new device information to the logged user.
 			req.session.user.devices.push(deviceId.toString());
-			req.session.user.numberDevices = req.session.user.numberDevices > 0
-				? req.session.user.numberDevices + 1 
-				: 1;
+			req.session.user.numberDevices =
+				req.session.user.numberDevices > 0
+					? req.session.user.numberDevices + 1
+					: 1;
 			req.session.user.deviceGoals = deviceGoals;
 			req.session.user.currentDevice = deviceId.toString();
 			req.session.user.currentDeviceName = deviceName;
@@ -765,39 +767,41 @@ routes //sustainable goals
 		res.render("goals");
 	});
 
-routes 
+routes
 	.route("/help")
+	// renders the help page
 	.get(async (req, res) => {
 		res.render("help");
 	})
 	.post(async (req, res) => {
-		let errors = [];
-		let email = req.body.email;
-		let issue = req.body.issue;
+		const { email, issue } = req.body;
 
-		if (typeof email === "undefined") {
-			errors.push("Enter Email!");
-			res.status(400).render("help", {
+		if (!email) {
+			return res.render("help", {
 				error: true,
-				message: errors[0],
+				message: "Enter Email!",
 			});
-			return;
 		}
 
-		if (typeof issue === "undefined" || issue.trim().length === 0) {
-			errors.push("Please describe your issue!");
-			res.status(400).render("help", {
+		if (!issue || issue.trim().length === 0) {
+			return res.render("help", {
 				error: true,
-				message: errors[0],
+				message: "Please describe your issue!",
 			});
-			return;
 		}
-		let validEmail;
-		try {
-			validEmail = checkEmail(email);
-		} catch (e) {
-			errors.push(e);
+
+		if (!checkEmail(email)) {
+			return res.render("help", {
+				error: true,
+				message: "Invalid email!",
+			});
 		}
+
+		// If everything is valid, render the page with a success message
+		return res.render("help", {
+			success: true,
+			message: "Your issue has been submitted successfully!",
+		});
 	});
 
 routes
@@ -810,16 +814,19 @@ routes
 				devices: devIds,
 				currentDevice,
 				currentDeviceName: currDeviceName,
-				currentGoal
+				currentGoal,
 			} = req.session.user;
 
 			// for now, the percentage of carbon footprint reduction is random
 			let percentage = Math.trunc(Math.random() * 100);
-			let progressMessage = '';
+			let progressMessage = "";
 			if (currentGoal) {
-				if (percentage >= 25 && percentage < 50) progressMessage = "Nice work!";
-				else if (percentage >= 50 && percentage < 75) progressMessage = "Great job! Keep going!";
-				else if (percentage >= 75 && percentage !== 100) progressMessage = "You're so close!";
+				if (percentage >= 25 && percentage < 50)
+					progressMessage = "Nice work!";
+				else if (percentage >= 50 && percentage < 75)
+					progressMessage = "Great job! Keep going!";
+				else if (percentage >= 75 && percentage !== 100)
+					progressMessage = "You're so close!";
 				else progressMessage = "You did it!";
 			}
 
@@ -832,7 +839,7 @@ routes
 					tips: await getTips(),
 					percentage: percentage,
 					progressMessage: progressMessage,
-					emissionsFacts: await getEmissionsFacts()
+					emissionsFacts: await getEmissionsFacts(),
 				});
 				return;
 			}
@@ -847,7 +854,7 @@ routes
 					if (currentDevice && currentDevice !== devId) continue;
 					else deviceGoals.push(...device.deviceGoals);
 				}
-				
+
 				// console.log(deviceGoals);
 				console.log(`Current Goal: ${currentGoal}`);
 			} catch (e) {
@@ -860,15 +867,15 @@ routes
 					message: "Internal Server Error",
 					percentage: percentage,
 					progressMessage: progressMessage,
-					emissionsFacts: await getEmissionsFacts()
+					emissionsFacts: await getEmissionsFacts(),
 				});
 				return;
 			}
 
 			// Render dashboard page
-			deviceGoals = deviceGoals.filter(goal => goal !== currentGoal);
+			deviceGoals = deviceGoals.filter((goal) => goal !== currentGoal);
 			console.log(deviceGoals);
-			res.render('dashboard', {
+			res.render("dashboard", {
 				firstName: firstName,
 				deviceName: currDeviceName,
 				devices: devices,
@@ -877,14 +884,14 @@ routes
 				tips: await getTips(),
 				percentage: percentage,
 				progressMessage: progressMessage,
-				emissionsFacts: await getEmissionsFacts()
+				emissionsFacts: await getEmissionsFacts(),
 			});
 			return;
 		} else res.redirect("/login");
 	})
 	.post(async (req, res) => {
 		// update current goal
-		if (req.body.type == 'goals') {
+		if (req.body.type == "goals") {
 			console.log(req.body);
 			let newGoal = req.body.goals;
 			console.log(newGoal);
@@ -900,10 +907,13 @@ routes
 
 			// for now, the percentage of carbon footprint reduction is random
 			let percentage = Math.trunc(Math.random() * 100);
-			let progressMessage = '';
-			if (percentage >= 25 && percentage < 50) progressMessage = "Nice work!";
-			else if (percentage >= 50 && percentage < 75) progressMessage = "Great job! Keep going!";
-			else if (percentage >= 75 && percentage !== 100) progressMessage = "You're so close!";
+			let progressMessage = "";
+			if (percentage >= 25 && percentage < 50)
+				progressMessage = "Nice work!";
+			else if (percentage >= 50 && percentage < 75)
+				progressMessage = "Great job! Keep going!";
+			else if (percentage >= 75 && percentage !== 100)
+				progressMessage = "You're so close!";
 			else progressMessage = "You did it!";
 
 			// if the user doesn't have any devices registered, render the page accordingly
@@ -915,7 +925,7 @@ routes
 					tips: await getTips(),
 					percentage: percentage,
 					progressMessage: progressMessage,
-					emissionsFacts: await getEmissionsFacts()
+					emissionsFacts: await getEmissionsFacts(),
 				});
 				return;
 			}
@@ -935,11 +945,13 @@ routes
 			// const currentGoal = req.session.user.currentGoal ?? 'N/A';
 
 			// get every goal except the current goal
-			const deviceGoals = allDeviceGoals.filter(goal => goal !== newGoal);
+			const deviceGoals = allDeviceGoals.filter(
+				(goal) => goal !== newGoal
+			);
 			console.log(deviceGoals);
 
 			// re-render the page with the new other goals
-			res.render('dashboard', {
+			res.render("dashboard", {
 				firstName: firstName,
 				deviceName: currDeviceName,
 				devices: devices,
@@ -948,11 +960,11 @@ routes
 				tips: await getTips(),
 				percentage: percentage,
 				progressMessage: progressMessage,
-				emissionsFacts: await getEmissionsFacts()
+				emissionsFacts: await getEmissionsFacts(),
 			});
 		}
 		// update current device
-		else if (req.body.type == 'devices') {
+		else if (req.body.type == "devices") {
 			console.log(req.body);
 			let newDevId = req.body.deviceId;
 			const {
@@ -961,15 +973,18 @@ routes
 				devices: devIds,
 				currentDevice: currentDevId,
 				currentGoal,
-				deviceGoals
+				deviceGoals,
 			} = req.session.user;
 
 			// for now, the percentage of carbon footprint reduction is random
 			let percentage = Math.trunc(Math.random() * 100);
-			let progressMessage = '';
-			if (percentage >= 25 && percentage < 50) progressMessage = "Nice work!";
-			else if (percentage >= 50 && percentage < 75) progressMessage = "Great job! Keep going!";
-			else if (percentage >= 75 && percentage !== 100) progressMessage = "You're so close!";
+			let progressMessage = "";
+			if (percentage >= 25 && percentage < 50)
+				progressMessage = "Nice work!";
+			else if (percentage >= 50 && percentage < 75)
+				progressMessage = "Great job! Keep going!";
+			else if (percentage >= 75 && percentage !== 100)
+				progressMessage = "You're so close!";
 			else progressMessage = "You did it!";
 
 			// if the user selected the same device, then do nothing
@@ -984,8 +999,10 @@ routes
 					if (currentDevId == devId) continue;
 					devices.push(await getDevice(userId, devId));
 				}
-				let otherGoals = deviceGoals.filter((goal) => goal !== currentGoal);
-				res.render('dashboard', {
+				let otherGoals = deviceGoals.filter(
+					(goal) => goal !== currentGoal
+				);
+				res.render("dashboard", {
 					firstName: firstName,
 					deviceName: currDeviceName,
 					devices: devices,
@@ -995,20 +1012,20 @@ routes
 					deviceGoals: otherGoals,
 					percentage: percentage,
 					progressMessage: progressMessage,
-					emissionsFacts: await getEmissionsFacts()
+					emissionsFacts: await getEmissionsFacts(),
 				});
 			} else {
 				let newDevice = await getDevice(userId, newDevId);
 				let newDeviceName = newDevice.deviceName;
 				let devices = [];
 				devices.push(newDevice);
-				for (let devId of devIds) { 
+				for (let devId of devIds) {
 					if (newDevice._id.toString() === devId) continue;
 					devices.push(await getDevice(userId, devId));
 				}
 				let newGoals = newDevice.deviceGoals;
 				console.log(newDevice);
-		
+
 				req.session.user.currentDevice = newDevId;
 				req.session.user.currentDeviceName = newDeviceName;
 				req.session.user.currentGoal = newGoals[0];
@@ -1016,7 +1033,7 @@ routes
 
 				// re-render the page with the info from the new current device
 				console.log(req.session.user);
-				res.render('dashboard', {
+				res.render("dashboard", {
 					firstName: firstName,
 					deviceName: newDeviceName,
 					devices: devices,
@@ -1025,12 +1042,11 @@ routes
 					tips: await getTips(),
 					percentage: percentage,
 					progressMessage: progressMessage,
-					emissionsFacts: await getEmissionsFacts()
+					emissionsFacts: await getEmissionsFacts(),
 				});
 			}
 		}
 	});
-
 
 // Finish the redeem portal
 routes.route("/leaderboard").get(async (req, res) => {
