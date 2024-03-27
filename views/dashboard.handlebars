@@ -7,15 +7,22 @@
     {{#if this.devices}}
     <form action="/dashboard" method="POST" id="choose-device-form">
         <ul>
+            <br>
             {{#each this.devices}}
-            <li id={{this._id}} onclick="submitForm();">{{this.deviceName}}</li>
+            <li id={{this._id}} onclick="submitForm();" class="link remove-dots">{{this.deviceName}}</li>
+            <br>
             {{/each}}
         </ul>
         <input type="hidden" name="type" value="devices">
         <input type="hidden" name="deviceId" value="">
     </form>
     {{/if}}
-    <a href="/devices" id="add" class="button">Add Device</a>
+    <br>
+    <br>
+    <a href="/devices" id="add" class="add-device-button"><div id="move-add-dev">Add Device</div></a>
+    <br>
+    <br>
+    <br>
     <br>
     <br>
     <br>
@@ -65,7 +72,7 @@
                 </select>
                 <br>
                 <br>
-                <button type="submit" class="btn button">Submit</button>
+                <button type="submit" class="btn goals-button">Submit</button>
                 <input type="hidden" name="type" value="goals">
             </form>
             </div>
