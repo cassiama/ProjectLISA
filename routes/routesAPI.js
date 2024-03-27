@@ -200,6 +200,7 @@ routes
 				numberDevices: user.numberDevices,
 				os: user.os,
 				phoneSys: user.phoneSys,
+				devices: [],
 			};
 			console.log(req.session.user);
 			res.redirect("/account");
