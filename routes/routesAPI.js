@@ -14,6 +14,7 @@ import {
 	getAllUsers,
 	getTopUsers,
 	getUserById,
+	getUserByEmail,
 	addPoints,
 	getTips,
 	getTotalPoints,
@@ -626,8 +627,23 @@ routes
 	})
 	.post(async (req, res) => {
 		// should send an email to req.body.emailAddress
-		res.redirect("/newpassword");
-	});
+        let errors = [];
+        let email = req.body.email;
+        let user;
+        try {
+            user = await getUserByEmail(email);
+        } catch (e) {
+            errors.push("User with that email does not exist");
+            console.log(errors);
+            res.status(400).render("forgetpassword", {
+                error: true,
+                message: errors[0],
+            });
+            return;
+        }
+        req.session.user = user;
+        res.redirect("/newpassword");
+    });
 
 routes
 	.route("/newpassword")
@@ -636,67 +652,68 @@ routes
 	})
 	.post(async (req, res) => {
 		// console.log(req.body);
-		let errors = [];
-		let newPassword = req.body.newPassword;
-		let newPasswordInput = req.body.newPasswordInput;
+        let errors = [];
+        let newPassword = req.body.newPassword;
+        let newPasswordInput = req.body.newPasswordInput;
 
-		if (
-			typeof newPassword === "undefined" ||
-			typeof newPasswordInput === "undefined"
-		) {
-			errors.push("New password must be provided.");
-			console.log(errors);
-			res.status(400).render("newpassword", {
-				error: true,
-				message: errors[0],
-			});
-			return;
-		}
+        if (
+            typeof newPassword === "undefined" ||
+            typeof newPasswordInput === "undefined"
+        ) {
+            errors.push("New password must be provided.");
+            console.log(errors);
+            res.status(400).render("newpassword", {
+                error: true,
+                message: errors[0],
+            });
+            return;
+        }
 
-		if (newPassword !== newPasswordInput) {
-			errors.push("Passwords do not match.");
-			console.log(errors);
-			res.status(400).render("newpassword", {
-				error: true,
-				message: errors[0],
-			});
-			return;
-		}
+        if (newPassword !== newPasswordInput) {
+            errors.push("Passwords do not match.");
+            console.log(errors);
+            res.status(400).render("newpassword", {
+                error: true,
+                message: errors[0],
+            });
+            return;
+        }
 
-		let validPassword;
-		try {
-			validPassword = checkPassword(newPassword);
-		} catch (e) {
-			errors.push(e);
-		}
+        let validPassword;
+        try {
+            validPassword = checkPassword(newPassword);
+        } catch (e) {
+            errors.push(e);
+        }
 
-		if (errors.length > 0) {
-			console.log(errors);
-			res.status(400).render("newpassword", {
-				error: true,
-				message: errors[0],
-			});
-			return;
-		}
+        if (errors.length > 0) {
+            console.log(errors);
+            res.status(400).render("newpassword", {
+                error: true,
+                message: errors[0],
+            });
+            return;
+        }
 
-		try {
-			await updateUser(
-				xss(req.session.user.id),
-				xss(req.session.user.firstName),
-				xss(req.session.user.lastName),
-				xss(req.session.user.email),
-				xss(validPassword)
-			);
-			res.redirect("/dashboard");
-		} catch (e) {
-			errors.push(e);
-			res.status(400).render("newpassword", {
-				error: true,
-				message: errors[0],
-			});
-			return;
-		}
-	});
+        try {
+            await updateUser(
+                xss(req.session.user._id),
+                null,
+                null,
+                null,
+                xss(validPassword)
+            );
+        } catch (e) {
+            errors.push(e);
+            res.status(400).render("newpassword", {
+                error: true,
+                message: errors[0],
+            });
+            return;
+        }
+        req.session.destroy();
+        res.redirect("/login");
+    });
 
 routes
 	.route("/rewards")
