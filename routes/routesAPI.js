@@ -29,6 +29,43 @@ import { allGoals } from "../utils/goals.js";
 import { getEmissionsFacts } from "../utils/emissionsFacts.js";
 const routes = Router();
 
+routes.use((req, res, next) => {
+	let userFullName;
+	if (req.session.user) {
+		const {
+			firstName,
+			lastName
+		} = req.session.user;
+		userFullName = `${firstName} ${lastName}`
+	} else userFullName = "Guest User";
+	const options = {
+		timeStyle: {
+			hour: "2-digit",
+			minute: "2-digit",
+			second: "2-digit",
+		},
+		dateStyle: {
+			weekday: "short",
+			month: "short",
+			day: "numeric",
+			year: "numeric",
+			timeZoneName: "short",
+		}
+	};
+
+	// Print out the timestamp for when request was received
+	console.groupCollapsed("Server Timestamp");
+	console.info(`Received REQ from ${userFullName} at ${new Date().toLocaleDateString(undefined, options.dateStyle)} ${new Date().toLocaleTimeString(undefined, options.timeStyle)}.`);
+	console.groupEnd();
+
+	if (["POST", "PATCH", "PUT"].includes(req.method)) {
+		// Print out a label for when the request calls console.info
+		console.group(`Info from ${req.method} ${req.originalUrl}`);
+		next();
+		console.groupEnd();
+	} else next();
+});
+
 routes.get("/", (req, res) => {
 	if (req.session.user) res.redirect("/dashboard");
 	else res.redirect("/login");
@@ -772,10 +809,14 @@ routes
 	.route("/help")
 	// renders the help page
 	.get(async (req, res) => {
-		res.render("help");
+		const { email } = req.session.user;
+		console.log(email);
+		res.render("help", { email: email });
 	})
 	.post(async (req, res) => {
 		const { email, issue } = req.body;
+		let validEmail;
+		console.log(email);
 
 		if (!email) {
 			return res.render("help", {
@@ -791,7 +832,9 @@ routes
 			});
 		}
 
-		if (!checkEmail(email)) {
+		try {
+			validEmail = checkEmail(email);
+		} catch (e) {
 			return res.render("help", {
 				error: true,
 				message: "Invalid email!",
@@ -800,6 +843,7 @@ routes
 
 		// If everything is valid, render the page with a success message
 		return res.render("help", {
+			email: validEmail,
 			success: true,
 			message: "Your issue has been submitted successfully!",
 		});
