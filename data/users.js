@@ -4,6 +4,8 @@ import {
 	checkPassword,
 	checkString,
 	checkId,
+	checkAge,
+	checkInt,
 } from "../utils/helpers.js";
 import { users } from "../config/mongoCollections.js";
 import { ObjectId } from "mongodb";
@@ -12,7 +14,7 @@ const saltRounds = 8;
 
 export const createLog = () => {
 	let battery = Math.floor(Math.random() * 101);
-	let screenTime = Math.floor(Math.random() * 86401);
+	let screenTime = Math.floor(Math.random() * 1441);
 	let normal = Math.floor(Math.random() * 90);
 	let performance = Math.floor(Math.random() * (100 - normal));
 	let energySaver = 100 - normal - performance;
@@ -22,8 +24,8 @@ export const createLog = () => {
 	let start1 = Math.floor(Math.random() * 100);
 	let end1 = Math.floor(Math.random() * (101 - start1)) + start1;
 	let lastCycle = {start: start1, end: end1};
-	let previousDeleted = Math.floor(Math.random() * (1000));
-	let currentDeleted = Math.floor(Math.random() * (1000));
+	let previousDeleted = Math.floor(Math.random() * (1001));
+	let currentDeleted = Math.floor(Math.random() * (1001));
 	let log = {
 		currentBattery: battery,
 		screenTime: screenTime,
@@ -54,6 +56,13 @@ export const registerUser = async (firstName, lastName, email, password, ageInpu
 	}
 	const hashed = await bcrypt.hash(password, saltRounds);
 	let log = createLog();
+	ageInput = checkInt(ageInput);
+	ageInput = checkAge(ageInput);
+	occupation = checkString(occupation);
+	geography = checkString(geography);
+	numberDevices = checkInt(numberDevices);
+	os = checkString(os);
+	phoneSys = checkString(phoneSys);
 
 	let newUser = {
 		firstName: firstName,
@@ -184,6 +193,25 @@ export const updateUser = async (id, firstName, lastName, email, password, ageIn
 		if (emailExists) {
 			throw `Email already exists (updateUser)`;
 		}
+	}
+	if (ageInput) {
+		ageInput = checkInt(ageInput);
+		ageInput = checkAge(ageInput);
+	}
+	if (occupation) {
+		occupation = checkString(occupation);
+	}
+	if (geography) {
+		geography = checkString(geography);
+	}
+	if (numberDevices) {
+		numberDevices = checkInt(numberDevices);
+	}
+	if (os) {
+		os = checkString(os);
+	}
+	if (phoneSys) {
+		phoneSys = checkString(phoneSys);
 	}
 
 	const userUpdate = {
