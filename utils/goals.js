@@ -1,12 +1,11 @@
-const laptopGoals = [
-    'Laptop Goal #1',
-    'Laptop Goal #2',
-    'Laptop Goal #3'
+const dailyGoals = [
+    "Recharge before device reaches 20% (Daily)",
+    "Clean out inbox (Daily)",
+    "Shut Down when not in use (Daily)"
 ];
-const mobileGoals = [
-    'Mobile Goal #1',
-    'Mobile Goal #2',
-    'Mobile Goal #3'
+const weeklyGoals = [
+    "Download instead of streaming (Weekly)",
+    "Reduce screen time by 5 hours (Weekly)"
 ];
 
-export const allGoals = [...laptopGoals, ...mobileGoals];
+export const allGoals = [...dailyGoals, ...weeklyGoals];

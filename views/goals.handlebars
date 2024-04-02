@@ -1,12 +1,15 @@
 <div class="help-container">
 <h1 class="title">Sustainability Goals</h1>
 <ol class="facts-text">
-    <li class="facts-text">Recharge before device reaches 20% (Daily)</li>
-    <li class="facts-text">Turn off wifi at night (Daily)</li>
-    <li class="facts-text">Clean out inbox (Daily)</li>
-    <li class="facts-text">Download instead of streaming (Weekly)</li>
-    <li class="facts-text">Shut Down when not in use (Daily)</li>
-    <li class="facts-text">Unplug adapter before bedtime (Daily)</li>
+    {{#each goals}}
+    <li class="facts-text">{{this}}</li>
+    <br>
+    {{/each}}
+    {{!-- <li class="facts-text"></li>
+    <li class="facts-text"></li>
+    <li class="facts-text"></li>
+    <li class="facts-text"></li> --}}
+    {{!-- <li class="facts-text">Unplug adapter before bedtime (Daily)</li> --}}
 </ol>
 
 <a href="/devices" class="button">Back to Device Registration</a>
