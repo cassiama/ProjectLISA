@@ -6,12 +6,20 @@
 		
 		<label for="devGoals">Device Goals: </label>
 		<br>
-		<select name="deviceGoals" id="deviceGoals" multiple required>
+		{{#each goals}}
+			{{! Checkbox options}}
+			<input type="checkbox" name="deviceGoals" value="{{this}}" id="deviceGoals" required>{{this}}
+			<br>
+		{{/each}}
+		{{#if error}}
+			<p class="error">{{message}}</p>
+		{{/if}}
+		{{!-- <select name="deviceGoals" id="deviceGoals" multiple required>
 			<option value="Test 0">Test 0</option>
 			{{#each goals}}
 				<option>{{this}}</option>
 			{{/each}}
-		</select>
+		</select> --}}
 		<br />
 		<br>
 		{{#if error}}
