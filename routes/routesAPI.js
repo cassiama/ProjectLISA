@@ -889,9 +889,13 @@ routes
 		});
 	});
 
-routes
+	routes
 	.route("/dashboard")
 	.get(async (req, res) => {
+
+		let ID = req.session.user.id;
+		let users = await getUserById(ID); 
+
 		if (req.session.user) {
 			const {
 				id: userId,
@@ -902,9 +906,20 @@ routes
 				currentGoal,
 			} = req.session.user;
 
+			console.log(users);
+			//0.25: 0.25 watts/minute baseline for normal
+			//0.33: 0.33 watts/minute for performance
+			//0.9: usingh energySaver assumes 10% savings in power
+			//0.27: 0.27 watts/minute streaming
+			let carbonEmissionSavings = (users.log.normal * 0.25 + users.log.performance * 0.33) 
+			+ (users.log.energySaver * 0.25 * 0.9)  
+			- (users.log.streamTime * 0.27) 
+			- (users.log.downloaded * 1.5) - (users.log.idleTime * 0.05) + (users.log.lastCycle * 65 * 0.8)
 			// for now, the percentage of carbon footprint reduction is random
-			let percentage = Math.trunc(Math.random() * 100);
+			//baseline: 520 watt/hours
+			let percentage = (((carbonEmissionSavings/60)/520)*100).toFixed(2);
 			let progressMessage = "";
+
 			if (currentGoal) {
 				if (percentage >= 25 && percentage < 50)
 					progressMessage = "Nice work!";

@@ -14,18 +14,22 @@ const saltRounds = 8;
 
 export const createLog = () => {
 	let battery = Math.floor(Math.random() * 101);
-	let screenTime = Math.floor(Math.random() * 1441);
-	let normal = Math.floor(Math.random() * 90);
-	let performance = Math.floor(Math.random() * (100 - normal));
-	let energySaver = 100 - normal - performance;
-	let downloaded = Math.floor(Math.random() * 1001);
+	let screenTime = Math.floor(Math.random() * 1440);
+	// let normal = Math.floor(Math.random() * 90);
+	// let performance = Math.floor(Math.random() * (100 - normal));
+	// let energySaver = 100 - normal - performance;
+	let normal = Math.floor(Math.random() * screenTime);
+	let performance = Math.floor(Math.random() * (screenTime - normal));
+	let energySaver = screenTime - normal - performance;
+	let downloaded = Math.floor(Math.random() * 20);
 	let streamTime = Math.floor(Math.random() * screenTime);
 	let idleTime = Math.floor(Math.random() * (screenTime - streamTime));
-	let start1 = Math.floor(Math.random() * 100);
-	let end1 = Math.floor(Math.random() * (101 - start1)) + start1;
-	let lastCycle = { start: start1, end: end1 };
-	let previousDeleted = Math.floor(Math.random() * 1001);
-	let currentDeleted = Math.floor(Math.random() * 1001);
+	// let start1 = Math.floor(Math.random() * 100);
+	// let end1 = Math.floor(Math.random() * (101 - start1)) + start1;
+	// let lastCycle = {start: start1, end: end1};
+	let lastCycle = Math.floor(Math.random() * 25);
+	let previousDeleted = Math.floor(Math.random() * (1000));
+	let currentDeleted = Math.floor(Math.random() * (1000));
 	let log = {
 		currentBattery: battery,
 		screenTime: screenTime,
@@ -37,8 +41,7 @@ export const createLog = () => {
 		idleTime: idleTime,
 		lastCycle: lastCycle,
 		previousDeleted: previousDeleted,
-		currentDeleted: currentDeleted,
-	};
+		currentDeleted: currentDeleted};
 	return log;
 };
 
