@@ -19,6 +19,7 @@ import {
 	getTips,
 	getTotalPoints,
 	subtractPoints,
+	helpTicket
 } from "../data/users.js";
 import {
 	serialNumAlreadyExists,
@@ -870,6 +871,16 @@ routes
 			});
 		}
 
+		try {
+            // Add the issue to the helpTicket field in the user's session
+            await helpTicket(email, issue);
+        } catch (e) {
+            return res.render("help", {
+                error: true,
+                message: "Failed to submit your issue.",
+            });
+        }
+
 		// If everything is valid, render the page with a success message
 		return res.render("help", {
 			email: validEmail,
@@ -1139,5 +1150,11 @@ routes.route("/leaderboard").get(async (req, res) => {
 		return;
 	}
 });
+
+routes
+    .route("/editGoals")
+    .get(async (req, res) => {
+        res.render("editGoals", {currentDevice: req.session.user.currentDevice, currentDeviceName:  req.session.user.currentDeviceName, goals: allGoals});
+    })
 
 export default routes;

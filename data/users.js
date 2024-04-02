@@ -23,9 +23,9 @@ export const createLog = () => {
 	let idleTime = Math.floor(Math.random() * (screenTime - streamTime));
 	let start1 = Math.floor(Math.random() * 100);
 	let end1 = Math.floor(Math.random() * (101 - start1)) + start1;
-	let lastCycle = {start: start1, end: end1};
-	let previousDeleted = Math.floor(Math.random() * (1001));
-	let currentDeleted = Math.floor(Math.random() * (1001));
+	let lastCycle = { start: start1, end: end1 };
+	let previousDeleted = Math.floor(Math.random() * 1001);
+	let currentDeleted = Math.floor(Math.random() * 1001);
 	let log = {
 		currentBattery: battery,
 		screenTime: screenTime,
@@ -37,13 +37,47 @@ export const createLog = () => {
 		idleTime: idleTime,
 		lastCycle: lastCycle,
 		previousDeleted: previousDeleted,
-		currentDeleted: currentDeleted};
+		currentDeleted: currentDeleted,
+	};
 	return log;
 };
 
-export const registerUser = async (firstName, lastName, email, password, ageInput, occupation, geography, numberDevices, os, phoneSys) => {
-	if (!firstName || !lastName || !email || !password || !ageInput || !occupation || !geography || !numberDevices || !os || !phoneSys) {
-		console.log("Missing input fields:", { firstName, lastName, email, password, ageInput, occupation, geography, numberDevices, os, phoneSys });
+export const registerUser = async (
+	firstName,
+	lastName,
+	email,
+	password,
+	ageInput,
+	occupation,
+	geography,
+	numberDevices,
+	os,
+	phoneSys
+) => {
+	if (
+		!firstName ||
+		!lastName ||
+		!email ||
+		!password ||
+		!ageInput ||
+		!occupation ||
+		!geography ||
+		!numberDevices ||
+		!os ||
+		!phoneSys
+	) {
+		console.log("Missing input fields:", {
+			firstName,
+			lastName,
+			email,
+			password,
+			ageInput,
+			occupation,
+			geography,
+			numberDevices,
+			os,
+			phoneSys,
+		});
 		throw "All input fields must be provided (registerUser)";
 	}
 	firstName = checkName(firstName, "First name");
@@ -77,7 +111,7 @@ export const registerUser = async (firstName, lastName, email, password, ageInpu
 		numberDevices: numberDevices,
 		os: os,
 		phoneSys: phoneSys,
-		log: log
+		log: log,
 	};
 	const userCollection = await users();
 	const newInsertInformation = await userCollection.insertOne(newUser);
@@ -157,14 +191,26 @@ export const checkUser = async (email, password) => {
 			let _id = user._id.toString();
 			let devices = user.devices;
 			let log = user.log;
-			return { _id, firstName, lastName, emailAddress, devices, log};
+			return { _id, firstName, lastName, emailAddress, devices, log };
 		}
 	} else {
 		throw "Either the email address or password is invalid";
 	}
 };
 
-export const updateUser = async (id, firstName, lastName, email, password, ageInput, occupation, geography, numberDevices, os, phoneSys) => {
+export const updateUser = async (
+	id,
+	firstName,
+	lastName,
+	email,
+	password,
+	ageInput,
+	occupation,
+	geography,
+	numberDevices,
+	os,
+	phoneSys
+) => {
 	let hashed1;
 	if (id) {
 		id = checkId(id);
@@ -227,13 +273,16 @@ export const updateUser = async (id, firstName, lastName, email, password, ageIn
 		numberDevices: numberDevices ? numberDevices : oldUser.numberDevices,
 		os: os ? os : oldUser.os,
 		phoneSys: phoneSys ? phoneSys : oldUser.phoneSys,
-		log: oldUser.log
+		log: oldUser.log,
 	};
 
 	const userCollection = await users();
 
-	const updateInfo = await userCollection.replaceOne({_id: new ObjectId(id)}, userUpdate);
-	console.log("update" + updateInfo)
+	const updateInfo = await userCollection.replaceOne(
+		{ _id: new ObjectId(id) },
+		userUpdate
+	);
+	console.log("update" + updateInfo);
 
 	if (updateInfo.modifiedCount === 0) {
 		throw `At least one field must be different to successfully update user`;
@@ -311,15 +360,25 @@ export const helpTicket = async (email, message) => {
 		throw "Error: Message cannot be an empty string";
 	}
 	message = message.trim();
-	const ticketCollection = await tickets();
+	const userCollection = await users();
+	const user = await userCollection.findOne({ email: email });
+	if (!user) {
+		throw "Error: User not found";
+	}
 	const newTicket = {
 		email: email,
 		message: message,
 	};
-	const insertInfo = await ticketCollection.insertOne(newTicket);
-	if (insertInfo.insertedCount === 0) throw "Error: Could not add ticket";
-	return newTicket;
+	const updateInfo = await userCollection.updateOne(
+		{ email: email },
+		{ $push: { helpTickets: newTicket } }
+	);
+	if (updateInfo.modifiedCount === 0) {
+		throw "Error: Could not update user";
+	}
+	return true;
 };
+
 export const getTotalPoints = async (userId) => {
 	if (!userId) {
 		throw "Error: User Id must be inputed";
@@ -337,7 +396,7 @@ export const getTotalPoints = async (userId) => {
 
 	const updatedUser = await userCollection.findOne(
 		{ _id: new ObjectId(userId) },
-		{ points: totalPoints } 
+		{ points: totalPoints }
 	);
 	// console.log(updatedUser);
 	return updatedUser.points;
@@ -418,32 +477,35 @@ export const addPoints = async (userId, rewardPoints) => {
 };
 
 export const getTips = async () => {
-    // array of tips as a string
-    let tipArray = [
-        "Ask suppliers to email you a receipt instead of printing it out",
-        "Use natural light during the day instead of overhead lighting or lamps",
-        "Organize carpool to work/events",
-        "Follow scheduled maintenance for vehicles",
-        "Switch to LED lighting",
-        "Unplug large electronics when not in use",
-        "Turn off your car when parked or in a gridlocked traffic jam",
-        "Change the air filter in your air conditioning unit",
-        "Keep the coils in the back of your refrigerator clean",
-        "Consider travel alternatives to flying",
-    ];
-    let randomTips = [];
-    // randomizes through the array and generates an array of 3 tips
-    for (let i = 0; i < 3; i++) {
-        let randomIndex = Math.floor(Math.random() * tipArray.length);
-        randomTips.push(tipArray[randomIndex]);
-        tipArray.splice(randomIndex, 1);
-    }
-    // returns the array of 3 tips
-    return randomTips;
+	// array of tips as a string
+	let tipArray = [
+		"Ask suppliers to email you a receipt instead of printing it out",
+		"Use natural light during the day instead of overhead lighting or lamps",
+		"Organize carpool to work/events",
+		"Follow scheduled maintenance for vehicles",
+		"Switch to LED lighting",
+		"Unplug large electronics when not in use",
+		"Turn off your car when parked or in a gridlocked traffic jam",
+		"Change the air filter in your air conditioning unit",
+		"Keep the coils in the back of your refrigerator clean",
+		"Consider travel alternatives to flying",
+	];
+	let randomTips = [];
+	// randomizes through the array and generates an array of 3 tips
+	for (let i = 0; i < 3; i++) {
+		let randomIndex = Math.floor(Math.random() * tipArray.length);
+		randomTips.push(tipArray[randomIndex]);
+		tipArray.splice(randomIndex, 1);
+	}
+	// returns the array of 3 tips
+	return randomTips;
 };
 
 export const getTopUsers = async () => {
 	const userCollection = await users();
-	const topUsers = await userCollection.find({}).sort({points: -1}).toArray();
+	const topUsers = await userCollection
+		.find({})
+		.sort({ points: -1 })
+		.toArray();
 	return topUsers;
 };
