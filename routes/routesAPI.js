@@ -832,7 +832,10 @@ routes //sustainability facts
 routes //sustainable goals
 	.route("/goals")
 	.get(async (req, res) => {
-		res.render("goals");
+		console.group("GET /goals Debug:");
+		const dailyGoals = allGoals.slice(0, 3),
+		      weeklyGoals = allGoals.slice(3);
+		res.render("goals", {dailyGoals: dailyGoals, weeklyGoals: weeklyGoals});
 	});
 
 routes
@@ -915,7 +918,6 @@ routes
 			+ (users.log.energySaver * 0.25 * 0.9)  
 			- (users.log.streamTime * 0.27) 
 			- (users.log.downloaded * 1.5) - (users.log.idleTime * 0.05) + (users.log.lastCycle * 65 * 0.8)
-			// for now, the percentage of carbon footprint reduction is random
 			//baseline: 520 watt/hours
 			let percentage = (((carbonEmissionSavings/60)/520)*100).toFixed(2);
 			let progressMessage = "";

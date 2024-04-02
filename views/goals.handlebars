@@ -1,15 +1,16 @@
 <div class="help-container">
 <h1 class="title">Sustainability Goals</h1>
 <ol class="facts-text">
-    {{#each goals}}
-    <li class="facts-text">{{this}}</li>
-    <br>
+    <h3 class="facts-text">Daily Goals:</h3>
+    {{#each dailyGoals}}
+        <li class="facts-text">{{this}}</li>
     {{/each}}
-    {{!-- <li class="facts-text"></li>
-    <li class="facts-text"></li>
-    <li class="facts-text"></li>
-    <li class="facts-text"></li> --}}
-    {{!-- <li class="facts-text">Unplug adapter before bedtime (Daily)</li> --}}
+    <br>
+    <h3 class="facts-text">Weekly Goals:</h3>
+    {{#each weeklyGoals}}
+        <li class="facts-text">{{this}}</li>
+    {{/each}}
+    <br>
 </ol>
 
 <a href="/devices" class="button">Back to Device Registration</a>
