@@ -32,39 +32,51 @@ const routes = Router();
 
 routes.use((req, res, next) => {
 	let userFullName;
+	let userEmail;
 	if (req.session.user) {
 		const {
 			firstName,
-			lastName
+			lastName,
+			email
 		} = req.session.user;
-		userFullName = `${firstName} ${lastName}`
-	} else userFullName = "Guest User";
+		userFullName = `${firstName} ${lastName}`;
+		userEmail = email;
+	} else {
+		userFullName = "Guest User";
+		userEmail = "N/A";
+	}
+
 	const options = {
 		timeStyle: {
 			hour: "2-digit",
 			minute: "2-digit",
 			second: "2-digit",
+			timeZoneName: "short",
 		},
 		dateStyle: {
 			weekday: "short",
 			month: "short",
 			day: "numeric",
 			year: "numeric",
-			timeZoneName: "short",
 		}
 	};
+	const dt = new Date();
+	const date = dt.toLocaleDateString(
+		undefined,
+		options.dateStyle
+	);
+	const time = dt.toLocaleTimeString(
+		undefined,
+		options.timeStyle
+	);
 
-	// Print out the timestamp for when request was received
-	console.groupCollapsed("Server Timestamp");
-	console.info(`Received REQ from ${userFullName} at ${new Date().toLocaleDateString(undefined, options.dateStyle)} ${new Date().toLocaleTimeString(undefined, options.timeStyle)}.`);
+	// Print the information about the current request to the console
+	console.group(`Request Timestamp: ${ date } ${ time }`);
+	console.info(`Current Request: ${req.method} ${req.originalUrl}`);
+	console.info(`Current User: ${userFullName}`);
+	console.info(`User's Email: ${userEmail}`);
 	console.groupEnd();
-
-	if (["POST", "PATCH", "PUT"].includes(req.method)) {
-		// Print out a label for when the request calls console.info
-		console.group(`Info from ${req.method} ${req.originalUrl}`);
-		next();
-		console.groupEnd();
-	} else next();
+	next();
 });
 
 routes.get("/", (req, res) => {

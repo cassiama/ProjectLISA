@@ -32,9 +32,8 @@ app.use(session({
 }));
 
 app.use('*', (req, res, next) => {
-    console.log(`${req.method} ${req.originalUrl}`);
-    next();
     console.log();
+    next();
 });
 
 app.use('*', (req, res, next) => {
