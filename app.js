@@ -28,7 +28,7 @@ app.use(session({
     secret: 'projectlisa',
     resave: false,
     saveUninitialized: true,
-    cookie: { maxAge: 1800000 } // maxAge = 30 min
+    cookie: { maxAge: 24 * 60 * 60 } // maxAge = 24 hrs
 }));
 
 app.use('*', (req, res, next) => {
