@@ -15,11 +15,29 @@
 		<br>
 		<label for="devGoals">Device Goals: </label>
 		<br>
-		{{#each goals}}
+		<form id="myForm">
+			{{#each goals}}
+				<input type="checkbox" class="deviceGoals" name="deviceGoals" value="{{this}}">{{this}}
+				<br>
+			{{/each}}
+			<br>
+			<br>
+			<input type="submit" value="Submit" class="button">
+		</form>
+		<script>
+			document.getElementById('myForm').addEventListener('submit', function(e) {
+				var checkboxes = document.querySelectorAll('input.deviceGoals:checked');
+				if (checkboxes.length === 0) {
+					e.preventDefault();
+					alert('Please select at least one goal.');
+				}
+			});
+		</script>
+		{{!-- {{#each goals}}
 			{{! Checkbox options}}
 			<input type="checkbox" name="deviceGoals" value="{{this}}" id="deviceGoals" required>{{this}}
 			<br>
-		{{/each}}
+		{{/each}} --}}
 		{{#if error}}
 			<p class="error">{{message}}</p>
 		{{/if}}
@@ -28,7 +46,7 @@
 		<a href="/goals" id="link">Learn More About Device Goals</a>
 		</br>
 		</br>
-		<button type="submit" class="button">Submit</button>
+		{{!-- <button type="submit" class="button">Submit</button> --}}
 		<br>
 		<br>
 		<br>
