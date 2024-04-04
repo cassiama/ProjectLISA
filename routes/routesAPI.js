@@ -897,7 +897,7 @@ routes
 	.get(async (req, res) => {
 
 		let ID = req.session.user.id;
-		let users = await getUserById(ID); 
+		let user = await getUserById(ID); 
 
 		if (req.session.user) {
 			const {
@@ -909,15 +909,15 @@ routes
 				currentGoal,
 			} = req.session.user;
 
-			console.log(users);
+			console.log(user);
 			//0.25: 0.25 watts/minute baseline for normal
 			//0.33: 0.33 watts/minute for performance
 			//0.9: usingh energySaver assumes 10% savings in power
 			//0.27: 0.27 watts/minute streaming
-			let carbonEmissionSavings = (users.log.normal * 0.25 + users.log.performance * 0.33) 
-			+ (users.log.energySaver * 0.25 * 0.9)  
-			- (users.log.streamTime * 0.27) 
-			- (users.log.downloaded * 1.5) - (users.log.idleTime * 0.05) + (users.log.lastCycle * 65 * 0.8)
+			let carbonEmissionSavings = (user.log.normal * 0.25 + user.log.performance * 0.33) 
+			+ (user.log.energySaver * 0.25 * 0.9)  
+			- (user.log.streamTime * 0.27) 
+			- (user.log.downloaded * 1.5) - (user.log.idleTime * 0.05) + (user.log.lastCycle * 65 * 0.8)
 			//baseline: 520 watt/hours
 			let percentage = (((carbonEmissionSavings/60)/520)*100).toFixed(2);
 			let progressMessage = "";
@@ -1007,8 +1007,13 @@ routes
 			} = req.session.user;
 			console.log(req.session.user);
 
-			// for now, the percentage of carbon footprint reduction is random
-			let percentage = Math.trunc(Math.random() * 100);
+			const user = await getUserById(userId);
+			let carbonEmissionSavings = (user.log.normal * 0.25 + user.log.performance * 0.33) 
+			+ (user.log.energySaver * 0.25 * 0.9)  
+			- (user.log.streamTime * 0.27) 
+			- (user.log.downloaded * 1.5) - (user.log.idleTime * 0.05) + (user.log.lastCycle * 65 * 0.8)
+			//baseline: 520 watt/hours
+			let percentage = (((carbonEmissionSavings/60)/520)*100).toFixed(2);
 			let progressMessage = "";
 			if (percentage >= 25 && percentage < 50)
 				progressMessage = "Nice work!";
@@ -1078,8 +1083,13 @@ routes
 				deviceGoals,
 			} = req.session.user;
 
-			// for now, the percentage of carbon footprint reduction is random
-			let percentage = Math.trunc(Math.random() * 100);
+			const user = await getUserById(userId);
+			let carbonEmissionSavings = (user.log.normal * 0.25 + user.log.performance * 0.33) 
+			+ (user.log.energySaver * 0.25 * 0.9)  
+			- (user.log.streamTime * 0.27) 
+			- (user.log.downloaded * 1.5) - (user.log.idleTime * 0.05) + (user.log.lastCycle * 65 * 0.8)
+			//baseline: 520 watt/hours
+			let percentage = (((carbonEmissionSavings/60)/520)*100).toFixed(2);
 			let progressMessage = "";
 			if (percentage >= 25 && percentage < 50)
 				progressMessage = "Nice work!";
