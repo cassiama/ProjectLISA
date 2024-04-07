@@ -1,47 +1,47 @@
-        <form action="/editProfile" method="POST" id="editProfile-form" class="column">
-        {{!-- Might need to add correct action --}}
-        
-        
-        <div class="vertical-container">
+<main>
+  <form action="/editProfile" method="POST" id="editProfile-form">
+  {{!-- Might need to add correct action --}}
+    <div class="edit-profile-container">
         <h2 class="title">Edit Profile</h2>
+
         <label for="firstName">First Name:</label>
         <br>
-        <input type="text" id="firstName" name="firstName" required>
+        <input type="text" id="firstName" name="firstName" required class="register-input">
         <br/>
         <br>
         <label for="lastName">Last Name:</label>
         <br>
-        <input type="text" id="lastName" name="lastName" required>
+        <input type="text" id="lastName" name="lastName" required class="register-input">
         <br/>
         <br>
         <label for="email">Email:</label>
         <br>
-        <input type="email" id="email" name="email" required>
+        <input type="email" id="email" name="email" required class="register-input">
         <br/>
         <br>
         <label for="ageInput">Age:</label>
         <br>
-        <input type="number" id="ageInput" name="ageInput">
+        <input type="number" id="ageInput" name="ageInput" class="register-input">
         <br/>
         <br>
         <label for="occupation">Occupation:</label>
         <br>
-        <input type="text" id="occupation" name="occupation">
+        <input type="text" id="occupation" name="occupation" class="register-input">
         <br/>
         <br>
         <label for="numberDevices">Number of devices owned:</label>
         <br>
-        <input type="text" id="numberDevices" name="numberDevices">
+        <input type="text" id="numberDevices" name="numberDevices" class="register-input">
         <br/>
         <br>
         <label for="password">Password (must have at least 8 characters, 1 special character, 1 number, and 1 capital letter):</label>
         <br>
-        <input type="password" id="password" name="password" required>
+        <input type="password" id="password" name="password" required class="register-input">
         <br/>
         <br>
         <label for="confirmPassword">Confirm Password:</label>
         <br>
-        <input type="password" id="confirmPassword" name="confirmPassword" required>
+        <input type="password" id="confirmPassword" name="confirmPassword" required class="register-input">
         <br/>
         <br>
         <p>Please select your geographical location:</p>
@@ -79,10 +79,10 @@
 
             <br>     
             {{!-- <input type="hidden" name="_method" value="PUT"> --}}
-            <button class="btn button" type="submit">Submit</button>
-        </form>
-
+            <button class="button" type="submit">Submit</button>
     </br>
     </br>
-    <a href="/account">Back to Profile</a>
+    <a href="/account" class="button">Back</a>
     </div>
+  </form>
+</main>

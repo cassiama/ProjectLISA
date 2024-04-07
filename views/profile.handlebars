@@ -14,18 +14,32 @@
     <br>
     <br>
     <br>
-    <h2>Edit Profile</h2>
-    <a href="/editProfile">Click here to edit your profile!</a>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <div class="shift-text">
+    <a href="/editProfile" class="button">Edit Profile?</a>
     </br>
     </br>
-    <a href="/dashboard" class="button">Back to Dashboard</a>
+    <br>
+    <br>
+    <a href="/dashboard" class="button">Back</a>
+    </div>
   </div>
   <div class="column">
     <div>
         {{!-- <h2>My Devices:</h2> --}}
         <div class="vertical-container">
         {{#if devices}}
-        <ol>My Devices:
+        <h3>My Devices</h3>
+        <ol>
           {{#each devices}}
           <li>
               <div class="row">
@@ -66,10 +80,16 @@
         </br>
         <a href="/leaderboard" id="link">Check out the leaderboard!</a>
         </br>
+        <br>
+        <a href="/help" id="link">Need Help?</a>
         </br>
-        <a href="/help">Need Help?</a>
+        <br>
+        <a href="/logout" id="link">Logout</a>
+        <br>
+        <br>
         </br>
-        <a href="/logout">Logout</a>
+        <br>
+        <br>
         </div>
     </div>
   </div>

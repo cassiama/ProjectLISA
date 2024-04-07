@@ -217,6 +217,11 @@ ul {
   align-items: center;
   justify-content: center
 }
+.image {
+  background-color: rgba(238, 238, 238, 0.70);
+  padding: 15px;
+  border-radius: 15px;
+}
 .profile-text {
   padding-left: 20px;
   color: #FFFFFF;
@@ -234,6 +239,21 @@ a {
   text-align: center;
   border: none;
 }
+.shift-text {
+  margin-left: 100px;
+}
+
+/* edit profile page */
+.edit-profile-container {
+  background: rgba(238, 238, 238, 0.70);
+  margin: auto;
+  text-align: left;
+  width: fit-content;
+  height: 150%;
+  padding: 30px;
+  border-radius: 30px;
+}
+
 /* leaderboard page */
 td, th {
   border: 2px solid black;
