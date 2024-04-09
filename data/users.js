@@ -45,6 +45,39 @@ export const createLog = () => {
 	return log;
 };
 
+export const createPrevLog = () => {
+	let battery = 0;
+	let screenTime = 0;
+	// let normal = Math.floor(Math.random() * 90);
+	// let performance = Math.floor(Math.random() * (100 - normal));
+	// let energySaver = 100 - normal - performance;
+	let normal = 0;
+	let performance = 0;
+	let energySaver = 0;
+	let downloaded = 0;
+	let streamTime = 0;
+	let idleTime = 0;
+	// let start1 = Math.floor(Math.random() * 100);
+	// let end1 = Math.floor(Math.random() * (101 - start1)) + start1;
+	// let lastCycle = {start: start1, end: end1};
+	let lastCycle = 0;
+	let previousDeleted = 0;
+	let currentDeleted = 0;
+	let log = {
+		currentBattery: battery,
+		screenTime: screenTime,
+		normal: normal,
+		performance: performance,
+		energySaver: energySaver,
+		downloaded: downloaded,
+		streamTime: streamTime,
+		idleTime: idleTime,
+		lastCycle: lastCycle,
+		previousDeleted: previousDeleted,
+		currentDeleted: currentDeleted};
+	return log;
+};
+
 export const registerUser = async (
 	firstName,
 	lastName,
@@ -92,7 +125,6 @@ export const registerUser = async (
 		throw `emailAddress already exists (createUser)`;
 	}
 	const hashed = await bcrypt.hash(password, saltRounds);
-	let log = createLog();
 	ageInput = checkInt(ageInput);
 	ageInput = checkAge(ageInput);
 	occupation = checkString(occupation);
@@ -113,8 +145,7 @@ export const registerUser = async (
 		geography: geography,
 		numberDevices: numberDevices,
 		os: os,
-		phoneSys: phoneSys,
-		log: log,
+		phoneSys: phoneSys
 	};
 	const userCollection = await users();
 	const newInsertInformation = await userCollection.insertOne(newUser);
@@ -140,31 +171,29 @@ export const emailAlreadyExists = async (email) => {
 };
 
 export const updateLog = async (userId) => {
-	if (!userId) {
-		throw "Error: User ID must be provided";
-	}
-	userId = checkId(userId);
-
-	const userCollection = await users();
-	const user = await userCollection.findOne({ _id: new ObjectId(userId) });
-
-	if (!user) {
-		throw "Error: User not found";
-	}
-
-	const log = createLog();
-
-	const updateResult = await userCollection.updateOne(
-		{ _id: new ObjectId(userId) },
-		{ $set: { log: log } }
-	);
-
-	if (updateResult.modifiedCount === 0) {
-		throw "Error: Log update failed";
-	}
-
-	return log;
+    if (!userId) {
+        throw "Error: User ID must be provided";
+    }
+    userId = checkId(userId);
+    const userCollection = await users();
+    const user = await userCollection.findOne({ _id: new ObjectId(userId) });
+    if (!user) {
+        throw "Error: User not found";
+    }
+    for (const device of user.devices) {
+        const log = createLog();
+        const updateResult = await userCollection.updateOne(
+            { _id: new ObjectId(userId), "devices._id": device._id },
+            { $set: { "devices.$.log": log } }
+        );
+        if (updateResult.modifiedCount === 0) {
+            throw "Error: Log update failed for device with ID: " + device._id;
+        }
+    }
+	const updatedUser = await userCollection.findOne({ _id: new ObjectId(userId) });
+    return updatedUser;
 };
+
 
 export const checkUser = async (email, password) => {
 	if (!email || !password) {
@@ -179,23 +208,24 @@ export const checkUser = async (email, password) => {
 	const user1 = await userCollection.findOne({ email: email });
 	let validPassword = await bcrypt.compare(password, user1.password);
 	if (validPassword) {
-		const log = createLog();
-		const updateResult = await userCollection.updateOne(
-			{ _id: user1._id },
-			{ $set: { log: log } }
-		);
-		if (updateResult.modifiedCount === 0) {
-			throw "Error: Log update failed";
-		} else {
+		for (const device of user.devices) {
+            const prevLog = device.log;
+            const log = createLog();
+            const updateResult = await userCollection.updateOne(
+                { _id: user._id, "devices._id": device._id },
+                { $set: { "devices.$.prevLog": prevLog, "devices.$.log": log } }
+            );
+			if (updateResult.modifiedCount === 0) {
+				throw "Error: Log update failed for device with ID: " + device._id;
+			}
+		}
 			const user = await userCollection.findOne({ email: email });
 			let firstName = user.firstName;
 			let lastName = user.lastName;
 			let emailAddress = user.email;
 			let _id = user._id.toString();
 			let devices = user.devices;
-			let log = user.log;
-			return { _id, firstName, lastName, emailAddress, devices, log };
-		}
+			return { _id, firstName, lastName, emailAddress, devices};
 	} else {
 		throw "Either the email address or password is invalid";
 	}
@@ -275,8 +305,7 @@ export const updateUser = async (
 		geography: geography ? geography : oldUser.geography,
 		numberDevices: numberDevices ? numberDevices : oldUser.numberDevices,
 		os: os ? os : oldUser.os,
-		phoneSys: phoneSys ? phoneSys : oldUser.phoneSys,
-		log: oldUser.log,
+		phoneSys: phoneSys ? phoneSys : oldUser.phoneSys
 	};
 
 	const userCollection = await users();

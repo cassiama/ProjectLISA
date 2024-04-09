@@ -6,6 +6,7 @@ import {
 	checkId,
 	checkDeviceGoals,
 } from "../utils/helpers.js";
+import {createLog, createPrevLog} from './users.js'
 import { users } from "../config/mongoCollections.js";
 import { ObjectId } from "mongodb";
 
@@ -44,12 +45,16 @@ export const registerDevice = async (
 	if (serialAlreadyExists) {
 		throw `Error: Device already registered`;
 	}
+	let prevLog = createPrevLog();
+	let devLog = createLog();
 	let newDevice = {
 		_id: new ObjectId(),
 		deviceOwner: userId,
 		serialNum: serialNum,
 		deviceGoals: deviceGoals,
 		deviceName: deviceName,
+		prevLog: prevLog,
+		log: devLog
 	};
 	const userCollection = await users();
 	let device = await userCollection.findOneAndUpdate(
