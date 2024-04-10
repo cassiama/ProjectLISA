@@ -2,15 +2,15 @@
 	<form method="post" id="registerDevice-form">
 		<div class="vertical-container">
 		<h2 class="title">Device Registration</h2>
-
+		<br>
 		<label for="serialNum">Serial Number: </label>
 		<br>
-		<input type="text" name="serialNumber" id="serialNumber" required />
+		<input type="text" name="serialNumber" id="serialNumber" required class="register-input"/>
 		<br />
 		<br>
 		<label for="devName">Device Name: </label>
 		<br>
-		<input type="text" name="deviceName" id="deviceName" required />
+		<input type="text" name="deviceName" id="deviceName" required class="register-input"/>
 		<br />
 		<br>
 		<label for="devGoals">Device Goals: </label>
@@ -22,7 +22,10 @@
 			{{/each}}
 			<br>
 			<br>
-			<input type="submit" value="Submit" class="button">
+			<a href="/goals" id="link">Learn More About Device Goals</a>
+			<br>
+			<br>
+			<button type="submit" class="register-button">Register Device</button>
 		</form>
 		<script>
 			document.getElementById('myForm').addEventListener('submit', function(e) {
@@ -43,16 +46,9 @@
 		{{/if}}
 		<br />
 		<br />
-		<a href="/goals" id="link">Learn More About Device Goals</a>
-		</br>
-		</br>
 		{{!-- <button type="submit" class="button">Submit</button> --}}
 		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-		<a href="/dashboard" class="button">Back to Dashboard</a>
+		<a href="/dashboard" class="button">Back</a>
 		</div>
 	</form>
 </main>

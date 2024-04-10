@@ -1,10 +1,12 @@
 <main>
 	<form method="post" id="editDeviceGoal-form">
 		<div class="vertical-container">
-		<h2 class="title">Edit Goals For: {{this.currentDeviceName}}</h2>
+		<h2 class="title">Edit Goals</h2>
+		<h3>{{this.currentDeviceName}}</h3>
 
 		
-		<label for="devGoals">Device Goals: </label>
+		<label for="devGoals">New Device Goals</label>
+		<br>
 		<br>
 		<form id="myForm">
 			{{#each goals}}
@@ -13,7 +15,10 @@
 			{{/each}}
 			<br>
 			<br>
-			<input type="submit" value="Submit" class="button">
+			<a href="/goals" id="link">Learn More About Device Goals</a>
+			<br>
+			<br>
+			<button type="submit"  class="register-button">Submit</button>
 		</form>
 		<script>
 			document.getElementById('myForm').addEventListener('submit', function(e) {
@@ -40,16 +45,13 @@
 		{{/if}}
 
 		<br />
-		<a href="/goals" id="link">Learn More About Device Goals</a>
 		</br>
 		</br>
 		{{!-- <button type="submit" class="button">Submit</button> --}}
 		<br>
 		<br>
 		<br>
-		<br>
-		<br>
-		<a href="/dashboard" class="button">Back to Dashboard</a>
+		<a href="/dashboard" class="button">Back</a>
 		</div>
 	</form>
 </main>

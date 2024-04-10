@@ -1,22 +1,30 @@
 <div class="help-container">
-<h1 class="title">Help Page</h1>
-<div class ="row">
+  <div class ="row">
+    <h1 class="help-title">Help Page</h1>
   <div class="column">
-<h2 class = "FAQs faqs-text ">FAQs</h2>
+    <div class="column-shift">
+<h2 class="faq-text">FAQs</h2>
     <br>
-    <ul class="text">
+    <ul class="qna">
       <li>Q: How do I register a device?</li>
-      <li>A: Go to the Device Registration page and fill out the form.</li>
+      <li>A: On the device registration page, you can find a form that allows you to register a device and pick goals for it.</li>
       <br>
       <li>Q: How do I view my device goals?</li>
-      <li>A: Go to the Device Goals page.</li>
+      <li>A: Your personal device goals are viewable from your Dashboard.  To view full goal descriptions, visit the learn more link on the device registration page.</li>
       <br>
       <li>Q: How do I submit a help ticket?</li>
-      <li>A: Fill out the form on this page.</li>
+      <li>A: Fill out the form on the lefthand side of this page.  Our support team will get back to you as soon as possible.</li>
+      <br>
+      <br>
+      <br>
+      <br>
+      <a href="/dashboard" class="button">Back</a>
     </ul>
+    </div>
   </div>
     <div class="column">
-<h2 class="helpTicket">Submit a Help Ticket</h2>
+      <div class="column2-shift">
+<h2 class="faq-text">Submit a Help Ticket</h2>
   <form method="POST" id="help-form" class="column">
     <br>
     <label for="email">
@@ -54,10 +62,10 @@
     {{#if success}}
       <p class="success">{{message}}</p>
     {{/if}}
-    <br>  
+    <br> 
+    </div> 
   </div>
 </div>
   </br>
   </br>
-    <a href="/dashboard" class="button">Back to Dashboard</a>
 </div>

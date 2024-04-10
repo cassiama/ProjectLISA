@@ -1,20 +1,30 @@
 <div class="help-container">
-<h1 class="title">Sustainability Goals</h1>
-<ol class="facts-text">
+    <div class="row">
+        <h1 class="help-title">Sustainability Goals</h1>
+        <div class="column">
     <h3 class="facts-text">Daily Goals:</h3>
+    <ol class="facts-text"></ol>
     {{#each dailyGoals}}
         <li class="facts-text">{{this}}</li>
     {{/each}}
-    <br>
+    </ol>
+    </div>
+    <div class="column">
     <h3 class="facts-text">Weekly Goals:</h3>
+    <ol class="facts-text">
     {{#each weeklyGoals}}
         <li class="facts-text">{{this}}</li>
     {{/each}}
     <br>
 </ol>
+</div>
+<br>
 
-<a href="/devices" class="button">Back to Device Registration</a>
-<a href="/editGoals" class="button">Back to Edit Goals</a>
+</div>
+<a href="/editGoals" class="button">Edit Goals?</a>
+
+<a href="/devices" class="button">Back</a>
+</div>
 </div>
 
 

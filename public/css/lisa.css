@@ -94,9 +94,33 @@ a:visited {
   padding-right: 5px;
   border-radius: 10px;
   padding-bottom: 50px;
+  margin: auto;
 }
 .faq-text {
+  text-align: center;
+}
+.help-title {
+  color: #000;
+  font-size: 50px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  text-align: center;
+  padding-top: 15px;
+}
+.qna {
+  margin-right: 100px;
   margin-left: 50px;
+}
+.column-shift {
+  margin-left: 50px;
+}
+.column2-shift {
+  margin-left: 150px;
+}
+textarea {
+  width: 450px;
+  height: 175px;
 }
 
 /* facts page */
@@ -104,13 +128,25 @@ a:visited {
   background-color: rgba(238, 238, 238, 0.70);
   width: fit-content;
   height: 500px;
-  padding: 20px;
   margin: auto;
   border-radius: 15px;
+  padding-left: 25px;
+  padding-right: 25px;
+  padding-top: 45px;
 }
 .facts-text {
   font-size: 30px;
   color: #FFFFFF;
+}
+.facts-button {
+  margin-top: 100px;
+  margin-left: 650px;
+}
+
+/* goals page */
+.goals-button {
+  margin-top: 200px;
+  margin-left: 650px;
 }
 
 /* register page */
