@@ -26,10 +26,11 @@ export const createLog = () => {
 	let idleTime = Math.floor(Math.random() * (screenTime - streamTime));
 	// let start1 = Math.floor(Math.random() * 100);
 	// let end1 = Math.floor(Math.random() * (101 - start1)) + start1;
-	// let lastCycle = {start: start1, end: end1};
-	let lastCycle = Math.floor(Math.random() * 25);
+	let lastCycle = {start: start1, end: end1};
+	let chargingTime = Math.floor(Math.random() * 1440);
 	// let previousDeleted = Math.floor(Math.random() * (1000));
 	let deleted = Math.floor(Math.random() * (1000));
+	let averageBrightness = Math.floor(Math.random() * 101);
 	let log = {
 		currentBattery: battery,
 		screenTime: screenTime,
@@ -40,7 +41,9 @@ export const createLog = () => {
 		streamTime: streamTime,
 		idleTime: idleTime,
 		lastCycle: lastCycle,
-		deleted: deleted};
+		chargingTime, chargingTime,
+		deleted: deleted,
+		averageBrightness: averageBrightness};
 	return log;
 };
 
@@ -60,8 +63,10 @@ export const createPrevLog = () => {
 	// let end1 = Math.floor(Math.random() * (101 - start1)) + start1;
 	// let lastCycle = {start: start1, end: end1};
 	let lastCycle = 0;
+	let chargingTime = 0;
 	// let previousDeleted = 0;
 	let deleted = 0;
+	let averageBrightness = 0;
 	let log = {
 		currentBattery: battery,
 		screenTime: screenTime,
@@ -72,6 +77,8 @@ export const createPrevLog = () => {
 		streamTime: streamTime,
 		idleTime: idleTime,
 		lastCycle: lastCycle,
+		chargingTime: chargingTime,
+		averageBrightness: averageBrightness,
 		deleted: deleted};
 	return log;
 };
