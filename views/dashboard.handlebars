@@ -58,26 +58,33 @@
             </div>
             <br>
             <br>
-            <div class="other-goals">
-            <h3 class="dashboard-text">{{firstName}}'s Other Goals:</h3>
-            <div class="form-align">
-            <form action="/dashboard" method="POST" id="choose-goal-form" class="column">
-                <label for="goals"class="dashboard-text other-goals">Choose a goal to focus on!</label>
-                <br>
-                <br>
-                <select name="goals" id="goals">
-                    {{#each this.deviceGoals}}
-                    <option>{{this}}</option>
-                    {{/each}}
-                </select>
-                <br>
-                <br>
-                <button type="submit" class="btn goals-button">Submit</button>
-                <input type="hidden" name="type" value="goals">
-            </form>
-            </div>
-            <a class="link" href="/editGoals">Click here to edit your device goals</a>
-            </div>
+            {{#if onlyOneGoal}}
+                <div class="column">
+                    <h3>This device only has one goal</h3>
+                    <a class="link" href="/editGoals">Click here to edit your device goals</a>
+                </div>
+            {{else}}
+                <div class="other-goals">
+                <h3 class="dashboard-text">{{firstName}}'s Other Goals:</h3>
+                    <div class="form-align">
+                    <form action="/dashboard" method="POST" id="choose-goal-form" class="column">
+                        <label for="goals"class="dashboard-text other-goals">Choose a goal to focus on!</label>
+                        <br>
+                        <br>
+                        <select name="goals" id="goals">
+                            {{#each this.deviceGoals}}
+                            <option>{{this}}</option>
+                            {{/each}}
+                        </select>
+                        <br>
+                        <br>
+                        <button type="submit" class="btn goals-button">Submit</button>
+                        <input type="hidden" name="type" value="goals">
+                    </form>
+                    </div>
+                    <a class="link" href="/editGoals">Click here to edit your device goals</a>
+                </div>
+            {{/if}}
         </div>
         <div class="column">
             <div class="right-box">
