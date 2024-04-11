@@ -133,5 +133,6 @@ export const editDeviceGoal = async (userId, deviceId, deviceGoals) => {
 	if (!updated.acknowledged) {
 		throw `Error: Unable to update device goals`;
 	}
-	return updated;
+	let updatedDevice = getDevice(userId, deviceId);
+	return updatedDevice;
 };

@@ -28,8 +28,8 @@ export const createLog = () => {
 	// let end1 = Math.floor(Math.random() * (101 - start1)) + start1;
 	// let lastCycle = {start: start1, end: end1};
 	let lastCycle = Math.floor(Math.random() * 25);
-	let previousDeleted = Math.floor(Math.random() * (1000));
-	let currentDeleted = Math.floor(Math.random() * (1000));
+	// let previousDeleted = Math.floor(Math.random() * (1000));
+	let deleted = Math.floor(Math.random() * (1000));
 	let log = {
 		currentBattery: battery,
 		screenTime: screenTime,
@@ -40,8 +40,7 @@ export const createLog = () => {
 		streamTime: streamTime,
 		idleTime: idleTime,
 		lastCycle: lastCycle,
-		previousDeleted: previousDeleted,
-		currentDeleted: currentDeleted};
+		deleted: deleted};
 	return log;
 };
 
@@ -61,8 +60,8 @@ export const createPrevLog = () => {
 	// let end1 = Math.floor(Math.random() * (101 - start1)) + start1;
 	// let lastCycle = {start: start1, end: end1};
 	let lastCycle = 0;
-	let previousDeleted = 0;
-	let currentDeleted = 0;
+	// let previousDeleted = 0;
+	let deleted = 0;
 	let log = {
 		currentBattery: battery,
 		screenTime: screenTime,
@@ -73,8 +72,7 @@ export const createPrevLog = () => {
 		streamTime: streamTime,
 		idleTime: idleTime,
 		lastCycle: lastCycle,
-		previousDeleted: previousDeleted,
-		currentDeleted: currentDeleted};
+		deleted: deleted};
 	return log;
 };
 
@@ -208,11 +206,11 @@ export const checkUser = async (email, password) => {
 	const user1 = await userCollection.findOne({ email: email });
 	let validPassword = await bcrypt.compare(password, user1.password);
 	if (validPassword) {
-		for (const device of user.devices) {
+		for (const device of user1.devices) {
             const prevLog = device.log;
             const log = createLog();
             const updateResult = await userCollection.updateOne(
-                { _id: user._id, "devices._id": device._id },
+                { _id: user1._id, "devices._id": device._id },
                 { $set: { "devices.$.prevLog": prevLog, "devices.$.log": log } }
             );
 			if (updateResult.modifiedCount === 0) {
