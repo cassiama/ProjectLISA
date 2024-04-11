@@ -24,8 +24,8 @@ export const createLog = () => {
 	let downloaded = Math.floor(Math.random() * 20);
 	let streamTime = Math.floor(Math.random() * screenTime);
 	let idleTime = Math.floor(Math.random() * (screenTime - streamTime));
-	// let start1 = Math.floor(Math.random() * 100);
-	// let end1 = Math.floor(Math.random() * (101 - start1)) + start1;
+	let start1 = Math.floor(Math.random() * 100);
+	let end1 = Math.floor(Math.random() * (101 - start1)) + start1;
 	let lastCycle = {start: start1, end: end1};
 	let chargingTime = Math.floor(Math.random() * 1440);
 	// let previousDeleted = Math.floor(Math.random() * (1000));
