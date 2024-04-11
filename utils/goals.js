@@ -1,12 +1,13 @@
 const dailyGoals = [
-    "Recharge before device reaches 20% (Daily)",
-    "Clean out inbox (Daily)",
-    "Shut Down when not in use (Daily)",
+    "Recharge device before 20% (Daily)",
+    "Use energy-saving mode at least 75% of the time (Daily)",
+    "Keep idle time below 45 minutes (Daily)",
+    "Keep average screen brightness below 75% (Daily)"
 ];
 const weeklyGoals = [
-    "Download instead of streaming (Weekly)",
-    "Reduce screen time by 5 hours (Weekly)",
+    "Reduce screen time by 10% (Weekly)",
     "Remove 100 MB of storage space (Weekly)",
+    "Reduce charging time by 10% (Weekly)"
 ];
 
 export const allGoals = [...dailyGoals, ...weeklyGoals];
