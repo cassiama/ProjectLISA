@@ -19,7 +19,7 @@
 			<button type="submit"  class="register-button">Submit</button>
 		</form>
 		<script>
-			document.getElementById('myForm').addEventListener('submit', function(e) {
+			document.getElementById('editDeviceGoal-form').addEventListener('submit', function(e) {
 				var checkboxes = document.querySelectorAll('input.deviceGoals:checked');
 				if (checkboxes.length === 0) {
 					e.preventDefault();
@@ -32,10 +32,6 @@
 		{{/if}}
 		<br />
 		<br>
-		{{#if error}}
-			<p class="error">{{message}}</p>
-		{{/if}}
-		<br />
 		</br>
 		</br>
 		<br>
