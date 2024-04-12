@@ -1,54 +1,69 @@
 <main>
 	<form method="post" id="registerDevice-form">
 		<div class="vertical-container">
-		<h2 class="title">Device Registration</h2>
-		<br>
-		<label for="serialNum">Serial Number: </label>
-		<br>
-		<input type="text" name="serialNumber" id="serialNumber" required class="register-input"/>
-		<br />
-		<br>
-		<label for="devName">Device Name: </label>
-		<br>
-		<input type="text" name="deviceName" id="deviceName" required class="register-input"/>
-		<br />
-		<br>
-		<label for="devGoals">Device Goals: </label>
-		<br>
-		<form id="myForm">
-			{{#each goals}}
-				<input type="checkbox" class="deviceGoals" name="deviceGoals" value="{{this}}">{{this}}
-				<br>
-			{{/each}}
-			<br>
-			<br>
-			<a href="/goals" id="link">Learn More About Device Goals</a>
-			<br>
-			<br>
-			<button type="submit" class="register-button">Register Device</button>
-		</form>
-		<script>
-			document.getElementById('myForm').addEventListener('submit', function(e) {
-				var checkboxes = document.querySelectorAll('input.deviceGoals:checked');
-				if (checkboxes.length === 0) {
-					e.preventDefault();
-					alert('Please select at least one goal.');
-				}
-			});
-		</script>
-		{{!-- {{#each goals}}
+			<h2 class="title">Device Registration</h2>
+			<br />
+			<label for="serialNum">Serial Number: </label>
+			<br />
+			<input
+				type="text"
+				name="serialNumber"
+				id="serialNumber"
+				placeholder="Enter serial number"
+				required
+				class="register-input"
+			/>
+			<br />
+			<br />
+			<label for="devName">Device Name: </label>
+			<br />
+			<input
+				type="text"
+				name="deviceName"
+				id="deviceName"
+				required
+				placeholder="Enter device name"
+				class="register-input"
+			/>
+			<br />
+			<br />
+			<label for="devGoals">Device Goals: </label>
+			<br />
+			<form id="myForm">
+				{{#each goals}}
+					<input
+						type="checkbox"
+						class="deviceGoals"
+						name="deviceGoals"
+						value="{{this}}"
+					/>{{this}}
+					<br />
+				{{/each}}
+				<br />
+				<br />
+				<a href="/goals" id="link">Learn More About Device Goals</a>
+				<br />
+				<br />
+				<button type="submit" class="register-button">Register Device</button>
+			</form>
+			<script>
+				document.getElementById('myForm').addEventListener('submit', function(e) { var checkboxes =
+				document.querySelectorAll('input.deviceGoals:checked'); if
+				(checkboxes.length === 0) { e.preventDefault(); alert('Please select at least one goal.'); } });
+			</script>
+			{{!-- {{#each goals}}
 			{{! Checkbox options}}
 			<input type="checkbox" name="deviceGoals" value="{{this}}" id="deviceGoals" required>{{this}}
 			<br>
 		{{/each}} --}}
-		{{#if error}}
-			<p class="error">{{message}}</p>
-		{{/if}}
-		<br />
-		<br />
-		{{!-- <button type="submit" class="button">Submit</button> --}}
-		<br>
-		<a href="/dashboard" class="button">Back</a>
+			{{#if error}}
+				<p class="error">{{message}}</p>
+			{{/if}}
+			<br />
+			<br />
+			{{! <button type="submit" class="button">Submit</button> }}
+			<br />
+			<a href="/dashboard" class="button">Back</a>
 		</div>
 	</form>
 </main>
