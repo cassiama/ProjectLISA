@@ -3,7 +3,7 @@
     <div class="column">
       <div class="image-text">
         <div class="image">
-      <img src="https://pngimg.com/d/smiley_PNG158.png" width="200px" height="200px">
+      <img src="https://pngimg.com/d/smiley_PNG158.png" width="200px" height="200px" alt="Profile Pic">
     </div>
     <div class="profile-text">
     <h1>{{firstName}} {{lastName}}</h1>
@@ -37,21 +37,21 @@
     <div>
         {{!-- <h2>My Devices:</h2> --}}
         <div class="vertical-container">
-        {{#if devices}}
         <h3>My Devices</h3>
+        {{#if devices}}
         <ol>
           {{#each devices}}
           <li>
-              <div class="row">
-                  <p>{{this.deviceName}}</p>
-              </div>
-              <ul>Device Goals: 
+              <p>{{this.deviceName}}</p>
+              
+                <h4>Device Goals</h4>
                 {{#each this.deviceGoals}}
+                <ul>
                   <li>{{this}}</li>
+                </ul>
                 {{/each}}
-              </ul>
           </li>
-            <br/>
+          <br/>
           {{/each}}
         </ol>
         {{else}}
