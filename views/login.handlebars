@@ -29,10 +29,15 @@
         class="login-input"
       >
     </label>
-{{!-- 
+
     {{#if error}}
-      <p class="error">{{message}}</p>
-    {{/if}} --}}
+      <script>
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+          e.preventDefault();
+          alert({{message}});
+        });
+      </script>
+    {{/if}}
 
     <br>
     <br> 

@@ -57,7 +57,12 @@
     <br>
 
     {{#if error}}
-      <p class="error">{{message}}</p>
+      <script>
+        document.getElementById('help-form').addEventListener('submit', function(e) {
+          e.preventDefault();
+          alert({{message}});
+        });
+      </script>
     {{/if}}
     {{#if success}}
       <p class="success">{{message}}</p>
