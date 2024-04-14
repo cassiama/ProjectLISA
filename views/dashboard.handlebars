@@ -42,6 +42,82 @@
             <div class="left-box">
             {{#if deviceName}}
             <h3>{{deviceName}} Stats</h3>
+            <div id="piechart"></div>
+            {{!-- <p>UserID: {{userId}}, CurrentDevice: {{currentDevice}}</p> --}}
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+        console.log("Script executed");
+
+    document.addEventListener("DOMContentLoaded", async function() {
+        console.log("DOMContentLoaded event fired");
+
+        // Load google charts
+        console.log("Loading Google Charts library...");
+        google.charts.load('current', { 'packages': ['corechart'] });
+
+        // Wait for Google Charts to load
+        await new Promise(resolve => google.charts.setOnLoadCallback(resolve));
+        console.log("Google Charts library loaded.");
+
+        // Fetch device data
+        const currentDeviceInfo = JSON.parse('{{{currentDeviceInfo}}}');
+        const prevLog = currentDeviceInfo.prevLog;
+        const currentLog = currentDeviceInfo.log;
+
+        // Calculate differences
+        console.log("Calculating differences...");
+        const diff = {
+    powerMode: Math.max(
+        ((currentLog.normal * 0.25) + (currentLog.performance * 0.33) + (currentLog.energySaver * 0.25 * 0.9)) -
+        ((prevLog.normal * 0.25) + (prevLog.performance * 0.33) + (prevLog.energySaver * 0.25 * 0.9)),
+        0
+    ),
+    averageBrightness: Math.max(
+        ((currentLog.averageBrightness - prevLog.averageBrightness) * 0.5),
+        0
+    ),
+    chargingTime: Math.max(
+        ((currentLog.chargingTime - prevLog.chargingTime) * 0.8),
+        0
+    ),
+    streamTime: Math.max(
+        (currentLog.streamTime - prevLog.streamTime) * 0.27,
+        0
+    ),
+    idleTime: Math.max(
+        (currentLog.idleTime - prevLog.idleTime) * 0.05,
+        0
+    ),
+};
+        
+        console.log("Differences calculated:", diff);
+
+        // Create the data table for the pie chart
+        console.log("Creating data table...");
+        var data = google.visualization.arrayToDataTable([
+            ['Task', 'Difference'],
+            ['Normal', diff.powerMode],
+            ['Performance', diff.averageBrightness],
+            ['Energy Saver', diff.chargingTime],
+            ['Downloaded', diff.streamTime],
+            ['Idle Time', diff.idleTime],
+            ['Last Cycle', diff.lastCycle]
+        ]);
+        console.log("Data table created:", data);
+
+        // Set chart options
+        var options = {
+            title: 'Difference Between Previous and Current Log',
+        };
+
+        // Display the chart inside the <div> element with id="piechart"
+        console.log("Drawing pie chart...");
+        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+        chart.draw(data, options);
+        console.log("Pie chart drawn.");
+    });
+</script>
+
             {{else}}
             <h3>Stats Unavailable</h3>
             {{/if}}

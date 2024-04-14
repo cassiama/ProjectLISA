@@ -46,7 +46,7 @@ export const registerDevice = async (
 		throw `Error: Device already registered`;
 	}
 	let prevLog = createPrevLog();
-	let devLog = createLog();
+	let devLog = createLog(prevLog);
 	let newDevice = {
 		_id: new ObjectId(),
 		deviceOwner: userId,

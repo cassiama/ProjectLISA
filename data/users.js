@@ -12,7 +12,42 @@ import { ObjectId } from "mongodb";
 import bcrypt from "bcrypt";
 const saltRounds = 8;
 
-export const createLog = () => {
+// export const createLog = () => {
+// 	let battery = Math.floor(Math.random() * 101);
+// 	let screenTime = Math.floor(Math.random() * 1440);
+// 	// let normal = Math.floor(Math.random() * 90);
+// 	// let performance = Math.floor(Math.random() * (100 - normal));
+// 	// let energySaver = 100 - normal - performance;
+// 	let normal = Math.floor(Math.random() * screenTime);
+// 	let performance = Math.floor(Math.random() * (screenTime - normal));
+// 	let energySaver = screenTime - normal - performance;
+// 	let downloaded = Math.floor(Math.random() * 20);
+// 	let streamTime = Math.floor(Math.random() * screenTime);
+// 	let idleTime = Math.floor(Math.random() * (screenTime - streamTime));
+// 	let start1 = Math.floor(Math.random() * 100);
+// 	let end1 = Math.floor(Math.random() * (101 - start1)) + start1;
+// 	let lastCycle = {start: start1, end: end1};
+// 	let chargingTime = Math.floor(Math.random() * 1440);
+// 	// let previousDeleted = Math.floor(Math.random() * (1000));
+// 	let deleted = Math.floor(Math.random() * (1000));
+// 	let averageBrightness = Math.floor(Math.random() * 101);
+// 	let log = {
+// 		currentBattery: battery,
+// 		screenTime: screenTime,
+// 		normal: normal,
+// 		performance: performance,
+// 		energySaver: energySaver,
+// 		downloaded: downloaded,
+// 		streamTime: streamTime,
+// 		idleTime: idleTime,
+// 		lastCycle: lastCycle,
+// 		chargingTime, chargingTime,
+// 		deleted: deleted,
+// 		averageBrightness: averageBrightness};
+// 	return log;
+// };
+
+export const createLog = (prevLog) => {
 	let battery = Math.floor(Math.random() * 101);
 	let screenTime = Math.floor(Math.random() * 1440);
 	// let normal = Math.floor(Math.random() * 90);
@@ -32,19 +67,32 @@ export const createLog = () => {
 	let deleted = Math.floor(Math.random() * (1000));
 	let averageBrightness = Math.floor(Math.random() * 101);
 	let log = {
-		currentBattery: battery,
-		screenTime: screenTime,
-		normal: normal,
-		performance: performance,
-		energySaver: energySaver,
-		downloaded: downloaded,
-		streamTime: streamTime,
-		idleTime: idleTime,
-		lastCycle: lastCycle,
-		chargingTime, chargingTime,
-		deleted: deleted,
-		averageBrightness: averageBrightness};
-	return log;
+	first: false,
+	currentBattery: battery,
+	screenTime: screenTime,
+	normal: normal,
+	performance: performance,
+	energySaver: energySaver,
+	downloaded: downloaded,
+	streamTime: streamTime,
+	idleTime: idleTime,
+	lastCycle: lastCycle,
+	chargingTime, chargingTime,
+	deleted: deleted,
+	averageBrightness: averageBrightness};
+	
+	if (prevLog.first) {
+		return log;
+	} else {
+		Object.keys(log).forEach(key => {
+			if (key !== 'lastCycle' && key !== 'deleted' && key !== 'first') { // Exclude lastCycle, first, and deleted properties
+			  let difference = log[key] - prevLog[key];
+			  let maxDiff = prevLog[key] * 0.5; // Maximum allowed difference (50% of prevLog)
+			  log[key] = Math.max(prevLog[key] - maxDiff, Math.min(prevLog[key] + maxDiff, log[key]));
+			}
+		  });
+		return log;
+	}
 };
 
 export const createPrevLog = () => {
@@ -68,6 +116,7 @@ export const createPrevLog = () => {
 	let deleted = 0;
 	let averageBrightness = 0;
 	let log = {
+		first: true,
 		currentBattery: battery,
 		screenTime: screenTime,
 		normal: normal,
@@ -215,7 +264,7 @@ export const checkUser = async (email, password) => {
 	if (validPassword) {
 		for (const device of user1.devices) {
             const prevLog = device.log;
-            const log = createLog();
+            const log = createLog(prevLog);
             const updateResult = await userCollection.updateOne(
                 { _id: user1._id, "devices._id": device._id },
                 { $set: { "devices.$.prevLog": prevLog, "devices.$.log": log } }
