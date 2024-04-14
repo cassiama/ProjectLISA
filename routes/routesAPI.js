@@ -19,13 +19,14 @@ import {
 	getTips,
 	getTotalPoints,
 	subtractPoints,
-	helpTicket
+	helpTicket,
 } from "../data/users.js";
 import {
 	serialNumAlreadyExists,
 	registerDevice,
 	getDevice,
 	removeDevice,
+	editDeviceGoal
 } from "../data/devices.js";
 import { allGoals } from "../utils/goals.js";
 import { getEmissionsFacts } from "../utils/emissionsFacts.js";
@@ -908,20 +909,32 @@ routes
 				currentDeviceName: currDeviceName,
 				currentGoal,
 			} = req.session.user;
-
-			console.log(user);
 			//0.25: 0.25 watts/minute baseline for normal
 			//0.33: 0.33 watts/minute for performance
 			//0.9: usingh energySaver assumes 10% savings in power
 			//0.27: 0.27 watts/minute streaming
-			let carbonEmissionSavings = (user.log.normal * 0.25 + user.log.performance * 0.33) 
-			+ (user.log.energySaver * 0.25 * 0.9)  
-			- (user.log.streamTime * 0.27) 
-			- (user.log.downloaded * 1.5) - (user.log.idleTime * 0.05) + (user.log.lastCycle * 65 * 0.8)
-			//baseline: 520 watt/hours
-			let percentage = (((carbonEmissionSavings/60)/520)*100).toFixed(2);
-			let progressMessage = "";
+			//65W battery
+			//390g/kwh emission factor
+			const currDev = await getDevice(userId,currentDevice);
+			const prevLog = currDev.prevLog;
+			const currentLog = currDev.log;
 
+			let CarbonEmissionDifference= 
+			( (currentLog.normal - prevLog.normal) * 0.25 ) +
+			( (currentLog.performance - prevLog.performance) * 0.33 ) +
+			( (currentLog.energySaver - prevLog.energySaver) * 0.25 * 0.9 ) -
+			( currentLog.streamTime - prevLog.streamTime ) * 0.27 -
+			( currentLog.downloaded - prevLog.downloaded ) * 1.5 -
+			( currentLog.idleTime - prevLog.idleTime ) * 0.05 +
+			// ( currentLog.lastCycle - prevLog.lastCycle ) * 65 * 0.8 +
+			( (currentLog.chargingTime - prevLog.chargingTime)  * 0.8) +
+			( (currentLog.averageBrightness - prevLog.averageBrightness) * 0.5)
+			let carbonEmissionSavings =   (CarbonEmissionDifference/60) * 0.39
+
+        
+    // Baseline: 520 watt/hours
+    let percentage = (carbonEmissionSavings/520 * 100).toFixed(2);
+	let progressMessage = ""
 			if (currentGoal) {
 				if (percentage >= 25 && percentage < 50)
 					progressMessage = "Nice work!";
@@ -976,16 +989,24 @@ routes
 
 			// Render dashboard page
 			deviceGoals = deviceGoals.filter((goal) => goal !== currentGoal);
+			let onlyOneGoal = false;
+			if (deviceGoals.length < 1) {
+				onlyOneGoal = true;
+			}
 			console.log(deviceGoals);
 			res.render("dashboard", {
 				firstName: firstName,
 				deviceName: currDeviceName,
 				devices: devices,
+				userId: userId,
+				currentDevice: currentDevice,
 				currentGoal: currentGoal,
 				deviceGoals: deviceGoals,
 				tips: await getTips(),
 				percentage: percentage,
 				progressMessage: progressMessage,
+				onlyOneGoal: onlyOneGoal,
+				currentDeviceInfo: JSON.stringify(currDev),
 				emissionsFacts: await getEmissionsFacts(),
 			});
 			return;
@@ -1005,23 +1026,37 @@ routes
 				currentDevice,
 				currentDeviceName: currDeviceName,
 			} = req.session.user;
-			console.log(req.session.user);
 
 			const user = await getUserById(userId);
-			let carbonEmissionSavings = (user.log.normal * 0.25 + user.log.performance * 0.33) 
-			+ (user.log.energySaver * 0.25 * 0.9)  
-			- (user.log.streamTime * 0.27) 
-			- (user.log.downloaded * 1.5) - (user.log.idleTime * 0.05) + (user.log.lastCycle * 65 * 0.8)
-			//baseline: 520 watt/hours
-			let percentage = (((carbonEmissionSavings/60)/520)*100).toFixed(2);
-			let progressMessage = "";
-			if (percentage >= 25 && percentage < 50)
-				progressMessage = "Nice work!";
-			else if (percentage >= 50 && percentage < 75)
-				progressMessage = "Great job! Keep going!";
-			else if (percentage >= 75 && percentage !== 100)
-				progressMessage = "You're so close!";
-			else progressMessage = "You did it!";
+			const currDev = await getDevice(userId,currentDevice);
+			const prevLog = currDev.prevLog;
+			const currentLog = currDev.log;
+
+			let CarbonEmissionDifference= 
+			( (currentLog.normal - prevLog.normal) * 0.25 ) +
+			( (currentLog.performance - prevLog.performance) * 0.33 ) +
+			( (currentLog.energySaver - prevLog.energySaver) * 0.25 * 0.9 ) -
+			( currentLog.streamTime - prevLog.streamTime ) * 0.27 -
+			( currentLog.downloaded - prevLog.downloaded ) * 1.5 -
+			( currentLog.idleTime - prevLog.idleTime ) * 0.05 +
+			// ( currentLog.lastCycle - prevLog.lastCycle ) * 65 * 0.8 +
+			( (currentLog.chargingTime - prevLog.chargingTime) * 0.8) +
+			( (currentLog.averageBrightness - prevLog.averageBrightness) * 0.5)
+			let carbonEmissionSavings =   (CarbonEmissionDifference/60) * 0.39
+
+        
+    // Baseline: 520 watt/hours
+    let percentage = (carbonEmissionSavings/520 * 100).toFixed(2);
+	let progressMessage = ""
+			if (currentGoal) {
+				if (percentage >= 25 && percentage < 50)
+					progressMessage = "Nice work!";
+				else if (percentage >= 50 && percentage < 75)
+					progressMessage = "Great job! Keep going!";
+				else if (percentage >= 75 && percentage !== 100)
+					progressMessage = "You're so close!";
+				else progressMessage = "You did it!";
+			}
 
 			// if the user doesn't have any devices registered, render the page accordingly
 			if (!currentDevice) {
@@ -1056,7 +1091,10 @@ routes
 				(goal) => goal !== newGoal
 			);
 			console.log(deviceGoals);
-
+			let onlyOneGoal = false;
+			if (deviceGoals.length < 1) {
+				onlyOneGoal = true;
+			}
 			// re-render the page with the new other goals
 			res.render("dashboard", {
 				firstName: firstName,
@@ -1067,6 +1105,8 @@ routes
 				tips: await getTips(),
 				percentage: percentage,
 				progressMessage: progressMessage,
+				onlyOneGoal: onlyOneGoal,
+				currentDeviceInfo: JSON.stringify(currDev),
 				emissionsFacts: await getEmissionsFacts(),
 			});
 		}
@@ -1084,20 +1124,35 @@ routes
 			} = req.session.user;
 
 			const user = await getUserById(userId);
-			let carbonEmissionSavings = (user.log.normal * 0.25 + user.log.performance * 0.33) 
-			+ (user.log.energySaver * 0.25 * 0.9)  
-			- (user.log.streamTime * 0.27) 
-			- (user.log.downloaded * 1.5) - (user.log.idleTime * 0.05) + (user.log.lastCycle * 65 * 0.8)
-			//baseline: 520 watt/hours
-			let percentage = (((carbonEmissionSavings/60)/520)*100).toFixed(2);
-			let progressMessage = "";
-			if (percentage >= 25 && percentage < 50)
-				progressMessage = "Nice work!";
-			else if (percentage >= 50 && percentage < 75)
-				progressMessage = "Great job! Keep going!";
-			else if (percentage >= 75 && percentage !== 100)
-				progressMessage = "You're so close!";
-			else progressMessage = "You did it!";
+			const currDev = await getDevice(userId, currentDevId);
+			const prevLog = currDev.prevLog;
+			const currentLog = currDev.log;
+
+			let CarbonEmissionDifference= 
+			( (currentLog.normal - prevLog.normal) * 0.25 ) +
+			( (currentLog.performance - prevLog.performance) * 0.33 ) +
+			( (currentLog.energySaver - prevLog.energySaver) * 0.25 * 0.9 ) -
+			( currentLog.streamTime - prevLog.streamTime ) * 0.27 -
+			( currentLog.downloaded - prevLog.downloaded ) * 1.5 -
+			( currentLog.idleTime - prevLog.idleTime ) * 0.05 +
+			// ( currentLog.lastCycle - prevLog.lastCycle ) * 65 * 0.8 +
+			( (currentLog.chargingTime - prevLog.chargingTime) * 0.8) +
+			( (currentLog.averageBrightness - prevLog.averageBrightness) * 0.5)
+			let carbonEmissionSavings =   CarbonEmissionDifference * 390
+
+        
+    // Baseline: 520 watt/hours
+    let percentage = (carbonEmissionSavings/60 * 100).toFixed(2);
+	let progressMessage = ""
+			if (currentGoal) {
+				if (percentage >= 25 && percentage < 50)
+					progressMessage = "Nice work!";
+				else if (percentage >= 50 && percentage < 75)
+					progressMessage = "Great job! Keep going!";
+				else if (percentage >= 75 && percentage !== 100)
+					progressMessage = "You're so close!";
+				else progressMessage = "You did it!";
+			}
 
 			// if the user selected the same device, then do nothing
 			if (currentDevId == newDevId) {
@@ -1114,6 +1169,10 @@ routes
 				let otherGoals = deviceGoals.filter(
 					(goal) => goal !== currentGoal
 				);
+				let onlyOneGoal = false;
+				if (deviceGoals.length < 1) {
+					onlyOneGoal = true;
+				}
 				res.render("dashboard", {
 					firstName: firstName,
 					deviceName: currDeviceName,
@@ -1124,6 +1183,8 @@ routes
 					deviceGoals: otherGoals,
 					percentage: percentage,
 					progressMessage: progressMessage,
+					onlyOneGoal: onlyOneGoal,
+					currentDeviceInfo: JSON.stringify(currDev),
 					emissionsFacts: await getEmissionsFacts(),
 				});
 			} else {
@@ -1142,7 +1203,10 @@ routes
 				req.session.user.currentDeviceName = newDeviceName;
 				req.session.user.currentGoal = newGoals[0];
 				req.session.user.deviceGoals = newGoals.slice(1);
-
+				let onlyOneGoal = false;
+				if (req.session.user.deviceGoals.length < 1) {
+					onlyOneGoal = true;
+				}
 				// re-render the page with the info from the new current device
 				console.log(req.session.user);
 				res.render("dashboard", {
@@ -1154,6 +1218,8 @@ routes
 					tips: await getTips(),
 					percentage: percentage,
 					progressMessage: progressMessage,
+					onlyOneGoal: onlyOneGoal,
+					currentDeviceInfo: JSON.stringify(currDev),
 					emissionsFacts: await getEmissionsFacts(),
 				});
 			}
@@ -1183,5 +1249,46 @@ routes
     .get(async (req, res) => {
         res.render("editGoals", {currentDevice: req.session.user.currentDevice, currentDeviceName:  req.session.user.currentDeviceName, goals: allGoals});
     })
+	.post(async (req, res) => {
+		let errors = [];
+		let devId = req.session.user.currentDevice;
+		let devGoals = Array.isArray(req.body.deviceGoals)
+			? req.body.deviceGoals
+			: [req.body.deviceGoals];
+		// console.log(req.body);
+		if (typeof devId === "undefined" || devId.trim().length === 0) {
+			errors.push("Invalid Device ID");
+			res.status(400).render("editGoals", {
+				error: true,
+				message: errors[0],
+				goals: allGoals,
+			});
+			return;
+		}
+		try {
+			const {
+				deviceGoals
+			} = await editDeviceGoal(
+				xss(req.session.user.id),
+				xss(devId),
+				devGoals
+			);
+
+			// Add the new device information to the logged user.
+			req.session.user.deviceGoals = deviceGoals;
+			req.session.user.currentGoal = devGoals[0];
+
+			// Redirect to the user's profile page.
+			res.redirect("/dashboard");
+		} catch (e) {
+			errors.push(e);
+			res.status(400).render("editGoals", {
+				error: true,
+				message: errors[0],
+				goals: allGoals,
+			});
+			return;
+		}
+	});
 
 export default routes;
