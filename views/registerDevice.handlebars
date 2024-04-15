@@ -47,18 +47,21 @@
 				<button type="submit" class="register-button">Register Device</button>
 			</form>
 			<script>
-				document.getElementById('myForm').addEventListener('submit', function(e) { var checkboxes =
-				document.querySelectorAll('input.deviceGoals:checked'); if
-				(checkboxes.length === 0) { e.preventDefault(); alert('Please select at least one goal.'); } });
+				// error message
+				document.getElementById("registerDevice-form").addEventListener("submit", function (event) {
+					var checkboxes = document.querySelectorAll(".deviceGoals");
+					var checkedOne = Array.prototype.slice.call(checkboxes).some(x => x.checked);
+					if (!checkedOne) {
+						alert("Please select at least one device goal.");
+						event.preventDefault();
+					}
+				});
 			</script>
 			{{!-- {{#each goals}}
 			{{! Checkbox options}}
 			<input type="checkbox" name="deviceGoals" value="{{this}}" id="deviceGoals" required>{{this}}
 			<br>
 		{{/each}} --}}
-			{{#if error}}
-				<p class="error">{{message}}</p>
-			{{/if}}
 			<br />
 			<br />
 			{{! <button type="submit" class="button">Submit</button> }}
