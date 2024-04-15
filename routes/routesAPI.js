@@ -906,36 +906,46 @@ routes
 				currentGoal,
 			} = req.session.user;
 
-			let percentage;
-			try {
-				//0.25: 0.25 watts/minute baseline for normal
-				//0.33: 0.33 watts/minute for performance
-				//0.9: usingh energySaver assumes 10% savings in power
-				//0.27: 0.27 watts/minute streaming
-				//65W battery
-				//390g/kwh emission factor
-				const currDev = await getDevice(userId,currentDevice);
-				const prevLog = currDev.prevLog;
-				const currentLog = currDev.log;
-
-				let CarbonEmissionDifference= 
-				( (currentLog.normal - prevLog.normal) * 0.25 ) +
-				( (currentLog.performance - prevLog.performance) * 0.33 ) +
-				( (currentLog.energySaver - prevLog.energySaver) * 0.25 * 0.9 ) -
-				( currentLog.streamTime - prevLog.streamTime ) * 0.27 -
-				( currentLog.downloaded - prevLog.downloaded ) * 1.5 -
-				( currentLog.idleTime - prevLog.idleTime ) * 0.05 +
-				// ( currentLog.lastCycle - prevLog.lastCycle ) * 65 * 0.8 +
-				( (currentLog.chargingTime - prevLog.chargingTime)  * 0.8) +
-				( (currentLog.averageBrightness - prevLog.averageBrightness) * 0.5)
-				let carbonEmissionSavings =   (CarbonEmissionDifference/60) * 0.39
-
-			
-				// Baseline: 520 watt/hours
-				percentage = (carbonEmissionSavings/520 * 100).toFixed(2);
-			} catch (e) {
-				percentage = "0.00";
+			// if the user doesn't have any devices registered, render the page accordingly
+			if (devIds.length === 0) {
+				res.render("dashboard", {
+					firstName: firstName,
+					deviceGoals: ["No goals available"],
+					currentGoal: "N/A",
+					tips: await getTips(),
+					percentage: "0.00",
+					progressMessage: "",
+					onlyOneGoal: false,
+					emissionsFacts: await getEmissionsFacts(),
+				});
+				return;
 			}
+
+			//0.25: 0.25 watts/minute baseline for normal
+			//0.33: 0.33 watts/minute for performance
+			//0.9: usingh energySaver assumes 10% savings in power
+			//0.27: 0.27 watts/minute streaming
+			//65W battery
+			//390g/kwh emission factor
+			const currDev = await getDevice(userId,currentDevice);
+			const prevLog = currDev.prevLog;
+			const currentLog = currDev.log;
+
+			let CarbonEmissionDifference= 
+			( (currentLog.normal - prevLog.normal) * 0.25 ) +
+			( (currentLog.performance - prevLog.performance) * 0.33 ) +
+			( (currentLog.energySaver - prevLog.energySaver) * 0.25 * 0.9 ) -
+			( currentLog.streamTime - prevLog.streamTime ) * 0.27 -
+			( currentLog.downloaded - prevLog.downloaded ) * 1.5 -
+			( currentLog.idleTime - prevLog.idleTime ) * 0.05 +
+			// ( currentLog.lastCycle - prevLog.lastCycle ) * 65 * 0.8 +
+			( (currentLog.chargingTime - prevLog.chargingTime)  * 0.8) +
+			( (currentLog.averageBrightness - prevLog.averageBrightness) * 0.5)
+			let carbonEmissionSavings =   (CarbonEmissionDifference/60) * 0.39
+
+		
+			// Baseline: 520 watt/hours
+			let percentage = (carbonEmissionSavings/520 * 100).toFixed(2);
 
 			let progressMessage = ""
 			if (currentGoal) {
@@ -945,22 +955,7 @@ routes
 					progressMessage = "Great job! Keep going!";
 				else if (percentage >= 75 && percentage !== 100)
 					progressMessage = "You're so close!";
-				else progressMessage = "You did it!";
-			}
-
-			// if the user doesn't have any devices registered, render the page accordingly
-			if (devIds.length === 0) {
-				res.render("dashboard", {
-					firstName: firstName,
-					deviceGoals: ["No goals available"],
-					currentGoal: "N/A",
-					tips: await getTips(),
-					percentage: percentage,
-					progressMessage: progressMessage,
-					onlyOneGoal: false,
-					emissionsFacts: await getEmissionsFacts(),
-				});
-				return;
+				else if (percentage === 100) progressMessage = "You did it!";
 			}
 
 			// Get all of the device goals for the current device.
@@ -1061,7 +1056,7 @@ routes
 					emissionsFacts: await getEmissionsFacts(),
 				});
 			} else {
-				const currDev = await getDevice(userId,currentDevice);
+				const currDev = await getDevice(userId,currDeviceId);
 				const prevLog = currDev.prevLog;
 				const currentLog = currDev.log;
 
@@ -1202,7 +1197,7 @@ routes
 					progressMessage = "Great job! Keep going!";
 				else if (percentage >= 75 && percentage !== 100)
 					progressMessage = "You're so close!";
-				else progressMessage = "You did it!";
+				else if (percentage === 100) progressMessage = "You did it!";
 
 				res.render("dashboard", {
 					firstName: firstName,
@@ -1264,7 +1259,7 @@ routes
 					progressMessage = "Great job! Keep going!";
 				else if (percentage >= 75 && percentage !== 100)
 					progressMessage = "You're so close!";
-				else progressMessage = "You did it!";
+				else if (percentage === 100) progressMessage = "You did it!";
 
 				// re-render the page with the info from the new current device
 				console.log(req.session.user);
