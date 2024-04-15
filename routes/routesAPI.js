@@ -1237,7 +1237,7 @@ routes
 			let { currentUserPoints } = req.session.user;
 			// if the user selected the same device, then do nothing
 			if (currentDevId == newDevId) {
-				console.log(`${currDeviceName} goals:`, deviceGoals);
+				console.log('All goals:', deviceGoals);
 				console.log('Current goal:', currentGoal);
 				let currentDevice = await getDevice(userId, currentDevId);
 				let currDeviceName = currentDevice.deviceName;
