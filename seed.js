@@ -1,10 +1,14 @@
-import { addPoints, registerUser } from './data/users.js';
-import { registerDevice } from './data/devices.js';
+import { addRewardPoints, registerUser } from './data/users.js';
+import { addPointsToGoal, registerDevice } from './data/devices.js';
 import { dbConnection, closeConnection } from './config/mongoConnection.js';
+import { getAllGoalsInfo } from './utils/goals.js';
 
 //lets drop the database each time this is run
 const db = await dbConnection();
 await db.dropDatabase();
+
+// grab all possible goals
+const allGoals = await getAllGoalsInfo();
 
 async function main() {
     let user1, user2, user3, device1, device2, device3;
@@ -46,9 +50,9 @@ async function main() {
             'windows',
             'ios'
         );
-        await addPoints(user1._id, 100);
-        await addPoints(user2._id, 250);
-        await addPoints(user3._id, 1150);
+        await addRewardPoints(user1._id, 100);
+        await addRewardPoints(user2._id, 250);
+        await addRewardPoints(user3._id, 1150);
     } catch (e) {
         console.log("User: " + e);
     }
@@ -58,13 +62,26 @@ async function main() {
             user1._id.toString(),
             "fh938hr0rq0irih0rjrjs",
             "Lenovo ThinkPad X1 Carbon Gen 11",
-            ["Unplug charger from device before bedtime", "Download content instead of streaming"]
+            [allGoals[0], allGoals[3]]
+        )
+        // assume that user1 completed 50% of their goal for the day
+        await addPointsToGoal(
+            user1._id.toString(),
+            device1._id.toString(),
+            allGoals[0],
+            50
+        )
+        await addPointsToGoal(
+            user1._id.toString(),
+            device1._id.toString(),
+            allGoals[3],
+            100
         )
         device2 = await registerDevice(
             user1._id.toString(),
             "qhw4hr9iasdhsi0rjqwrw",
             "Legion Pro 7i Gen 9",
-            ["Clean out inbox", "Recharge before device reaches 20%", "Turn off wifi at night"]
+            [allGoals[1], allGoals[0], allGoals[2]]
         )
     } catch (e) {
         console.log("Device" + e);

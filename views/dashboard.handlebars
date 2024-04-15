@@ -149,7 +149,7 @@
                         <br>
                         <select name="goals" id="goals">
                             {{#each this.deviceGoals}}
-                            <option>{{this}}</option>
+                            <option>{{this.info}}</option>
                             {{/each}}
                         </select>
                         <br>
@@ -165,7 +165,9 @@
         <div class="column">
             <div class="right-box">
                 <h3>Current Goal:</h3>
-                <p>{{this.currentGoal}}</p>
+                {{#with this.currentGoal}}
+                    <p>{{this.info}}</p>
+                {{/with}}
                 <progress value={{{percentage}}} max="100"> {{percentage}}% </progress>
                 <h5>{{progressMessage}}</h5>
                 <p>You have reduced your carbon footprint by {{percentage}}%</p>

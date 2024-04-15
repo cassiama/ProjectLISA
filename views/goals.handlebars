@@ -5,7 +5,7 @@
     <h3 class="facts-text">Daily Goals:</h3>
     <ol class="facts-text"></ol>
     {{#each dailyGoals}}
-        <li class="facts-text">{{this}}</li>
+        <li class="facts-text">{{this.info}}</li>
     {{/each}}
     </ol>
     </div>
@@ -13,7 +13,7 @@
     <h3 class="facts-text">Weekly Goals:</h3>
     <ol class="facts-text">
     {{#each weeklyGoals}}
-        <li class="facts-text">{{this}}</li>
+        <li class="facts-text">{{this.info}}</li>
     {{/each}}
     <br>
 </ol>

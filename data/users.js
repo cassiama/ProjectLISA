@@ -477,18 +477,18 @@ export const getTotalPoints = async (userId) => {
 	}
 	userId = userId.trim();
 	const userCollection = await users();
-	const user = await getUserById(userId);
-	const totalPoints = user.points;
+	const sumResult = await userCollection.aggregate([
+		{ $match: { "_id": new ObjectId(userId) } }, // grab the user
+		{ $unwind: "$devices" }, // grab user's devices
+		{ $unwind: "$devices.deviceGoals" }, // grab the device's goals
+		{ $group: { _id: null, totalPoints: { $sum: { $round: ["$devices.deviceGoals.userPoints"] } } } }, // calculate the sum
+	]).toArray();
+	const totalPoints = sumResult[0].totalPoints;
 
-	const updatedUser = await userCollection.findOne(
-		{ _id: new ObjectId(userId) },
-		{ points: totalPoints }
-	);
-	// console.log(updatedUser);
-	return updatedUser.points;
+	return totalPoints;
 };
 
-export const subtractPoints = async (userId, rewardPoints) => {
+export const subtractRewardPoints = async (userId, rewardPoints) => {
 	if (!userId) {
 		throw "Error: User Id must be inputed";
 	}
@@ -527,7 +527,7 @@ export const subtractPoints = async (userId, rewardPoints) => {
 	return true;
 };
 
-export const addPoints = async (userId, rewardPoints) => {
+export const addRewardPoints = async (userId, rewardPoints) => {
 	if (!userId) {
 		throw "Error: User Id must be inputed";
 	}
@@ -537,7 +537,7 @@ export const addPoints = async (userId, rewardPoints) => {
 	if (userId.length == 0 || userId.trim().length == 0) {
 		throw "Error: User Id must not be an empty string or only include empty spaces";
 	}
-	if (!rewardPoints) {
+	if (typeof rewardPoints === "undefined") {
 		throw "Error: Reward Points must be inputed";
 	}
 	if (typeof rewardPoints != "number") {
@@ -546,7 +546,7 @@ export const addPoints = async (userId, rewardPoints) => {
 	if (rewardPoints <= 0) {
 		throw "Error: Reward Points must be greater than 0";
 	}
-	if (rewardPoints % 1 != 0) {
+	if (!Number.isInteger(rewardPoints)) {
 		throw "Error: Reward Points must be an integer";
 	}
 	userId = userId.trim();
@@ -561,6 +561,26 @@ export const addPoints = async (userId, rewardPoints) => {
 	if (updatedUser.modifiedCount === 0) throw "Error: Could not update user";
 	return true;
 };
+
+// /**
+//  * Adds up every point gained by the user for each goal to the user's point total.
+//  * @param {String} userId A valid ObjectId string
+//  * @returns true iff userId is a valid ObjectId string
+//  */
+// export const sumUpGoalPoints = async userId => {
+// 	// add error checking for userId
+
+// 	const user = await getUserById(userId);
+// 	// for every device...
+// 	for (const device of user.devices) {
+// 		// add the userPoints of each goal to the user's total points
+// 		const userPointsSumForDevice = device.deviceGoals.reduce((acc, goal) => goal.userPoints + acc);
+// 		console.info(`Total Amount of Points Gained for ${device.deviceName} by ${user.firstName} ${user.lastName}: ${userPointsSumForDevice}`);
+// 		user.points += userPointsSumForDevice
+// 	}
+// 	console.info(`Total Points Gained for ${user.firstName} ${user.lastName}: ${user.points}`);
+// 	return true;
+// };
 
 export const getTips = async () => {
 	// array of tips as a string
