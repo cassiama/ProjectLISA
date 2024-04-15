@@ -9,7 +9,7 @@
         <ul>
             <br>
             {{#each this.devices}}
-            <li id={{this._id}} onclick="submitForm();" class="link remove-dots">{{this.deviceName}}</li>
+            <li id={{this._id}} onclick="submitForm();" class="link remove-dots hover">{{this.deviceName}}</li>
             <br>
             {{/each}}
         </ul>
@@ -108,6 +108,12 @@
         // Set chart options
         var options = {
             title: 'Difference Between Previous and Current Log',
+            backgroundColor: '#ddbfe3',
+            colors: ['#E1F0DA', '#D4E7C5', '#BFD8AF', '#99BC85'],
+            pieSliceBorderColor: "transparent",
+            pieSliceTextStyle: {
+            color: 'black'
+            } 
         };
 
         // Display the chart inside the <div> element with id="piechart"
@@ -134,33 +140,6 @@
             </div>
             <br>
             <br>
-            {{#if onlyOneGoal}}
-                <div class="column">
-                    <h3>This device only has one goal</h3>
-                    <a class="link" href="/editGoals">Click here to edit your device goals</a>
-                </div>
-            {{else}}
-                <div class="other-goals">
-                <h3 class="dashboard-text">{{firstName}}'s Other Goals:</h3>
-                    <div class="form-align">
-                    <form action="/dashboard" method="POST" id="choose-goal-form" class="column">
-                        <label for="goals"class="dashboard-text other-goals">Choose a goal to focus on!</label>
-                        <br>
-                        <br>
-                        <select name="goals" id="goals">
-                            {{#each this.deviceGoals}}
-                            <option>{{this.info}}</option>
-                            {{/each}}
-                        </select>
-                        <br>
-                        <br>
-                        <button type="submit" class="btn goals-button">Submit</button>
-                        <input type="hidden" name="type" value="goals">
-                    </form>
-                    </div>
-                    <a class="link" href="/editGoals">Click here to edit your device goals</a>
-                </div>
-            {{/if}}
         </div>
         <div class="column">
             <div class="right-box">
@@ -183,7 +162,38 @@
                         <br />
                     {{/each}}
                 </ul>
+                <br>
+                <br>
             </div>
+            {{#if onlyOneGoal}}
+                <div class="other-goals">
+                    <div class="edit-user-goals">
+                    <h3>This device only has one goal</h3>
+                    <a class="link" href="/editGoals">Want to edit your goals?</a>
+                    </div>
+                </div>
+            {{else}}
+                <div class="other-goals">
+                <h3>{{firstName}}'s Other Goals:</h3>
+                    <div class="form-align">
+                    <form action="/dashboard" method="POST" id="choose-goal-form" class="column">
+                        <label for="goals"class="dashboard-text other-goals">Choose a goal to focus on!</label>
+                        <br>
+                        <br>
+                        <select name="goals" id="goals">
+                            {{#each this.deviceGoals}}
+                            <option>{{this.info}}</option>
+                            {{/each}}
+                        </select>
+                        <br>
+                        <br>
+                        <button type="submit" class="btn goals-button">Submit</button>
+                        <input type="hidden" name="type" value="goals">
+                    </form>
+                    </div>
+                    <a class="link" href="/editGoals">Want to edit your goals?</a>
+                </div>
+            {{/if}}
         </div>
     </div>
     </div>

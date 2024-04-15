@@ -250,6 +250,16 @@ textarea {
 .dashboard-text {
   color: #FFFFFF;
 }
+.hover {
+  cursor: pointer;
+}
+.edit-user-goals {
+  background-color: rgba(238, 238, 238, 0.70);
+  padding: 30px;
+  width: 55%;
+  margin-left: 120px;
+  border-radius: 20px;
+}
 
 /* profile page */
 .image-text {
