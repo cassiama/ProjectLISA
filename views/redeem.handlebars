@@ -60,9 +60,6 @@
         </form>
         <a href="/dashboard" class="button goals-button">Back</a>
 </div>
-    {{#if error}}
-        <p class="error">{{message}}</p>
-    {{/if}}
 
 
 </br>
@@ -89,5 +86,14 @@
         pointsElem.setAttribute("value", redeemValue);
         document.getElementById("rewards-form").submit();
     }
+    // if the user does not have enough points, alert them
+    document.getElementById('rewards-form').addEventListener('submit', function(e) {
+        let pointsElem = document.querySelector("input[name='points']");
+        let points = pointsElem.getAttribute("value");
+        if (points > {{this.points}}) {
+            e.preventDefault();
+            alert('You do not have enough points to redeem this reward.');
+        }
+    });
 </script>
 </main>
