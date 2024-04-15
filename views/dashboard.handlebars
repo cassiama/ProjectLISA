@@ -96,10 +96,10 @@
         console.log("Creating data table...");
         var data = google.visualization.arrayToDataTable([
             ['Task', 'Difference'],
-            ['Normal', diff.powerMode],
-            ['Performance', diff.averageBrightness],
-            ['Energy Saver', diff.chargingTime],
-            ['Downloaded', diff.streamTime],
+            ['Power Mode', diff.powerMode],
+            ['Average Brightness', diff.averageBrightness],
+            ['Charging Time', diff.chargingTime],
+            ['Stream Time', diff.streamTime],
             ['Idle Time', diff.idleTime],
             ['Last Cycle', diff.lastCycle]
         ]);
@@ -109,11 +109,8 @@
         var options = {
             title: 'Difference Between Previous and Current Log',
             backgroundColor: '#ddbfe3',
-            colors: ['#4F6F52', '#D4E7C5', '#BFD8AF', '#99BC85'],
-            pieSliceBorderColor: "transparent",
-            pieSliceTextStyle: {
-            color: 'black'
-            } 
+            colors: ['#E00849', '#9900b7', '#6300C6', '#ba0059'],
+            pieSliceBorderColor: "transparent"
         };
 
         // Display the chart inside the <div> element with id="piechart"
