@@ -740,7 +740,7 @@ routes
             });
             return;
         }
-        req.session.user = user;
+        req.session.new = user;
         res.redirect("/newpassword");
     });
 
@@ -796,7 +796,7 @@ routes
 
         try {
             await updateUser(
-                xss(req.session.user._id),
+                xss(req.session.new._id),
                 null,
                 null,
                 null,
@@ -912,6 +912,7 @@ routes //sustainability facts
 	.get(async (req, res) => {
 		res.render("facts", {
 			firstName: req.session.user.firstName,
+			deviceName: req.session.user.deviceName
 		});
 	});
 

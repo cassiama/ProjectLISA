@@ -38,7 +38,7 @@ app.use('*', (req, res, next) => {
 
 app.use('*', (req, res, next) => {
     if (req.originalUrl !== '/login' && req.originalUrl !== '/register' && req.originalUrl !== '/forgetpassword') {
-        if (!req.session.user) {
+        if (!req.session.user && !req.session.new) {
             res.redirect("/login");         
             return;
         }
