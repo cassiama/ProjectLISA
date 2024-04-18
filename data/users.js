@@ -476,16 +476,9 @@ export const getTotalPoints = async (userId) => {
 		throw "Error: User Id must not be an empty string or only include empty spaces";
 	}
 	userId = userId.trim();
-	const userCollection = await users();
-	const sumResult = await userCollection.aggregate([
-		{ $match: { "_id": new ObjectId(userId) } }, // grab the user
-		{ $unwind: "$devices" }, // grab user's devices
-		{ $unwind: "$devices.deviceGoals" }, // grab the device's goals
-		{ $group: { _id: null, totalPoints: { $sum: { $round: ["$devices.deviceGoals.userPoints"] } } } }, // calculate the sum
-	]).toArray();
-	const totalPoints = sumResult[0].totalPoints;
 
-	return totalPoints;
+	const user = await getUserById(userId);
+	return user.points;
 };
 
 export const subtractRewardPoints = async (userId, rewardPoints) => {

@@ -209,7 +209,10 @@ export const addPointsToGoal = async (userId, deviceId, goalInfo, userPointsGain
 			"_id": new ObjectId(userId)
 		},
 		{
-			$inc: {"devices.$[device].deviceGoals.$[goal].userPoints": userPointsGained}
+			$inc: {
+				points: userPointsGained,
+				"devices.$[device].deviceGoals.$[goal].userPoints": userPointsGained
+			}
 		},
 		{
 			arrayFilters: [
