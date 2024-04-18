@@ -435,3 +435,11 @@ table {
   transition: margin-left .5s;
   padding: 16px;
 }
+
+#choose-goal-form select {
+  width: 275px;
+}
+
+#choose-goal-form select:focus {
+  width: auto;
+}

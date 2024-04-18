@@ -69,13 +69,13 @@ async function main() {
             user1._id.toString(),
             device1._id.toString(),
             allGoals[0],
-            50
+            5
         )
         await addPointsToGoal(
             user1._id.toString(),
             device1._id.toString(),
             allGoals[3],
-            100
+            10
         )
         device2 = await registerDevice(
             user1._id.toString(),

@@ -255,7 +255,7 @@ routes
 				numberDevices: user.numberDevices,
 				os: user.os,
 				phoneSys: user.phoneSys,
-				devices: [],
+				deviceIds: [],
 			};
 			console.log(req.session.user);
 			res.redirect("/account");
@@ -352,9 +352,9 @@ routes
 				firstName: firstName,
 				lastName: lastName,
 				email: email,
-				devices: devices,
+				deviceIds: devices,
 				deviceGoals: deviceGoals,
-				currentDevice: devices[0],
+				currentDeviceId: devices[0],
 				currentDeviceName: currDeviceName,
 				currentGoal: currentGoal,
 				totalGoalPoints: totalGoalPoints,
@@ -437,10 +437,9 @@ routes.get("/logout", async (req, res) => {
 					} else if (percentage >= 40 && percentage < 50) {
 						powOfTwo = 1;
 						pointsGained = Math.round(goal.totalPoints / Math.pow(2, powOfTwo));
-					} else { // user can't gain more than the max points if % >= 50
-						powOfTwo = 0;
+					} else // user can't gain more than the max points if % >= 50
 						pointsGained = goal.totalPoints - goal.userPoints;
-					}
+
 					console.log(`Points gained for "${goal.info}":`, pointsGained);
 					await addRewardPoints(userId, pointsGained);
 					if (goal.userPoints + pointsGained < goal.totalPoints)
@@ -474,7 +473,7 @@ routes.route("/account").get(async (req, res) => {
 			firstName,
 			lastName,
 			email,
-			devices: deviceIds,
+			deviceIds,
 		} = req.session.user;
 		// console.log(userId, firstName, lastName, email, deviceIds);
 		let devices = [];
@@ -525,7 +524,7 @@ routes
 		let ageInput = req.body.ageInput;
 		let occupation = req.body.occupation;
 		let numberDevices = req.body.numberDevices;
-		let geography = req.body.devices;
+		let geography = req.body.geography;
 		let os = req.body.os;
 		let phoneSys = req.body.phoneSys;
 		// console.log(req.body);
@@ -693,7 +692,7 @@ routes
 		};
 		console.log(req.session.user);
 
-		let deviceIds = req.session.user.devices;
+		let deviceIds = req.session.user.deviceIds;
 		let devices = [];
 		try {
 			for (let devId of deviceIds) {
@@ -882,13 +881,13 @@ routes
 			);
 
 			// Add the new device information to the logged user.
-			req.session.user.devices.push(deviceId.toString());
+			req.session.user.deviceIds.push(deviceId.toString());
 			req.session.user.numberDevices =
 				req.session.user.numberDevices > 0
 					? req.session.user.numberDevices + 1
 					: 1;
 			req.session.user.deviceGoals = deviceGoals;
-			req.session.user.currentDevice = deviceId.toString();
+			req.session.user.currentDeviceId = deviceId.toString();
 			req.session.user.currentDeviceName = deviceName;
 			req.session.user.currentGoal = devGoals[0];
 
@@ -925,6 +924,7 @@ routes //sustainable goals
 		let dailyGoals = getAllGoalsInfo().slice(0, 4),
 		      weeklyGoals = getAllGoalsInfo().slice(4);
 		res.render("goals", {dailyGoals: dailyGoals, weeklyGoals: weeklyGoals});
+		console.groupEnd();
 	});
 
 routes
@@ -988,8 +988,8 @@ routes
 			const {
 				id: userId,
 				firstName,
-				devices: devIds,
-				currentDevice,
+				deviceIds: devIds,
+				currentDeviceId,
 				currentDeviceName: currDeviceName,
 				currentGoal,
 				totalGoalPoints,
@@ -1017,7 +1017,7 @@ routes
 			//0.27: 0.27 watts/minute streaming
 			//65W battery
 			//390g/kwh emission factor
-			const currDev = await getDevice(userId,currentDevice);
+			const currDev = await getDevice(userId,currentDeviceId);
 			const prevLog = currDev.prevLog;
 			const currentLog = currDev.log;
 
@@ -1058,7 +1058,7 @@ routes
 				for (let devId of devIds) {
 					let device = await getDevice(userId, devId);
 					devices.push(device);
-					if (currentDevice && currentDevice !== devId) continue;
+					if (currentDeviceId && currentDeviceId !== devId) continue;
 					else deviceGoals.push(...device.deviceGoals);
 				}
 
@@ -1091,7 +1091,7 @@ routes
 				deviceName: currDeviceName,
 				devices: devices,
 				userId: userId,
-				currentDevice: currentDevice,
+				currentDevice: currentDeviceId,
 				currentGoal: currentGoal,
 				deviceGoals: deviceGoals,
 				tips: await getTips(),
@@ -1114,8 +1114,8 @@ routes
 			const {
 				id: userId,
 				firstName,
-				devices: devIds,
-				currentDevice: currDeviceId,
+				deviceIds: devIds,
+				currentDeviceId: currDeviceId,
 				currentDeviceName: currDeviceName,
 				totalGoalPoints,
 			} = req.session.user;
@@ -1231,8 +1231,8 @@ routes
 			const {
 				id: userId,
 				firstName,
-				devices: devIds,
-				currentDevice: currentDevId,
+				deviceIds: devIds,
+				currentDeviceId: currentDevId,
 				currentGoal,
 				deviceGoals,
 				totalGoalPoints,
@@ -1316,7 +1316,7 @@ routes
 				currentUserPoints = newGoals[0].userPoints;
 				console.log('New device:', newDevice);
 
-				req.session.user.currentDevice = newDevId;
+				req.session.user.currentDeviceId = newDevId;
 				req.session.user.currentDeviceName = newDeviceName;
 				req.session.user.currentGoal = newGoals[0];
 				req.session.user.currentUserPoints = newGoals[0].userPoints;
@@ -1386,7 +1386,7 @@ routes.route("/leaderboard").get(async (req, res) => {
 		const topUsers = await getTopUsers();
 		const userRank = topUsers.findIndex((user) => user._id.toString() === userId) + 1;
 		res.render("leaderboard", {
-			users: topUsers,
+			users: topUsers.slice(0, Math.min(5, topUsers.length)),
 			userRank: userRank
 		});
 	} catch (e) {
@@ -1403,14 +1403,14 @@ routes
     .route("/editGoals")
     .get(async (req, res) => {
         res.render("editGoals", {
-			currentDevice: req.session.user.currentDevice,
+			currentDevice: req.session.user.currentDeviceId,
 			currentDeviceName: req.session.user.currentDeviceName,
 			goals: getAllGoalsInfo()
 		});
     })
 	.post(async (req, res) => {
 		let errors = [];
-		let devId = req.session.user.currentDevice;
+		let devId = req.session.user.currentDeviceId;
 		let devGoals = Array.isArray(req.body.deviceGoals)
 			? req.body.deviceGoals
 			: [req.body.deviceGoals];
