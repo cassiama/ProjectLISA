@@ -133,9 +133,10 @@ textarea {
   padding-left: 25px;
   padding-right: 25px;
   padding-top: 45px;
+  padding-bottom: 60px;
 }
 .facts-text {
-  font-size: 30px;
+  font-size: 25px;
   color: #FFFFFF;
 }
 .facts-button {
