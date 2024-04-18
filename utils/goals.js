@@ -22,7 +22,7 @@ const weeklyGoals = [
         "points": 500,  // total possible points (log: datetime)
     },
     {
-        "info": "Remove 100 MB of storage space [Weekly]",  // what the goal is
+        "info": "Remove 100 MB of storage space (Weekly)",  // what the goal is
         "points": 500,  // total possible points (log: storage space)
     },
 ];
