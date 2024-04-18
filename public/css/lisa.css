@@ -149,6 +149,10 @@ textarea {
   margin-top: 200px;
   margin-left: 650px;
 }
+.align-buttons {
+  margin-top: 100px;
+  margin-left: 590px;
+}
 
 /* register page */
 .vertical-container {
@@ -379,6 +383,8 @@ table {
 .column1-shift {
   margin-left: 150px;
 }
+
+
 
 /* redeemed page */
 .redeemed-container {

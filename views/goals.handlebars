@@ -3,9 +3,10 @@
         <h1 class="help-title">Sustainability Goals</h1>
         <div class="column">
     <h3 class="facts-text">Daily Goals:</h3>
-    <ol class="facts-text"></ol>
+    <ol class="facts-text">
     {{#each dailyGoals}}
         <li class="facts-text">{{this}}</li>
+        <br>
     {{/each}}
     </ol>
     </div>
@@ -14,16 +15,15 @@
     <ol class="facts-text">
     {{#each weeklyGoals}}
         <li class="facts-text">{{this}}</li>
+        <br>
     {{/each}}
-    <br>
 </ol>
 </div>
-<br>
-
 </div>
+<div class="align-buttons">
 <a href="/editGoals" class="button">Edit Goals?</a>
-
-<a href="/devices" class="button">Back</a>
+<a href="/dashboard" class="button">Back</a>
+</div>
 </div>
 </div>
 

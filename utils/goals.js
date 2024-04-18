@@ -1,28 +1,28 @@
 const dailyGoals = [
     {
-        "info": "Recharge before device reaches 20% (Daily)",   // what the goal is
+        "info": "Recharge before device reaches 20%",   // what the goal is
         "points": 100,  // total possible points (log: battery)
     },
     {
-        "info": "Use energy-saving mode at least 75% of the time (Daily)",  // what the goal is
+        "info": "Use energy-saving mode at least 75% of the time",  // what the goal is
         "points": 100,  // total possible points (log: energySaver, screenTime)
     },
     {
-        "info": "Keep idle time below 45 minutes (Daily)",  // what the goal is
+        "info": "Keep idle time below 45 minutes",  // what the goal is
         "points": 100,  // total possible points (log: idleTime)
     },
     {
-        "info": "Keep average screen brightness below 75% (Daily)", // what the goal is
+        "info": "Keep average screen brightness below 75%", // what the goal is
         "points": 100,  // total possible points (log: averageBrightness)
     }
 ];
 const weeklyGoals = [
     {
-        "info": "Reduce charging time by 10% (Weekly)", // what the goal is
+        "info": "Reduce charging time by 10%", // what the goal is
         "points": 500,  // total possible points (log: datetime)
     },
     {
-        "info": "Remove 100 MB of storage space (Weekly)",  // what the goal is
+        "info": "Remove 100 MB of storage space",  // what the goal is
         "points": 500,  // total possible points (log: storage space)
     },
 ];
