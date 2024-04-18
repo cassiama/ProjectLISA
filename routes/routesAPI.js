@@ -912,7 +912,7 @@ routes //sustainability facts
 	.get(async (req, res) => {
 		res.render("facts", {
 			firstName: req.session.user.firstName,
-			deviceName: req.session.user.deviceName
+			deviceName: req.session.user.currentDeviceName
 		});
 	});
 
