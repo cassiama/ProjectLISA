@@ -1378,10 +1378,13 @@ routes
 // Finish the redeem portal
 routes.route("/leaderboard").get(async (req, res) => {
 	let errors = [];
+	const { id: userId } = req.session.user;
 	try {
 		const topUsers = await getTopUsers();
+		const userRank = topUsers.findIndex((user) => user._id.toString() === userId) + 1;
 		res.render("leaderboard", {
 			users: topUsers,
+			userRank: userRank
 		});
 	} catch (e) {
 		errors.push("Internal Server Error");
