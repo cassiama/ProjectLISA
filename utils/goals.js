@@ -44,4 +44,4 @@ export const getPointsByGoal = async goal => {
     }
 };
 
-export const getAllGoalsInfo = async () => allGoals.map(goal => goal.info);
+export const getAllGoalsInfo = () => allGoals.map(goal => goal.info);

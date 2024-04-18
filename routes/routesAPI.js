@@ -849,7 +849,7 @@ routes.route("/rewards/redeem").get(async (req, res) => {
 routes
 	.route("/devices")
 	.get(async (req, res) => {
-		if (req.session.user) res.render("registerDevice", { goals: await getAllGoalsInfo() });
+		if (req.session.user) res.render("registerDevice", { goals: getAllGoalsInfo() });
 		else res.redirect("/login");
 	})
 	.post(async (req, res) => {
@@ -865,7 +865,7 @@ routes
 			res.status(400).render("registerDevice", {
 				error: true,
 				message: errors[0],
-				goals: await getAllGoalsInfo(),
+				goals: getAllGoalsInfo(),
 			});
 			return;
 		}
@@ -899,7 +899,7 @@ routes
 			res.status(400).render("registerDevice", {
 				error: true,
 				message: errors[0],
-				goals: await getAllGoalsInfo(),
+				goals: getAllGoalsInfo(),
 			});
 			return;
 		}
@@ -920,8 +920,10 @@ routes //sustainable goals
 	.route("/goals")
 	.get(async (req, res) => {
 		console.group("GET /goals Debug:");
-		const dailyGoals = await getAllGoalsInfo().slice(0, 4),
-		      weeklyGoals = await getAllGoalsInfo().slice(4);
+		console.log(getAllGoalsInfo());
+		console.log(getAllGoalsInfo().slice(0,4));
+		let dailyGoals = getAllGoalsInfo().slice(0, 4),
+		      weeklyGoals = getAllGoalsInfo().slice(4);
 		res.render("goals", {dailyGoals: dailyGoals, weeklyGoals: weeklyGoals});
 	});
 
@@ -1403,7 +1405,7 @@ routes
         res.render("editGoals", {
 			currentDevice: req.session.user.currentDevice,
 			currentDeviceName: req.session.user.currentDeviceName,
-			goals: await getAllGoalsInfo()
+			goals: getAllGoalsInfo()
 		});
     })
 	.post(async (req, res) => {
@@ -1418,7 +1420,7 @@ routes
 			res.status(400).render("editGoals", {
 				error: true,
 				message: errors[0],
-				goals: await getAllGoalsInfo(),
+				goals: getAllGoalsInfo(),
 			});
 			return;
 		}
@@ -1442,7 +1444,7 @@ routes
 			res.status(400).render("editGoals", {
 				error: true,
 				message: errors[0],
-				goals: await getAllGoalsInfo(),
+				goals: getAllGoalsInfo(),
 			});
 			return;
 		}
