@@ -29,19 +29,23 @@ const weeklyGoals = [
 
 const allGoals = [...dailyGoals, ...weeklyGoals];
 
-export const getPointsByGoal = async goal => {
+export const getPointsByGoal = goal => {
     if (!goal || typeof goal != "string")
         return 0; // the goal doesn't exist, so return 0
     else {
         const currentGoal = allGoals.find(currGoal => currGoal.info == goal);
-        // console.log(currentGoal);
         const points = currentGoal ? currentGoal.points : 0; // either "points" or 0, depends on if the goal exists
-        console.info(
-            `It is possible to add ${points} ${points != 1 ? "points" : "point"} to the user's total.`,
-            `Goal: "${goal}"`
-        );
         return points;
     }
 };
 
 export const getAllGoalsInfo = () => allGoals.map(goal => goal.info);
+
+export const getGoalByInfo = goal => {
+    if (!goal || typeof goal != "string")
+        throw "Error: Device goal is invalid and does not exist";
+    else {
+        const currentGoal = allGoals.find(currGoal => currGoal.info == goal);
+        return currentGoal;
+    }
+};

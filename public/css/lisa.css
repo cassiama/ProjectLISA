@@ -437,7 +437,8 @@ table {
 }
 
 #choose-goal-form select {
-  width: 275px;
+  width: auto;
+  max-width: 90%;
 }
 
 #choose-goal-form select:focus {

@@ -1091,7 +1091,7 @@ routes
 				}
 
 				// console.log(deviceGoals);
-				console.log(`Current Goal: ${currentGoal.info}`);
+				console.log('Current Goal:', currentGoal);
 			} catch (e) {
 				res.render("dashboard", {
 					firstName: firstName,
@@ -1564,7 +1564,7 @@ routes
 
 			// Add the new device information to the logged user.
 			req.session.user.deviceGoals = deviceGoals;
-			req.session.user.currentGoal = devGoals[0];
+			req.session.user.currentGoal = deviceGoals[0];
 
 			// Redirect to the user's profile page.
 			res.redirect("/dashboard");

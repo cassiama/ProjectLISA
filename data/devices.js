@@ -9,7 +9,7 @@ import {
 import {createLog, createPrevLog} from './users.js'
 import { users } from "../config/mongoCollections.js";
 import { ObjectId } from "mongodb";
-import { getPointsByGoal } from "../utils/goals.js";
+import { getGoalByInfo, getPointsByGoal } from "../utils/goals.js";
 
 //May need to be changed
 export const serialNumAlreadyExists = async (serialNum) => {
@@ -123,7 +123,6 @@ export const removeDevice = async (userId, deviceId) => {
 	return deleted.value;
 };
 
-//May also need to be changed
 export const editDeviceGoal = async (userId, deviceId, deviceGoals) => {
 	if (!userId || !deviceId || !deviceGoals) {
 		throw `Error: All inputs must be provided (editDeviceGoal)`;
@@ -135,10 +134,13 @@ export const editDeviceGoal = async (userId, deviceId, deviceGoals) => {
 	if (old.deviceOwner.toString() !== userId) {
 		throw `Error: Cannot edit a device that does not belong to you`;
 	}
+
+	// convert the goals to objects first
+	let devGoals = deviceGoals.map(goal => getGoalByInfo(goal));
 	const userCollection = await users();
 	let updated = await userCollection.updateOne(
 		{ _id: new ObjectId(userId), "devices._id": new ObjectId(deviceId) },
-		{ $set: { "devices.$.deviceGoals": deviceGoals } }
+		{ $set: { "devices.$.deviceGoals": devGoals } }
 	);
 	if (!updated.acknowledged) {
 		throw `Error: Unable to update device goals`;
