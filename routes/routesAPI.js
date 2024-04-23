@@ -395,17 +395,17 @@ routes.get("/logout", async (req, res) => {
 				// console.log(`${device.deviceName} current log [before]:`, device.log);
 
 				// calculate the carbon emission savings
+				
 				let CarbonEmissionDifference= 
-				( (currentLog.normal - prevLog.normal) * 0.25 ) +
-				( (currentLog.performance - prevLog.performance) * 0.33 ) +
-				( (currentLog.energySaver - prevLog.energySaver) * 0.25 * 0.9 ) -
-				( currentLog.streamTime - prevLog.streamTime ) * 0.27 -
-				( currentLog.downloaded - prevLog.downloaded ) * 1.5 -
-				( currentLog.idleTime - prevLog.idleTime ) * 0.05 +
+				( (prevLog.normal - currentLog.normal) * 0.25 ) +
+				( (prevLog.performance - currentLog.performance) * 0.33 ) +
+				( (prevLog.energySaver - currentLog.energySaver) * 0.25 * 0.9 ) +
+				// ( currentLog.streamTime - prevLog.streamTime ) * 0.27 -
+				// ( currentLog.downloaded - prevLog.downloaded ) * 1.5 -
+				// ( currentLog.idleTime - prevLog.idleTime ) * 0.05 +
 				// ( currentLog.lastCycle - prevLog.lastCycle ) * 65 * 0.8 +
-				( (currentLog.chargingTime - prevLog.chargingTime) * 0.8) +
-				( (currentLog.averageBrightness - prevLog.averageBrightness) * 0.5)
-				let carbonEmissionSavings =   (CarbonEmissionDifference/60) * 0.39
+				( (prevLog.chargingTime - currentLog.chargingTime)  * 0.8);
+				let carbonEmissionSavings =   (CarbonEmissionDifference/60) * .390
 			
 				// Baseline: 520 watt/hours
 				
@@ -1024,24 +1024,51 @@ routes
 			let CarbonEmissionDifference= 
 			( (currentLog.normal - prevLog.normal) * 0.25 ) +
 			( (currentLog.performance - prevLog.performance) * 0.33 ) +
-			( (currentLog.energySaver - prevLog.energySaver) * 0.25 * 0.9 ) -
-			( currentLog.streamTime - prevLog.streamTime ) * 0.27 -
-			( currentLog.downloaded - prevLog.downloaded ) * 1.5 -
-			( currentLog.idleTime - prevLog.idleTime ) * 0.05 +
+			( (currentLog.energySaver - prevLog.energySaver) * 0.25 * 0.9 ) +
+			// ( currentLog.streamTime - prevLog.streamTime ) * 0.27 -
+			// ( currentLog.downloaded - prevLog.downloaded ) * 1.5 -
+			// ( currentLog.idleTime - prevLog.idleTime ) * 0.05 +
 			// ( currentLog.lastCycle - prevLog.lastCycle ) * 65 * 0.8 +
-			( (currentLog.chargingTime - prevLog.chargingTime)  * 0.8) +
-			( (currentLog.averageBrightness - prevLog.averageBrightness) * 0.5)
-			let carbonEmissionSavings =   (CarbonEmissionDifference/60) * 0.39
-
-		
+			( (currentLog.chargingTime - prevLog.chargingTime)  * 0.8);
+			// ( (currentLog.averageBrightness - prevLog.averageBrightness) * 0.5)
+			let carbonEmissionSavings =   (CarbonEmissionDifference/60) * .390
+			let carbonPercent = (carbonEmissionSavings/520 * 1000).toFixed(2);
 			// Baseline: 520 watt/hours
-			
-			let percentage = currentUserPoints >= totalGoalPoints 
-				? "100.00"
-				: (currentUserPoints + (carbonEmissionSavings/520 * 100)).toFixed(2);
-
-			let progressMessage = ""
+			let percentage;
+			let progressMessage = "";
 			if (currentGoal) {
+				if (currentGoal.info === "Recharge before device reaches 20%") {
+					if (currentLog.start <= 20) {
+						percentage = 0;
+					} else {
+						percentage = 100;
+					}
+				}
+				if (currentGoal.info === "Use energy-saving mode at least 75% of the time") {
+					const energySaverPercentage = ((currentLog.energySaver) / currentLog.screenTime) * 100;
+					percentage = energySaverPercentage >= 75 ? 100 : energySaverPercentage;
+				}
+				if (currentGoal.info === "Keep idle time below 45 minutes") {
+					const currentIdleTime = currentLog.idleTime;
+					percentage = currentIdleTime <= 45 ? 100 : ((45 - currentIdleTime) / 45) * 100;
+				}
+				if (currentGoal.info === "Keep average screen brightness below 75%") {
+					const currentAverageBrightness = currentLog.averageBrightness;
+					percentage = currentAverageBrightness <= 75 ? 100 : ((currentAverageBrightness - 75) / 75) * 100;
+				}
+				if (currentGoal.info === "Reduce charging time by 10%") {
+					const previousChargingTime = prevLog.chargingTime;
+					const currentChargingTime = currentLog.chargingTime;
+					percentage = ((previousChargingTime - currentChargingTime) / previousChargingTime) * 100;
+				}
+				if (currentGoal.info === "Remove 100 MB of storage space") {
+					if (currentLog.deleted < 100) {
+						percentage = currentLog.deleted;
+					} else {
+						percentage = 100;
+					}
+				}
+
 				if (percentage >= 25 && percentage < 50)
 					progressMessage = "Nice work!";
 				else if (percentage >= 50 && percentage < 75)
@@ -1050,6 +1077,7 @@ routes
 					progressMessage = "You're so close!";
 				else if (percentage === 100) progressMessage = "You did it!";
 			}
+
 
 			// Get all of the device goals for the current device.
 			let deviceGoals = [];
@@ -1095,6 +1123,7 @@ routes
 				currentGoal: currentGoal,
 				deviceGoals: deviceGoals,
 				tips: await getTips(),
+				carbonPercent: carbonPercent,
 				percentage: percentage,
 				progressMessage: progressMessage,
 				onlyOneGoal: onlyOneGoal,
@@ -1155,17 +1184,17 @@ routes
 				const prevLog = currDev.prevLog;
 				const currentLog = currDev.log;
 
-				let CarbonEmissionDifference= 
-				( (currentLog.normal - prevLog.normal) * 0.25 ) +
-				( (currentLog.performance - prevLog.performance) * 0.33 ) +
-				( (currentLog.energySaver - prevLog.energySaver) * 0.25 * 0.9 ) -
-				( currentLog.streamTime - prevLog.streamTime ) * 0.27 -
-				( currentLog.downloaded - prevLog.downloaded ) * 1.5 -
-				( currentLog.idleTime - prevLog.idleTime ) * 0.05 +
-				// ( currentLog.lastCycle - prevLog.lastCycle ) * 65 * 0.8 +
-				( (currentLog.chargingTime - prevLog.chargingTime) * 0.8) +
-				( (currentLog.averageBrightness - prevLog.averageBrightness) * 0.5)
-				let carbonEmissionSavings =   (CarbonEmissionDifference/60) * 0.39
+				
+			let CarbonEmissionDifference= 
+			( (prevLog.normal - currentLog.normal) * 0.25 ) +
+			( (prevLog.performance - currentLog.performance) * 0.33 ) +
+			( (prevLog.energySaver - currentLog.energySaver) * 0.25 * 0.9 ) +
+			// ( currentLog.streamTime - prevLog.streamTime ) * 0.27 -
+			// ( currentLog.downloaded - prevLog.downloaded ) * 1.5 -
+			// ( currentLog.idleTime - prevLog.idleTime ) * 0.05 +
+			// ( currentLog.lastCycle - prevLog.lastCycle ) * 65 * 0.8 +
+			( (prevLog.chargingTime - currentLog.chargingTime)  * 0.8);
+				let carbonEmissionSavings =   (CarbonEmissionDifference/60) * .390
 			
 				// Baseline: 520 watt/hours
 				
@@ -1175,17 +1204,53 @@ routes
 				currentUserPoints = newGoal.userPoints;
 				if (currentUserPoints == 0)
 					console.log(`Current goals' user points:`, currentUserPoints);
-				let percentage = currentUserPoints >= totalGoalPoints 
-					? "100.00"
-					: (currentUserPoints + (carbonEmissionSavings/520 * 100)).toFixed(2);
-				let progressMessage = ""
-				if (percentage >= 25 && percentage < 50)
-					progressMessage = "Nice work!";
-				else if (percentage >= 50 && percentage < 75)
-					progressMessage = "Great job! Keep going!";
-				else if (percentage >= 75 && percentage !== 100)
-					progressMessage = "You're so close!";
-				else if (percentage === 100) progressMessage = "You did it!";
+					let carbonPercent = (carbonEmissionSavings/520 * 1000).toFixed(2);
+		
+					// Baseline: 520 watt/hours
+					
+					let percentage;
+					let progressMessage = "";
+					if (newGoal) {
+						if (newGoal.info === "Recharge before device reaches 20%") {
+							if (currentLog.start <= 20) {
+								percentage = 0;
+							} else {
+								percentage = 100;
+							}
+						}
+						if (newGoal.info === "Use energy-saving mode at least 75% of the time") {
+							const energySaverPercentage = ((currentLog.energySaver) / currentLog.screenTime) * 100;
+							percentage = energySaverPercentage >= 75 ? 100 : energySaverPercentage;
+						}
+						if (newGoal.info === "Keep idle time below 45 minutes") {
+							const currentIdleTime = currentLog.idleTime;
+							percentage = currentIdleTime <= 45 ? 100 : ((45 - currentIdleTime) / 45) * 100;
+						}
+						if (newGoal.info === "Keep average screen brightness below 75%") {
+							const currentAverageBrightness = currentLog.averageBrightness;
+							percentage = currentAverageBrightness <= 75 ? 100 : ((currentAverageBrightness - 75) / 75) * 100;
+						}
+						if (newGoal.info === "Reduce charging time by 10%") {
+							const previousChargingTime = prevLog.chargingTime;
+							const currentChargingTime = currentLog.chargingTime;
+							percentage = ((previousChargingTime - currentChargingTime) / previousChargingTime) * 100;
+						}
+						if (newGoal.info === "Remove 100 MB of storage space") {
+							if (currentLog.deleted < 100) {
+								percentage = currentLog.deleted;
+							} else {
+								percentage = 100;
+							}
+						}
+		
+						if (percentage >= 25 && percentage < 50)
+							progressMessage = "Nice work!";
+						else if (percentage >= 50 && percentage < 75)
+							progressMessage = "Great job! Keep going!";
+						else if (percentage >= 75 && percentage !== 100)
+							progressMessage = "You're so close!";
+						else if (percentage === 100) progressMessage = "You did it!";
+					}
 
 				req.session.user.currentGoal = newGoal;
 				req.session.user.currentUserPoints = newGoal.userPoints;
@@ -1214,6 +1279,7 @@ routes
 					currentGoal: newGoal,
 					deviceGoals: deviceGoals,
 					tips: await getTips(),
+					carbonPercent: carbonPercent,
 					percentage: percentage,
 					progressMessage: progressMessage,
 					currentUserPoints: currentUserPoints,
@@ -1262,32 +1328,64 @@ routes
 				const prevLog = currDev.prevLog;
 				const currentLog = currDev.log;
 
+				
 				let CarbonEmissionDifference= 
-				( (currentLog.normal - prevLog.normal) * 0.25 ) +
-				( (currentLog.performance - prevLog.performance) * 0.33 ) +
-				( (currentLog.energySaver - prevLog.energySaver) * 0.25 * 0.9 ) -
-				( currentLog.streamTime - prevLog.streamTime ) * 0.27 -
-				( currentLog.downloaded - prevLog.downloaded ) * 1.5 -
-				( currentLog.idleTime - prevLog.idleTime ) * 0.05 +
+				( (prevLog.normal - currentLog.normal) * 0.25 ) +
+				( (prevLog.performance - currentLog.performance) * 0.33 ) +
+				( (prevLog.energySaver - currentLog.energySaver) * 0.25 * 0.9 ) +
+				// ( currentLog.streamTime - prevLog.streamTime ) * 0.27 -
+				// ( currentLog.downloaded - prevLog.downloaded ) * 1.5 -
+				// ( currentLog.idleTime - prevLog.idleTime ) * 0.05 +
 				// ( currentLog.lastCycle - prevLog.lastCycle ) * 65 * 0.8 +
-				( (currentLog.chargingTime - prevLog.chargingTime) * 0.8) +
-				( (currentLog.averageBrightness - prevLog.averageBrightness) * 0.5)
-				let carbonEmissionSavings =   (CarbonEmissionDifference/60) * 0.39
-
-			
+				( (prevLog.chargingTime - currentLog.chargingTime)  * 0.8);
+				let carbonEmissionSavings =   (CarbonEmissionDifference/60) * .390
+				let carbonPercent = (carbonEmissionSavings/520 * 1000).toFixed(2);
+		
 				// Baseline: 520 watt/hours
 				
-				let percentage = currentUserPoints >= totalGoalPoints 
-					? "100.00"
-					: (currentUserPoints + (carbonEmissionSavings/520 * 100)).toFixed(2);
-				let progressMessage = ""
-				if (percentage >= 25 && percentage < 50)
-					progressMessage = "Nice work!";
-				else if (percentage >= 50 && percentage < 75)
-					progressMessage = "Great job! Keep going!";
-				else if (percentage >= 75 && percentage !== 100)
-					progressMessage = "You're so close!";
-				else if (percentage === 100) progressMessage = "You did it!";
+				let percentage;
+				let progressMessage = "";
+				if (currentGoal) {
+					if (currentGoal.info === "Recharge before device reaches 20%") {
+						if (currentLog.start <= 20) {
+							percentage = 0;
+						} else {
+							percentage = 100;
+						}
+					}
+					if (currentGoal.info === "Use energy-saving mode at least 75% of the time") {
+						const energySaverPercentage = ((currentLog.energySaver) / currentLog.screenTime) * 100;
+						percentage = energySaverPercentage >= 75 ? 100 : energySaverPercentage;
+					}
+					if (currentGoal.info === "Keep idle time below 45 minutes") {
+						const currentIdleTime = currentLog.idleTime;
+						percentage = currentIdleTime <= 45 ? 100 : ((45 - currentIdleTime) / 45) * 100;
+					}
+					if (currentGoal.info === "Keep average screen brightness below 75%") {
+						const currentAverageBrightness = currentLog.averageBrightness;
+						percentage = currentAverageBrightness <= 75 ? 100 : ((currentAverageBrightness - 75) / 75) * 100;
+					}
+					if (currentGoal.info === "Reduce charging time by 10%") {
+						const previousChargingTime = prevLog.chargingTime;
+						const currentChargingTime = currentLog.chargingTime;
+						percentage = ((previousChargingTime - currentChargingTime) / previousChargingTime) * 100;
+					}
+					if (currentGoal.info === "Remove 100 MB of storage space") {
+						if (currentLog.deleted < 100) {
+							percentage = currentLog.deleted;
+						} else {
+							percentage = 100;
+						}
+					}
+	
+					if (percentage >= 25 && percentage < 50)
+						progressMessage = "Nice work!";
+					else if (percentage >= 50 && percentage < 75)
+						progressMessage = "Great job! Keep going!";
+					else if (percentage >= 75 && percentage !== 100)
+						progressMessage = "You're so close!";
+					else if (percentage === 100) progressMessage = "You did it!";
+				}
 
 				res.render("dashboard", {
 					firstName: firstName,
@@ -1297,6 +1395,7 @@ routes
 					currentGoal: currentGoal,
 					tips: await getTips(),
 					deviceGoals: otherGoals,
+					carbonPercent: carbonPercent,
 					percentage: percentage,
 					progressMessage: progressMessage,
 					onlyOneGoal: onlyOneGoal,
@@ -1331,34 +1430,63 @@ routes
 				const prevLog = currDev.prevLog;
 				const currentLog = currDev.log;
 
+				
 				let CarbonEmissionDifference= 
-				( (currentLog.normal - prevLog.normal) * 0.25 ) +
-				( (currentLog.performance - prevLog.performance) * 0.33 ) +
-				( (currentLog.energySaver - prevLog.energySaver) * 0.25 * 0.9 ) -
-				( currentLog.streamTime - prevLog.streamTime ) * 0.27 -
-				( currentLog.downloaded - prevLog.downloaded ) * 1.5 -
-				( currentLog.idleTime - prevLog.idleTime ) * 0.05 +
+				( (prevLog.normal - currentLog.normal) * 0.25 ) +
+				( (prevLog.performance - currentLog.performance) * 0.33 ) +
+				( (prevLog.energySaver - currentLog.energySaver) * 0.25 * 0.9 ) +
+				// ( currentLog.streamTime - prevLog.streamTime ) * 0.27 -
+				// ( currentLog.downloaded - prevLog.downloaded ) * 1.5 -
+				// ( currentLog.idleTime - prevLog.idleTime ) * 0.05 +
 				// ( currentLog.lastCycle - prevLog.lastCycle ) * 65 * 0.8 +
-				( (currentLog.chargingTime - prevLog.chargingTime) * 0.8) +
-				( (currentLog.averageBrightness - prevLog.averageBrightness) * 0.5)
-				let carbonEmissionSavings =   (CarbonEmissionDifference/60) * 0.39
-			
+				( (prevLog.chargingTime - currentLog.chargingTime)  * 0.8);
+				let carbonEmissionSavings =   (CarbonEmissionDifference/60) * .390
+				let carbonPercent = (carbonEmissionSavings/520 * 1000).toFixed(2);
 				// Baseline: 520 watt/hours
 				
-				let percentage = currentUserPoints >= totalGoalPoints 
-					? "100.00"
-					: (currentUserPoints + (carbonEmissionSavings/520 * 100)).toFixed(2);
-				console.log(`Reduced emissions by ${percentage}%`);
-				console.log(`Current goals' user points:`, currentUserPoints);
-				let progressMessage = ""
-				if (percentage >= 25 && percentage < 50)
-					progressMessage = "Nice work!";
-				else if (percentage >= 50 && percentage < 75)
-					progressMessage = "Great job! Keep going!";
-				else if (percentage >= 75 && percentage !== 100)
-					progressMessage = "You're so close!";
-				else if (percentage === 100) progressMessage = "You did it!";
-
+				let percentage;
+				let progressMessage = "";
+				if (req.session.user.currentGoal) {
+					if (req.session.user.currentGoal.info === "Recharge before device reaches 20%") {
+						if (currentLog.start <= 20) {
+							percentage = 0;
+						} else {
+							percentage = 100;
+						}
+					}
+					if (req.session.user.currentGoal.info === "Use energy-saving mode at least 75% of the time") {
+						const energySaverPercentage = ((currentLog.energySaver) / currentLog.screenTime) * 100;
+						percentage = energySaverPercentage >= 75 ? 100 : energySaverPercentage;
+					}
+					if (req.session.user.currentGoal.info === "Keep idle time below 45 minutes") {
+						const currentIdleTime = currentLog.idleTime;
+						percentage = currentIdleTime <= 45 ? 100 : ((45 - currentIdleTime) / 45) * 100;
+					}
+					if (req.session.user.currentGoal.info === "Keep average screen brightness below 75%") {
+						const currentAverageBrightness = currentLog.averageBrightness;
+						percentage = currentAverageBrightness <= 75 ? 100 : ((currentAverageBrightness - 75) / 75) * 100;
+					}
+					if (req.session.user.currentGoal.info === "Reduce charging time by 10%") {
+						const previousChargingTime = prevLog.chargingTime;
+						const currentChargingTime = currentLog.chargingTime;
+						percentage = ((previousChargingTime - currentChargingTime) / previousChargingTime) * 100;
+					}
+					if (req.session.user.currentGoal.info === "Remove 100 MB of storage space") {
+						if (currentLog.deleted < 100) {
+							percentage = currentLog.deleted;
+						} else {
+							percentage = 100;
+						}
+					}
+	
+					if (percentage >= 25 && percentage < 50)
+						progressMessage = "Nice work!";
+					else if (percentage >= 50 && percentage < 75)
+						progressMessage = "Great job! Keep going!";
+					else if (percentage >= 75 && percentage !== 100)
+						progressMessage = "You're so close!";
+					else if (percentage === 100) progressMessage = "You did it!";
+				}
 				// re-render the page with the info from the new current device
 				console.log(req.session.user);
 				res.render("dashboard", {
@@ -1368,6 +1496,7 @@ routes
 					currentGoal: newGoals[0],
 					deviceGoals: newGoals.slice(1),
 					tips: await getTips(),
+					carbonPercent: carbonPercent,
 					percentage: percentage,
 					progressMessage: progressMessage,
 					onlyOneGoal: onlyOneGoal,

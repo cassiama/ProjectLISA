@@ -84,13 +84,13 @@ export const createLog = (prevLog) => {
 	if (prevLog.first) {
 		return log;
 	} else {
-		Object.keys(log).forEach(key => {
-			if (key !== 'lastCycle' && key !== 'deleted' && key !== 'first') { // Exclude lastCycle, first, and deleted properties
-			  let difference = log[key] - prevLog[key];
-			  let maxDiff = prevLog[key] * 0.5; // Maximum allowed difference (50% of prevLog)
-			  log[key] = Math.max(prevLog[key] - maxDiff, Math.min(prevLog[key] + maxDiff, log[key]));
-			}
-		  });
+		// Object.keys(log).forEach(key => {
+		// 	if (key !== 'lastCycle' && key !== 'deleted' && key !== 'first') { // Exclude lastCycle, first, and deleted properties
+		// 	  let difference = log[key] - prevLog[key];
+		// 	  let maxDiff = prevLog[key] * 0.75; // Maximum allowed difference (50% of prevLog)
+		// 	  log[key] = Math.max(prevLog[key] - maxDiff, Math.min(prevLog[key] + maxDiff, log[key]));
+		// 	}
+		//   });
 		return log;
 	}
 };
