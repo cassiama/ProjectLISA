@@ -1038,11 +1038,9 @@ routes
 			let progressMessage = "";
 			if (currentGoal) {
 				if (currentGoal.info === "Recharge before device reaches 20%") {
-					if (currentLog.start <= 20) {
-						percentage = 0;
-					} else {
-						percentage = 100;
-					}
+					const currentStartPercentage = currentLog.lastCycle.start;
+					percentage = currentStartPercentage >= 20 ? 100 : (currentStartPercentage / 20) * 100;
+
 				}
 				if (currentGoal.info === "Use energy-saving mode at least 75% of the time") {
 					const energySaverPercentage = ((currentLog.energySaver) / currentLog.screenTime) * 100;
@@ -1212,11 +1210,8 @@ routes
 					let progressMessage = "";
 					if (newGoal) {
 						if (newGoal.info === "Recharge before device reaches 20%") {
-							if (currentLog.start <= 20) {
-								percentage = 0;
-							} else {
-								percentage = 100;
-							}
+							const currentStartPercentage = currentLog.lastCycle.start;
+							percentage = currentStartPercentage >= 20 ? 100 : (currentStartPercentage / 20) * 100;
 						}
 						if (newGoal.info === "Use energy-saving mode at least 75% of the time") {
 							const energySaverPercentage = ((currentLog.energySaver) / currentLog.screenTime) * 100;
@@ -1347,11 +1342,8 @@ routes
 				let progressMessage = "";
 				if (currentGoal) {
 					if (currentGoal.info === "Recharge before device reaches 20%") {
-						if (currentLog.start <= 20) {
-							percentage = 0;
-						} else {
-							percentage = 100;
-						}
+						const currentStartPercentage = currentLog.lastCycle.start;
+						percentage = currentStartPercentage >= 20 ? 100 : (currentStartPercentage / 20) * 100;
 					}
 					if (currentGoal.info === "Use energy-saving mode at least 75% of the time") {
 						const energySaverPercentage = ((currentLog.energySaver) / currentLog.screenTime) * 100;
@@ -1448,11 +1440,8 @@ routes
 				let progressMessage = "";
 				if (req.session.user.currentGoal) {
 					if (req.session.user.currentGoal.info === "Recharge before device reaches 20%") {
-						if (currentLog.start <= 20) {
-							percentage = 0;
-						} else {
-							percentage = 100;
-						}
+						const currentStartPercentage = currentLog.lastCycle.start;
+						percentage = currentStartPercentage >= 20 ? 100 : (currentStartPercentage / 20) * 100;
 					}
 					if (req.session.user.currentGoal.info === "Use energy-saving mode at least 75% of the time") {
 						const energySaverPercentage = ((currentLog.energySaver) / currentLog.screenTime) * 100;
