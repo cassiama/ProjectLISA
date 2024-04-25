@@ -433,10 +433,11 @@ table {
 }
   
 .openbtn {
-  font-size: 20px;
+  font-size: 22px;
   cursor: pointer;
   padding: 10px 15px;
   border: none;
+  border-radius: 3px;
 }
   
 #fullsite {
