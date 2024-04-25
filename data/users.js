@@ -260,6 +260,9 @@ export const checkUser = async (email, password) => {
 	const userCollection = await users();
 
 	const user1 = await userCollection.findOne({ email: email });
+	if (!user1) {
+		throw "This user does not exist";
+	}
 	let validPassword = await bcrypt.compare(password, user1.password);
 	if (validPassword) {
 		for (const device of user1.devices) {
@@ -281,7 +284,7 @@ export const checkUser = async (email, password) => {
 			let devices = user.devices;
 			return { _id, firstName, lastName, emailAddress, devices};
 	} else {
-		throw "Either the email address or password is invalid";
+		throw "Invalid password";
 	}
 };
 
@@ -368,13 +371,13 @@ export const updateUser = async (
 		{ _id: new ObjectId(id) },
 		userUpdate
 	);
-	console.log("update" + updateInfo);
+	console.log("(updateUser) update: ", updateInfo);
 
 	if (updateInfo.modifiedCount === 0) {
 		throw `At least one field must be different to successfully update user`;
 	}
 	let newInfo = await getUserById(id);
-	console.log("new" + newInfo);
+	console.log("(updateUser) new: ", newInfo);
 	return newInfo;
 };
 

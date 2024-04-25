@@ -453,3 +453,22 @@ table {
 #choose-goal-form select:focus {
   width: auto;
 }
+
+/* error message */
+.error {
+  color: black;
+  font-weight: bold;
+  width: 20%;
+  padding: 5px;
+  text-align: center;
+  border: 3px dotted red;
+  border-radius: 10px;
+}
+
+#forgetpassword-error {
+  width: 50%;
+}
+
+#registerdevice-error {
+  width: 50%;
+}

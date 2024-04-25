@@ -49,7 +49,7 @@ export const registerDevice = async (
 	for (let i = 0; i < deviceGoals.length; i++) {
 		let goal = {
 			info: deviceGoals[i],
-			totalPoints: await getPointsByGoal(deviceGoals[i]),
+			totalPoints: getPointsByGoal(deviceGoals[i]),
 			userPoints: 0
 		};
 		deviceGoals[i] = goal;
