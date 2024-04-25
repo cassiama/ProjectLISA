@@ -4,6 +4,8 @@
 <div id="sidebar" class="bar">
     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">☰</a>
     <br>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Lenovo_Global_Corporate_Logo.png/2560px-Lenovo_Global_Corporate_Logo.png" alt="lenovo-logo" width="250px">
+    <br>
     {{#if this.devices}}
     <form action="/dashboard" method="POST" id="choose-device-form">
         <ul>
@@ -109,7 +111,7 @@
         var options = {
             title: 'Difference Between Previous and Current Log',
             backgroundColor: '#ddbfe3',
-            colors: ['#E00849', '#9900b7', '#6300C6', '#ba0059'],
+            colors: ['#E00849', '#9900b7', '#6300C6', '#BF5FD2', '#B11D4C'],
             pieSliceBorderColor: "transparent"
         };
 
@@ -147,7 +149,7 @@
                 <progress value={{{percentage}}} max="100"> {{percentage}}% </progress>
                 <h5>{{progressMessage}}</h5>
                 <p>You have reduced your carbon footprint by {{carbonPercent}}%</p>
-                <a href="/leaderboard" id="link">Check out the leaderboard</a>
+                <a href="/leaderboard" id="link">Check out the leaderboard!</a>
             </div>
             <br>
             <br>

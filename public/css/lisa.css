@@ -73,6 +73,9 @@ a:visited {
 .login-input {
   width: 20%;
 }
+.login-logo {
+  float: right;
+}
 
 /* forgot password page */
 .forgot-password-container {
@@ -382,6 +385,11 @@ table {
 }
 .column1-shift {
   margin-left: 150px;
+}
+
+/* logout page */
+.logout-logo {
+  float: right;
 }
 
 
