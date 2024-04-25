@@ -32,19 +32,17 @@
         class="login-input"
       >
     </label>
-
-    {{#if error}}
-      <script>
-        document.getElementById('login-form').addEventListener('submit', function(e) {
-          e.preventDefault();
-          alert({{message}});
-        });
-      </script>
-    {{/if}}
     <br>
     <br>
     <br> 
     <button type="submit" class="btn login-button">Submit</button>
+    <br>
+    <br>
+    {{#if error}}
+    <div class="error">
+      <p>{{message}}</p>
+    </div>
+    {{/if}}
     <p>New user? <a href="/register" class="register" id="link">Sign up here!</a></p>
     <a href="/forgetpassword" id="link">Forgot Password?</a>
   </form>
