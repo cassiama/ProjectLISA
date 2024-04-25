@@ -283,8 +283,7 @@ routes
 		let password = req.body.password;
 
 		if (typeof email === "undefined") errors.push("No email provided.");
-		else if (typeof password === "undefined")
-			errors.push("No password provided.");
+		else if (typeof password === "undefined") errors.push("No password provided.");
 
 		if (errors.length > 0) {
 			console.log(errors);
