@@ -527,7 +527,7 @@ routes
 		let geography = req.body.geography;
 		let os = req.body.os;
 		let phoneSys = req.body.phoneSys;
-		// console.log(req.body);
+		console.log(req.body);
 		// console.log(req.session.user);
 		// console.log(req.body.id);
 
@@ -679,7 +679,7 @@ routes
 
 		// Update the current user's information in the cookie
 		req.session.user = {
-			id: updatedUser.id,
+			id: updatedUser._id,
 			firstName: updatedUser.firstName,
 			lastName: updatedUser.lastName,
 			email: updatedUser.email,
@@ -858,7 +858,7 @@ routes
 		let devGoals = Array.isArray(req.body.deviceGoals)
 			? req.body.deviceGoals
 			: [req.body.deviceGoals];
-		// console.log(req.body);
+		console.log(req.body);
 		if (typeof serialNum === "undefined" || serialNum.trim().length === 0) {
 			errors.push("Invalid Serial Number");
 			res.status(400).render("registerDevice", {
@@ -895,6 +895,7 @@ routes
 			res.redirect("/account");
 		} catch (e) {
 			errors.push(e);
+			console.error(errors);
 			res.status(400).render("registerDevice", {
 				error: true,
 				message: errors[0],
