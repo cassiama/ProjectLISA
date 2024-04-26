@@ -678,6 +678,7 @@ routes
 
 		// Update the current user's information in the cookie
 		req.session.user = {
+			...req.session.user,
 			id: updatedUser._id,
 			firstName: updatedUser.firstName,
 			lastName: updatedUser.lastName,
@@ -690,31 +691,7 @@ routes
 			phoneSys: updatedUser.phoneSys,
 		};
 		console.log(req.session.user);
-
-		let deviceIds = req.session.user.deviceIds;
-		let devices = [];
-		try {
-			for (let devId of deviceIds) {
-				// console.log(devId);
-				let device = await getDevice(validUserId, devId);
-				// console.log(device);
-				devices.push(device);
-			}
-			// console.log(devices);
-			res.render("profile", {
-				firstName: req.session.user.firstName,
-				lastName: req.session.user.lastName,
-				email: req.session.user.email,
-				devices: devices,
-			});
-		} catch (e) {
-			errors.push("Internal Server Error");
-			res.status(500).render("editProfile", {
-				error: true,
-				message: errors[0],
-			});
-			return;
-		}
+		res.redirect("/account");
 	});
 
 routes
