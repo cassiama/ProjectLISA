@@ -1,0 +1,232 @@
+{{!-- using some code from https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_collapse_sidebar to create sidebar--}}
+
+
+<div id="sidebar" class="bar">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">☰</a>
+    <br>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Lenovo_Global_Corporate_Logo.png/2560px-Lenovo_Global_Corporate_Logo.png" alt="lenovo-logo" width="250px">
+    <br>
+    {{#if this.devices}}
+    <form action="/dashboard" method="POST" id="choose-device-form">
+        <ul>
+            <br>
+            {{#each this.devices}}
+            <li id={{this._id}} onclick="submitForm();" class="link remove-dots hover">{{this.deviceName}}</li>
+            <br>
+            {{/each}}
+        </ul>
+        <input type="hidden" name="type" value="devices">
+        <input type="hidden" name="deviceId" value="">
+    </form>
+    {{/if}}
+    <br>
+    {{!-- <br> --}}
+    <a href="/devices" id="add" class="add-device-button"><div id="move-add-dev">Add Device</div></a>
+    <br>
+    <br>
+    <br>
+    {{!-- <br>
+    <br>
+    <br>
+    <br> 
+    <br>--}}
+    <br>
+    <a href="/account">My Profile</a>
+    <a href="/help">Help</a>
+    <a href="/logout">Sign Out</a>
+</div>
+<main>
+    <div id="fullsite">
+    <button class="openbtn" onclick="openNav()">☰</button>
+    <h1 id="dashboard-title">Hi, {{firstName}}!</h1>
+    <div class="row">
+        <div class="column">
+            <div class="left-box">
+            {{#if deviceName}}
+            <h3>{{deviceName}} Stats</h3>
+            <div id="piechart"></div>
+            {{!-- <p>UserID: {{userId}}, currentDeviceId: {{currentDeviceId}}</p> --}}
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+        console.log("Script executed");
+
+    document.addEventListener("DOMContentLoaded", async function() {
+        console.log("DOMContentLoaded event fired");
+
+        // Load google charts
+        console.log("Loading Google Charts library...");
+        google.charts.load('current', { 'packages': ['corechart'] });
+
+        // Wait for Google Charts to load
+        await new Promise(resolve => google.charts.setOnLoadCallback(resolve));
+        console.log("Google Charts library loaded.");
+
+        // Fetch device data
+        const currentDeviceInfo = JSON.parse('{{{currentDeviceInfo}}}');
+        const prevLog = currentDeviceInfo.prevLog;
+        const currentLog = currentDeviceInfo.log;
+
+        // Calculate differences
+        console.log("Calculating differences...");
+        const diff = {
+    powerMode: Math.max(
+        ((currentLog.normal * 0.25) + (currentLog.performance * 0.33) + (currentLog.energySaver * 0.25 * 0.9)) -
+        ((prevLog.normal * 0.25) + (prevLog.performance * 0.33) + (prevLog.energySaver * 0.25 * 0.9)),
+        0.01
+    ),
+    averageBrightness: Math.max(
+        ((currentLog.averageBrightness - prevLog.averageBrightness) * 0.5),
+        0.01
+    ),
+    chargingTime: Math.max(
+        ((currentLog.chargingTime - prevLog.chargingTime) * 0.8),
+        0.01
+    ),
+    streamTime: Math.max(
+        (currentLog.streamTime - prevLog.streamTime) * 0.27,
+        0.01
+    ),
+    idleTime: Math.max(
+        (currentLog.idleTime - prevLog.idleTime) * 0.05,
+        0.01
+    ),
+};
+        
+        console.log("Differences calculated:", diff);
+
+        // Create the data table for the pie chart
+        console.log("Creating data table...");
+        var data = google.visualization.arrayToDataTable([
+            ['Task', 'Difference'],
+            ['Power Mode', diff.powerMode],
+            ['Average Brightness', diff.averageBrightness],
+            ['Charging Time', diff.chargingTime],
+            ['Stream Time', diff.streamTime],
+            ['Idle Time', diff.idleTime],
+            ['Last Cycle', diff.lastCycle]
+        ]);
+        console.log("Data table created:", data);
+
+        // Set chart options
+        var options = {
+            title: 'Difference Between Previous and Current Log',
+            backgroundColor: '#ddbfe3',
+            colors: ['#E00849', '#9900b7', '#6300C6', '#BF5FD2', '#B11D4C'],
+            pieSliceBorderColor: "transparent"
+        };
+
+        // Display the chart inside the <div> element with id="piechart"
+        console.log("Drawing pie chart...");
+        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+        chart.draw(data, options);
+        console.log("Pie chart drawn.");
+    });
+</script>
+
+            {{else}}
+            <h3>Stats Unavailable</h3>
+            {{/if}}
+            <h5>Carbon Emissions Saved By:</h5>
+                    <ul>
+                        {{#each this.emissionsFacts}}
+                        <li>{{this.action}}</li>
+                        <ul>
+                            <li>{{this.stats}}</li>
+                        </ul>
+                        {{/each}}
+                    </ul>
+                    <a href="/facts" id="link">Learn More</a>
+            </div>
+            <br>
+            <br>
+        </div>
+        <div class="column">
+            <div class="right-box">
+                <h3>Current Goal:</h3>
+                {{#with this.currentGoal}}
+                    <p>{{this.info}}</p>
+                {{/with}}
+                <progress value={{{percentage}}} max="100"> {{percentage}}% </progress>
+                <h5>{{progressMessage}}</h5>
+                <p>You have reduced your carbon footprint by {{carbonPercent}}%</p>
+                <a href="/leaderboard" id="link">Check out the leaderboard!</a>
+            </div>
+            <br>
+            <br>
+            <div class="center">
+                <h3 class="dashboard-text">Sustainability Tips</h3>
+                <ul class="dashboard-text ul-fix">
+                    {{#each this.tips}}
+                        <li>{{this}}</li>
+                        <br />
+                    {{/each}}
+                </ul>
+                <br>
+                <br>
+            </div>
+            {{#if onlyOneGoal}}
+                <div class="other-goals">
+                    <div class="edit-user-goals">
+                    <h3>This device only has one goal</h3>
+                    <a class="link" href="/editGoals">Want to edit your goals?</a>
+                    </div>
+                </div>
+            {{else}}
+                <div class="other-goals">
+                    <div class="edit-user-goals">
+                <h3>{{firstName}}'s Other Goals:</h3>
+                    <form action="/dashboard" method="POST" id="choose-goal-form">
+                        <label for="goals"class="other-goals">Choose a goal to focus on!</label>
+                        <br>
+                        <select name="goals" id="goals">
+                            {{#each this.deviceGoals}}
+                            <option>{{this.info}}</option>
+                            {{/each}}
+                        </select>
+                        <br>
+                        <br>
+                        <button type="submit" class="button">Submit</button>
+                        <input type="hidden" name="type" value="goals">
+                    </form>
+                    <br>
+                    <a class="link" href="/editGoals">Want to edit your goals?</a>
+                    </div>
+                </div>
+            {{/if}}
+        </div>
+    </div>
+    </div>
+    <script>
+    function openNav() {
+        document.getElementById("sidebar").style.width = "250px";
+        document.getElementById("fullsite").style.marginLeft = "250px";
+        document.querySelector(".closebtn").style.visibility = "visible";
+        document.querySelector(".openbtn").style.visibility = "hidden";
+    }
+
+    function closeNav() {
+        document.getElementById("sidebar").style.width = "0px";
+        document.getElementById("fullsite").style.marginLeft= "0px";
+        document.querySelector(".closebtn").style.visibility = "hidden";
+        document.querySelector(".openbtn").style.visibility = "visible";
+    }
+    var currentDevId = '';
+    async function deviceClickListener(e) {
+        e.preventDefault();
+        currentDevId = e.target.id;
+    }
+    function addClickListeners(evt) {
+        // add click event listeners to the device list elements
+        var devices = document.querySelectorAll("#choose-device-form li");
+        for (let device of devices) {
+            device.addEventListener("mousedown", deviceClickListener);
+        }
+    }
+    window.addEventListener("load", addClickListeners);
+    function submitForm() {
+        let deviceIdElem = document.querySelector("input[name='deviceId']");
+        deviceIdElem.setAttribute("value", currentDevId);
+        document.getElementById("choose-device-form").submit();
+    }
+    </script>
+</main>

@@ -1,0 +1,31 @@
+<div class="help-container">
+    <div class="row">
+        <h1 class="help-title">Sustainability Goals</h1>
+        <div class="column">
+    <h3 class="facts-text">Daily Goals:</h3>
+    <ol class="facts-text">
+    {{#each dailyGoals}}
+        <li class="facts-text">{{this}}</li>
+        <br>
+    {{/each}}
+    </ol>
+    </div>
+    <div class="column">
+    <h3 class="facts-text">Weekly Goals:</h3>
+    <ol class="facts-text">
+    {{#each weeklyGoals}}
+        <li class="facts-text">{{this}}</li>
+        <br>
+    {{/each}}
+</ol>
+</div>
+</div>
+<div class="align-buttons">
+<a href="/editGoals" class="button">Edit Goals?</a>
+<a href="/dashboard" class="button">Back</a>
+</div>
+</div>
+</div>
+
+
+

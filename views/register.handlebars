@@ -1,0 +1,109 @@
+<main>
+    <form method="post" id="registerUser-form">
+      <div class="vertical-container">
+        <h2 class="title">Register Here!</h2>
+        
+        <label for="email">Email:</label>
+        <br>
+        <input type="email" id="email" name="email" required placeholder="Enter email address" class="register-input">
+        <br/>
+        <br>
+        <label for="firstName">First Name:</label>
+        <br>
+        <input type="text" id="firstName" name="firstName" required placeholder="Enter first name" class="register-input">
+        <br/>
+        <br>
+        <label for="lastName">Last Name:</label>
+        <br>
+        <input type="text" id="lastName" name="lastName" required placeholder="Enter last name" class="register-input">
+        <br/>
+        <br>
+        <label for="ageInput">Age:</label>
+        <br>
+        <input type="number" id="ageInput" name="ageInput" placeholder="Enter your age" min="13" max="120" class="register-input" required>
+        <br/>
+        <br>
+        <label for="occupation">Occupation:</label>
+        <br>
+        <input type="text" id="occupation" name="occupation" placeholder="Enter your occupation" class="register-input" required>
+        <br/>
+        <br>
+        <label for="numberDevices">Number of devices owned:</label>
+        <br>
+        <input type="number" id="numberDevices" name="numberDevices" placeholder="Enter the number of devices you own" class="register-input" min="0" required>
+        <br/>
+        <br>
+        <label for="password">Password (must have at least 8 characters, 1 special character, 1 number, and 1 capital letter):</label>
+        <br>
+        <input type="password" id="password" name="password" required placeholder="Enter password" class="register-input">
+        <br/>
+        <br>
+        <label for="confirmPassword">Confirm Password:</label>
+        <br>
+        <input type="password" id="confirmPassword" placeholder="Enter password" name="confirmPassword" required class="register-input">
+        <br/>
+        <br>
+        <p>Please select your geographical location:</p>
+          <input type="radio" id="urban" name="geography" value="urban" class="choice">
+          <label for="urban">Urban</label><br>
+          <input type="radio" id="suburban" name="geography" value="suburban" class="choice">
+          <label for="suburban">Suburban</label><br>
+          <input type="radio" id="rural" name="geography" value="rural" class="choice">
+          <label for="rural">Rural</label>
+        <br/>
+        <br>
+        <p>What is your operating system of choice?</p>
+          <input type="radio" id="windows" name="os" value="windows" class="choice">
+          <label for="windows">Windows</label><br>
+          <input type="radio" id="macOS" name="os" value="macOS" class="choice">
+          <label for="macOS">Mac OS</label><br>
+          <input type="radio" id="linux" name="os" value="linux" class="choice">
+          <label for="linux">Linux</label></br>
+          <input type="radio" id="chrome" name="os" value="chrome" class="choice">
+          <label for="chrome">Chrome</label>
+          <br>
+        <br/>
+
+        <p>What is your phone system of choice?</p>
+          <input type="radio" id="andriod" name="phoneSys" class="choice" value="android">
+          <label for="android">Android</label><br>
+          <input type="radio" id="ios" name="phoneSys" value="ios" class="choice">
+          <label for="ios">IOS</label><br>
+        <br/>
+        <script>
+          document.getElementById('registerUser-form').addEventListener('submit', function(e) {
+            var password = document.getElementById('password').value;
+            var confirmPassword = document.getElementById('confirmPassword').value;
+            if (password !== confirmPassword) {
+              e.preventDefault();
+              alert('Passwords do not match.');
+            }
+          });
+          document.getElementById('registerUser-form').addEventListener('submit', function(e) {
+            var password = document.getElementById('password').value;
+            var confirmPassword = document.getElementById('confirmPassword').value;
+            if (password === confirmPassword) {
+              var passwordCheck = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+              if (!password.match(passwordCheck)) {
+                e.preventDefault();
+                alert('Password must have at least 8 characters, 1 special character, 1 number, and 1 capital letter.');
+              }
+            }
+          });
+        document.getElementById('registerUser-form').addEventListener('submit', function(e) {
+          var checkboxes = document.querySelectorAll("input.choice:checked");
+          if (checkboxes.length < 3) {
+            e.preventDefault();
+            alert("Please select an option for each question.");
+          }
+        });
+        </script>
+
+        <br>     
+        <div id="register-text">
+        <button type="submit" class="register-button">Submit</button>
+        <p>Already a user? <a href="/login" id="link">Sign in here!</a></p>
+        </div>
+        </div>
+    </form>
+</main>

@@ -1,0 +1,99 @@
+<main>
+<div class="rewards-container">
+    <h1 class="rewards-title">Redeem Rewards</h1>
+    <h3 class="center">Your Points: {{this.points}}</h3>
+     <div class="redeem"> {{!--this is just random --}}
+        {{#each users}}
+            <tr>
+                <td>{{this.points}}</td>
+            </tr>
+        {{/each}}
+        <div class="row">
+        <div class="column">
+            <div class="column1-shift">
+        <form action="/rewards" method="POST" id="rewards-form">
+            <div class="donate">
+                <h4>A $10 Donation to fight against Climate Change</h4>
+                <progress value={{{this.points}}} max="100"></progress>
+                <h5>100 Points</h5>
+                <button type="submit" onclick="submitForm()" class="rewards-button">Redeem</a>
+                <input type="hidden" name="points">
+            </div>
+            <div class="donate">
+                <h4>A $20 Donation to fight against Climate Change</h4>
+                <progress value={{{this.points}}} max="200"></progress>
+                <h5>200 Points</h5>
+                <button type="submit" onclick="submitForm()" class="rewards-button">Redeem</a>
+                <input type="hidden" name="points">
+            </div>
+            <div class="carbon offset">
+                <h4>Earn a Carbon Offset Credit For Your Device</h4>
+                <progress value={{{this.points}}} max="350"></progress>
+                <h5>350 Points</h5>
+                <button type="submit" onclick="submitForm()" class="rewards-button">Redeem</a>
+                <input type="hidden" name="points">
+            </div>
+            </div>
+            </div>
+            <div class="column">
+                <div class="column2-shift">
+            <div class="lenovo">
+                <h4>$50 Towards Any Lenovo Product</h4>
+                <progress value={{{this.points}}} max="500"></progress>
+                <h5>500 Points</h5>
+                <button type="submit" onclick="submitForm()" class="rewards-button">Redeem</a>
+                <input type="hidden" name="points">
+            </div>
+            <div class="lenovo">
+                <h4>$100 Towards Any Lenovo Product</h4>
+                <progress value={{{this.points}}} max="1000"></progress>
+                <h5>1000 Points</h5>
+                <button type="submit" onclick="submitForm()" class="rewards-button">Redeem</a>
+                <input type="hidden" name="points">
+            </div>
+            <br>
+            <br>
+            </div>
+            </div>
+            </div>
+                </div>
+        </form>
+        <a href="/dashboard" class="button goals-button">Back</a>
+</div>
+
+
+</br>
+</br>
+<script>
+    var redeemValue = '';
+    async function redeemClickListener(e) {
+        e.preventDefault();
+        console.log(e);
+        let parentElem = e.target.parentElement;
+        let progressValue = parentElem.getElementsByTagName("progress").item(0).getAttribute("max");
+        redeemValue = progressValue;
+    }
+    function addClickListeners(evt) {
+        // add click event listeners to the button elements
+        var buttons = document.querySelectorAll("button");
+        for (let button of buttons) {
+            button.addEventListener("mousedown", redeemClickListener);
+        }
+    }
+    window.addEventListener("load", addClickListeners);
+    function submitForm() {
+        let pointsElem = document.querySelector("input[name='points']");
+        pointsElem.setAttribute("value", redeemValue);
+        document.getElementById("rewards-form").submit();
+    }
+    // if the user does not have enough points, alert them
+    document.getElementById('rewards-form').addEventListener('submit', function(e) {
+        let pointsElem = document.querySelector("input[name='points']");
+        let points = pointsElem.getAttribute("value");
+        if (points > {{this.points}}) {
+            e.preventDefault();
+            alert('You do not have enough points to redeem this reward.');
+        }
+    });
+</script>
+</main>

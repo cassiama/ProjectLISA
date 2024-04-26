@@ -1,0 +1,41 @@
+<main>
+	<form method="post" id="editDeviceGoal-form">
+		<div class="vertical-container">
+		<h2 class="title">Edit Goals</h2>
+		<h3>{{this.currentDeviceName}}</h3>
+		<label for="devGoals">New Device Goals</label>
+		<h4>Select All Goals You Want to Complete!</h4>
+		<br>
+		<br>
+		<form id="myForm">
+			{{#each goals}}
+				<input type="checkbox" class="deviceGoals" name="deviceGoals" value="{{this}}">{{this}}
+				<br>
+			{{/each}}
+			<br>
+			<br>
+			<a href="/goals" id="link">Learn More About Device Goals</a>
+			<br>
+			<br>
+			<button type="submit" class="register-button">Submit</button>
+		</form>
+		<script>
+			document.getElementById('editDeviceGoal-form').addEventListener('submit', function(e) {
+				var checkboxes = document.querySelectorAll('input.deviceGoals:checked');
+				if (checkboxes.length === 0) {
+					e.preventDefault();
+					alert('Please select at least one goal.');
+				}
+			});
+		</script>
+		<br />
+		<br>
+		</br>
+		</br>
+		<br>
+		<br>
+		<br>
+		<a href="/dashboard" class="button">Back</a>
+		</div>
+	</form>
+</main>

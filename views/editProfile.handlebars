@@ -1,0 +1,122 @@
+<main>
+  <form action="/editProfile" method="POST" id="editProfile-form">
+  {{!-- Might need to add correct action --}}
+    <div class="edit-profile-container">
+        <h2 class="title">Edit Profile</h2>
+
+        <label for="firstName">First Name:</label>
+        <br>
+        <input type="text" id="firstName" name="firstName" required class="register-input" placeholder="Enter first name">
+        <br/>
+        <br>
+        <label for="lastName">Last Name:</label>
+        <br>
+        <input type="text" id="lastName" name="lastName" required class="register-input" placeholder="Enter last name">
+        <br/>
+        <br>
+        <label for="email">Email:</label>
+        <br>
+        <input type="email" id="email" name="email" required class="register-input" placeholder="Enter email address">
+        <br/>
+        <br>
+        <label for="ageInput">Age:</label>
+        <br>
+        <input type="number" id="ageInput" name="ageInput" class="register-input" min="13" max="120" placeholder="Enter your age" required>
+        <br/>
+        <br>
+        <label for="occupation">Occupation:</label>
+        <br>
+        <input type="text" id="occupation" name="occupation" class="register-input" placeholder="Enter your occupation" required>
+        <br/>
+        <br>
+        <label for="numberDevices">Number of devices owned:</label>
+        <br>
+        <input type="number" id="numberDevices" name="numberDevices" class="register-input" min="0" placeholder="Enter the number of devices you own" required>
+        <br/>
+        <br>
+        <label for="password">Password (must have at least 8 characters, 1 special character, 1 number, and 1 capital letter):</label>
+        <br>
+        <input type="password" id="password" name="password" required class="register-input" placeholder="Enter password">
+        <br/>
+        <br>
+        <label for="confirmPassword">Confirm Password:</label>
+        <br>
+        <input type="password" id="confirmPassword" name="confirmPassword" required class="register-input" placeholder="Enter password">
+        <br/>
+        <br>
+        <p>Please select your geographical location:</p>
+          <input type="radio" id="urban" name="geography" value="urban" class="choose">
+          <label for="urban">Urban</label><br>
+          <input type="radio" id="suburban" name="geography" value="suburban" class="choose">
+          <label for="suburban">Suburban</label><br>
+          <input type="radio" id="rural" name="geography" value="rural" class="choose">
+          <label for="rural">Rural</label>
+        <br/>
+        <br>
+        <p>What is your operating system of choice?</p>
+          <input type="radio" id="windows" name="os" value="windows" class="choose">
+          <label for="windows">Windows</label><br>
+          <input type="radio" id="macOS" name="os" value="macOS" class="choose">
+          <label for="macOS">Mac OS</label><br>
+          <input type="radio" id="linux" name="os" value="linux" class="choose">
+          <label for="linux">Linux</label></br>
+          <input type="radio" id="chrome" name="os" value="chrome" class="choose">
+          <label for="chrome">Chrome</label>
+          <br>
+        <br/>
+
+        <p>What is your phone system of choice?</p>
+          <input type="radio" id="andriod" name="phoneSys" value="android" class="choose">
+          <label for="android">Android</label><br>
+          <input type="radio" id="ios" name="phoneSys" value="ios" class="choose">
+          <label for="ios">IOS</label><br>
+        <br/>
+
+      <br>     
+      {{!-- <input type="hidden" name="_method" value="PUT"> --}}
+      <button class="button" type="submit">Submit</button>
+      <script>
+        document.getElementById('editProfile-form').addEventListener('submit', function(e) {
+          var password = document.getElementById('password').value;
+          var confirmPassword = document.getElementById('confirmPassword').value;
+          if (password !== confirmPassword) {
+            e.preventDefault();
+            alert('Passwords do not match.');
+          }
+        });
+        document.getElementById('editProfile-form').addEventListener('submit', function(e) {
+          var password = document.getElementById('password').value;
+          var confirmPassword = document.getElementById('confirmPassword').value;
+          if (password === confirmPassword) {
+            var passwordCheck = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+            if (!password.match(passwordCheck)) {
+              e.preventDefault();
+              alert('Password must have at least 8 characters, 1 special character, 1 number, and 1 capital letter.');
+            }
+          }
+        });
+        // check that geography, os, and phone system are selected
+        document.getElementById('editProfile-form').addEventListener('submit', function(e) {
+          var check = document.querySelectorAll('input.choose:checked');
+          if (check.length < 3) {
+            e.preventDefault();
+            alert('Please select an option for each question.');
+          }
+        });
+        // if everything is filled out, submit form and alert success message
+        document.getElementById('editProfile-form').addEventListener('submit', function(e) {
+          var check = document.querySelectorAll('input.choose:checked');
+          var password = document.getElementById('password').value;
+          var confirmPassword = document.getElementById('confirmPassword').value;
+          if (check.length === 3 && password === confirmPassword) {
+            alert('Profile updated successfully!');
+          }
+        });
+      </script>
+      
+      </br>
+      </br>
+      <a href="/account" class="button">Back</a>
+      </div>
+  </form>
+</main>

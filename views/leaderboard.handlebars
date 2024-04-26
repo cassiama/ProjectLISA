@@ -1,0 +1,25 @@
+<div class="leaderboard-container">
+    <h1 class="leaderboard-title">Leaderboard</h1>
+    <h3 class="shift">Your Rank:  {{userRank}}</h3>
+    <div class="leaderboard">
+        <table>
+            <tr>
+                <th>Rank</th>
+                <th>First Name</th>
+                <th>Points</th>
+            </tr>
+        {{#each users}}
+            <tr>
+                <td>#{{math @index "+" 1}}</td>
+                <td>{{this.firstName}}</td>
+                <td>{{this.points}}</td>
+            </tr>
+        {{/each}}
+        </table>
+        <br>
+        <a href="/rewards" id="link" class="shift">Want to redeem your rewards?</a>
+    </div>
+    </br>
+<br>
+<a href="/dashboard" class="button shift">Back</a>
+</div>

@@ -1,0 +1,51 @@
+<main>
+  <form action="login" method="POST" id="login-form">
+    <div class="login-container">
+    <br>
+    <img class="login-logo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Lenovo_Global_Corporate_Logo.png/2560px-Lenovo_Global_Corporate_Logo.png" alt="lenovo-logo" width="150px">
+    <br>
+      <div class="login-text">
+    <h1 class="title">Login!</h1>
+    <label for="email">
+      Email:
+      <br>
+      <input
+        type="email"
+        name="email"
+        id="email"
+        placeholder="Enter email address"
+        required
+        class="login-input"
+      >
+    </label>
+<br>
+<br>
+    <label for="password">
+      Password:
+      <br>
+      <input
+        type="password"
+        name="password"
+        id="password"  
+        placeholder="Enter password"
+        required
+        class="login-input"
+      >
+    </label>
+    <br>
+    <br>
+    <br> 
+    <button type="submit" class="btn login-button">Submit</button>
+    <br>
+    <br>
+    {{#if error}}
+    <div class="error">
+      <p>{{message}}</p>
+    </div>
+    {{/if}}
+    <p>New user? <a href="/register" class="register" id="link">Sign up here!</a></p>
+    <a href="/forgetpassword" id="link">Forgot Password?</a>
+  </form>
+    </div>
+    </div>
+</main>
