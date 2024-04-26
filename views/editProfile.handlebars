@@ -3,7 +3,11 @@
   {{!-- Might need to add correct action --}}
     <div class="edit-profile-container">
         <h2 class="title">Edit Profile</h2>
-
+          {{#if error}}
+    <div class="error">
+      <p>{{message}}</p>
+    </div>
+    {{/if}}
         <label for="firstName">First Name:</label>
         <br>
         <input type="text" id="firstName" name="firstName" required class="register-input" placeholder="Enter first name">
