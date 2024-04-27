@@ -438,6 +438,7 @@ routes.get("/logout", async (req, res) => {
 						pointsGained = Math.round(goal.totalPoints / Math.pow(2, powOfTwo));
 					} else // user can't gain more than the max points if % >= 50
 						pointsGained = goal.totalPoints - goal.userPoints;
+					console.log(pointsGained);
 
 					console.log(`Points gained for "${goal.info}":`, pointsGained);
 					await addRewardPoints(userId, pointsGained);
